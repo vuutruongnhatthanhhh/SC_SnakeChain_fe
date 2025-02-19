@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
+  --background: #f0e7db;
   --foreground: #171717;
 }
 
@@ -17,5 +17,18 @@
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Media query cho màn hình nhỏ hơn 1024px */
+@media (max-width: 1300px) {
+  .text-xl {
+    font-size: 1rem; /* Chỉnh kích thước chữ cho các màn hình nhỏ hơn */
+  }
+  .text-base {
+    font-size: 0.875rem; /* Chỉnh kích thước chữ cho các màn hình nhỏ hơn */
+  }
+  .text-sm {
+    font-size: 0.75rem; /* Chỉnh kích thước chữ cho các màn hình nhỏ hơn */
+  }
 }

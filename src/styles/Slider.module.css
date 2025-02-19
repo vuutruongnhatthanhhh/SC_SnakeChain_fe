@@ -1,0 +1,38 @@
+/* Slider.module.css */
+
+/* Các lớp mặc định */
+.sliderTitle {
+  font-size: 2.3rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.sliderText {
+  font-size: 1.5rem;
+}
+
+@media (max-width: 1380px) {
+  .sliderTitle {
+    font-size: 1.8rem;
+  }
+
+  .sliderText {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 1024px) {
+  .sliderTitle {
+    font-size: 1.5rem;
+  }
+
+  .sliderText {
+    font-size: 0.825rem;
+  }
+}
+
+@media (max-width: 800px) {
+  .sliderWrapper {
+    display: none;
+  }
+}
