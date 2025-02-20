@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FaSearch } from "react-icons/fa";
 
 interface SearchProps {
-  onSearch: (query: string) => void; // Hàm callback để gửi từ khóa tìm kiếm lên component cha
-  checkboxes: { label: string; checked: boolean }[]; // Các checkbox với nhãn và trạng thái checked
-  onCheckboxChange: (index: number, checked: boolean) => void; // Hàm callback để cập nhật trạng thái của checkbox
+  onSearch: (query: string) => void;
+  checkboxes: { label: string; checked: boolean }[];
+  onCheckboxChange: (index: number, checked: boolean) => void;
 }
 
 const Search: React.FC<SearchProps> = ({
@@ -13,6 +13,13 @@ const Search: React.FC<SearchProps> = ({
   onCheckboxChange,
 }) => {
   const [query, setQuery] = useState<string>("");
+  const [clientCheckboxes, setClientCheckboxes] = useState(checkboxes);
+  const [isClient, setIsClient] = useState<boolean>(false);
+
+  useEffect(() => {
+    setIsClient(true);
+    setClientCheckboxes(checkboxes);
+  }, [checkboxes]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value);
@@ -23,13 +30,19 @@ const Search: React.FC<SearchProps> = ({
   };
 
   const handleCheckboxChange = (index: number) => {
-    const newCheckedState = !checkboxes[index].checked;
-    onCheckboxChange(index, newCheckedState); // Cập nhật trạng thái checkbox
+    const newCheckedState = !clientCheckboxes[index].checked;
+    onCheckboxChange(index, newCheckedState);
+    const updatedCheckboxes = [...clientCheckboxes];
+    updatedCheckboxes[index].checked = newCheckedState;
+    setClientCheckboxes(updatedCheckboxes);
   };
+
+  if (!isClient) {
+    return null;
+  }
 
   return (
     <div className="flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-4 w-full">
-      {/* Input tìm kiếm */}
       <div className="">
         <input
           type="text"
@@ -40,9 +53,8 @@ const Search: React.FC<SearchProps> = ({
         />
       </div>
 
-      {/* Hiển thị các checkbox */}
       <div className="flex flex-col md:flex-row items-start md:items-center space-y-2 md:space-y-0 md:space-x-4 mt-4 md:mt-0 w-full md:w-auto">
-        {checkboxes.map((checkbox, index) => (
+        {clientCheckboxes.map((checkbox, index) => (
           <label key={index} className="flex items-center space-x-1">
             <input
               type="checkbox"

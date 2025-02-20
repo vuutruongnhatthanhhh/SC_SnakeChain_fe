@@ -1,7 +1,7 @@
 import React from "react";
 import ServicesWebSection from "@/components/ServiceWebSection";
 import WebCard from "@/components/WebCard";
-import WhySection from "@/components/WhySection";
+import WhyWebSection from "@/components/WhyWebSection";
 import ProcessSection from "@/components/ProcessSection";
 import QuoteRequestForm from "@/components/QuoteRequestForm";
 
@@ -10,32 +10,32 @@ const Page: React.FC = () => {
     {
       title: "Mẫu website Bán loa Audio",
       imageUrl:
-        "/images/web/thiet-ke-website-ban-loa-ban-thiet-bi-am-thanh-audio-02.png", // Cập nhật lại link ảnh cho phù hợp
+        "/images/web/thiet-ke-website-ban-loa-ban-thiet-bi-am-thanh-audio-02.png",
     },
     {
       title: "Mẫu website Công ty Luật",
       imageUrl:
-        "/images/web/thiet-ke-website-cong-ty-luat-su-van-phong-luat-su-tu-van-luat-03.jpg", // Cập nhật lại link ảnh cho phù hợp
+        "/images/web/thiet-ke-website-cong-ty-luat-su-van-phong-luat-su-tu-van-luat-03.jpg",
     },
     {
       title: "Mẫu website Khoan Cắt Bê Tông",
       imageUrl:
-        "/images/web/thiet-ke-website-cong-ty-khoan-cat-ep-coc-do-be-tong-01.jpg", // Cập nhật lại link ảnh cho phù hợp
+        "/images/web/thiet-ke-website-cong-ty-khoan-cat-ep-coc-do-be-tong-01.jpg",
     },
     {
       title: "Mẫu website Bán loa Audio",
       imageUrl:
-        "/images/web/thiet-ke-website-ban-loa-ban-thiet-bi-am-thanh-audio-02.png", // Cập nhật lại link ảnh cho phù hợp
+        "/images/web/thiet-ke-website-ban-loa-ban-thiet-bi-am-thanh-audio-02.png",
     },
     {
       title: "Mẫu website Công ty Luật",
       imageUrl:
-        "/images/web/thiet-ke-website-cong-ty-luat-su-van-phong-luat-su-tu-van-luat-03.jpg", // Cập nhật lại link ảnh cho phù hợp
+        "/images/web/thiet-ke-website-cong-ty-luat-su-van-phong-luat-su-tu-van-luat-03.jpg",
     },
     {
       title: "Mẫu website Khoan Cắt Bê Tông",
       imageUrl:
-        "/images/web/thiet-ke-website-cong-ty-khoan-cat-ep-coc-do-be-tong-01.jpg", // Cập nhật lại link ảnh cho phù hợp
+        "/images/web/thiet-ke-website-cong-ty-khoan-cat-ep-coc-do-be-tong-01.jpg",
     },
   ];
   return (
@@ -58,7 +58,7 @@ const Page: React.FC = () => {
           Xem tất cả
         </a>
       </div>
-      <WhySection />
+      <WhyWebSection />
       <ProcessSection />
       <QuoteRequestForm />
     </>

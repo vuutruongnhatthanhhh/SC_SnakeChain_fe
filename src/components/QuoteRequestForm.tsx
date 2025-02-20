@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FaYoutube, FaFacebook, FaTiktok, FaInstagram } from "react-icons/fa";
 
 interface FormData {
@@ -19,6 +19,12 @@ const QuoteRequestForm: React.FC = () => {
     description: "",
   });
 
+  const [isClient, setIsClient] = useState(false); // Kiểm tra môi trường client
+
+  useEffect(() => {
+    setIsClient(true); // Set lại state khi component mount trên client
+  }, []);
+
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
@@ -33,9 +39,10 @@ const QuoteRequestForm: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Xử lý gửi form (ví dụ gửi qua API)
     console.log(formData);
   };
+
+  if (!isClient) return null;
 
   return (
     <div className="flex flex-col lg:flex-row items-center bg-white p-8 rounded-2xl shadow-lg max-w-6xl w-full mx-auto mb-4">
@@ -114,9 +121,6 @@ const QuoteRequestForm: React.FC = () => {
         <p className="mb-2">
           <strong>Email:</strong> vuutruongnhatthanh@gmail.com
         </p>
-        {/* <p className="mb-2">
-          <strong>Địa chỉ:</strong> Phố Mới, Thành phố Lào Cai
-        </p> */}
         <div className="flex space-x-4 mt-4">
           <a
             href="https://facebook.com"

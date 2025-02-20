@@ -4,7 +4,7 @@ interface ServiceCardProps {
   icon: React.ReactNode;
   title: string;
   description: string;
-  link: string; // Thêm thuộc tính link để nhận đường dẫn
+  link: string;
 }
 
 const ServiceCard: React.FC<ServiceCardProps> = ({

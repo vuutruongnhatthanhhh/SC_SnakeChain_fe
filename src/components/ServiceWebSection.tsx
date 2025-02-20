@@ -23,13 +23,13 @@ const ServicesSection: React.FC = () => {
         <ServiceCard
           icon={<FaShoppingCart />}
           title="Thiết kế website bán hàng"
-          description="Khám phá sự khác biệt vượt trội với công nghệ thiết kế website bán hàng chuẩn SEO Google từ Snake Chain."
+          description="Khám phá sự khác biệt vượt trội với công nghệ thiết kế website bán hàng chuẩn SEO Google từ Snake Chain, giúp đẩy mạnh doanh số bán hàng"
           link={"#"}
         />
         <ServiceCard
           icon={<FaBuilding />}
           title="Thiết kế website doanh nghiệp"
-          description="Hãy trải nghiệm dịch vụ Thiết kế web doanh nghiệp chuẩn SEO từ Snake Chain để nâng tầm thương hiệu công ty bạn và khẳng định sự hiện diện trực tuyến ngay hôm nay."
+          description="Hãy trải nghiệm dịch vụ Thiết kế web doanh nghiệp chuẩn SEO từ Snake Chain để nâng tầm thương hiệu công ty bạn. "
           link={"#1"}
         />
         <ServiceCard

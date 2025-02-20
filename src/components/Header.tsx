@@ -9,8 +9,10 @@ const Header: React.FC = () => {
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const menuRef = useRef<HTMLDivElement | null>(null);
   const toggleButtonRef = useRef<HTMLButtonElement | null>(null);
+  const [isClient, setIsClient] = useState<boolean>(false);
 
   useEffect(() => {
+    setIsClient(true);
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 860);
     };
@@ -35,6 +37,10 @@ const Header: React.FC = () => {
       document.removeEventListener("click", handleClickOutside);
     };
   }, []);
+
+  if (!isClient) {
+    return null;
+  }
 
   return (
     <header className=" sticky top-0 z-50 flex items-center justify-between p-4 text-white bg-gray-900">

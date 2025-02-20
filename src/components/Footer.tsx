@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { FaYoutube, FaFacebook, FaTiktok, FaInstagram } from "react-icons/fa";
 
 const Footer = () => {
@@ -77,10 +77,7 @@ const Footer = () => {
       </div>
 
       <div className="text-center mt-6 text-sm text-gray-400">
-        <p>
-          &copy; {new Date().getFullYear()} Bản quyền © Snake Chain | Bảo lưu
-          mọi quyền
-        </p>
+        <p>&copy; 2025 Bản quyền © Snake Chain | Bảo lưu mọi quyền</p>
       </div>
     </footer>
   );
