@@ -4,6 +4,8 @@ import { FaUser } from "react-icons/fa";
 
 const Header: React.FC = () => {
   const [isDropdownVisible, setDropdownVisible] = useState<boolean>(false);
+  const [isDropdownVisibleCourse, setDropdownVisibleCourse] =
+    useState<boolean>(false);
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const menuRef = useRef<HTMLDivElement | null>(null);
   const toggleButtonRef = useRef<HTMLButtonElement | null>(null);
@@ -35,10 +37,20 @@ const Header: React.FC = () => {
   }, []);
 
   return (
-    <header className="flex items-center justify-between p-4 text-white bg-gray-900">
+    <header className=" sticky top-0 z-50 flex items-center justify-between p-4 text-white bg-gray-900">
       <div className="flex items-center space-x-2">
-        <img src="/images/logo.png" alt="Logo" className="w-8 h-8" />
-        <div className="text-xl font-semibold">Snake Chain</div>
+        <a href="/" rel="noopener noreferrer">
+          <img
+            src="/images/logo.png"
+            alt="Logo"
+            className="w-8 h-8 cursor-pointer"
+          />
+        </a>
+        <a href="/" rel="noopener noreferrer">
+          <div className="text-xl font-semibold cursor-pointer">
+            Snake Chain
+          </div>
+        </a>
       </div>
 
       <div
@@ -48,7 +60,7 @@ const Header: React.FC = () => {
       >
         {!isMobile ? (
           <>
-            <a href="#khoahoc" className="text-white hover:text-[#319795]">
+            <a href="/course" className="text-white hover:text-[#319795]">
               Khóa học
             </a>
             <div
@@ -71,10 +83,16 @@ const Header: React.FC = () => {
                     href="#xaydungwebsite"
                     className="block px-6 py-3 hover:bg-[#319795] transition-colors duration-300"
                   >
+                    Bảng giá dịch vụ
+                  </a>
+                  <a
+                    href="/website"
+                    className="block px-6 py-3 hover:bg-[#319795] transition-colors duration-300"
+                  >
                     Thiết kế website
                   </a>
                   <a
-                    href="#xaydungapp"
+                    href="/mobile"
                     className="block px-6 py-3 hover:bg-[#319795] transition-colors duration-300"
                   >
                     Thiết kế ứng dụng di động
@@ -89,7 +107,7 @@ const Header: React.FC = () => {
               )}
             </div>
 
-            <a href="#sourcecode" className="text-white hover:text-[#319795]">
+            <a href="/sourcecode" className="text-white hover:text-[#319795]">
               Source Code
             </a>
             <a href="#video" className="text-white hover:text-[#319795]">
