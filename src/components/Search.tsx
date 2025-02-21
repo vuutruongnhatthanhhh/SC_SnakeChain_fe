@@ -17,7 +17,7 @@ const Search: React.FC<SearchProps> = ({
   const [isClient, setIsClient] = useState<boolean>(false);
 
   useEffect(() => {
-    setIsClient(true);
+    // setIsClient(true);
     setClientCheckboxes(checkboxes);
   }, [checkboxes]);
 
@@ -37,9 +37,9 @@ const Search: React.FC<SearchProps> = ({
     setClientCheckboxes(updatedCheckboxes);
   };
 
-  if (!isClient) {
-    return null;
-  }
+  // if (!isClient) {
+  //   return null;
+  // }
 
   return (
     <div className="flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-4 w-full">

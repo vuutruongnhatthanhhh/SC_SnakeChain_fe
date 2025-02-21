@@ -86,7 +86,12 @@ export default function Home() {
       />
       <QuoteRequestForm />
 
-      <Blogs blogs={blogs} title="Blog" allBlogLink="#allBlog" />
+      <Blogs
+        blogs={blogs}
+        title="Blog"
+        allBlogLink="#allBlog"
+        showButton={true}
+      />
     </div>
   );
 }

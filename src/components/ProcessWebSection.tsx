@@ -24,7 +24,7 @@ const ProcessStep: React.FC<ProcessStepProps> = ({
   );
 };
 
-const ProcessSection: React.FC = () => {
+const ProcessWebSection: React.FC = () => {
   return (
     <section className="py-16 px-8 bg-gray-50 mb-12">
       <h2 className="text-3xl font-bold text-center mb-12">
@@ -60,4 +60,4 @@ const ProcessSection: React.FC = () => {
   );
 };
 
-export default ProcessSection;
+export default ProcessWebSection;

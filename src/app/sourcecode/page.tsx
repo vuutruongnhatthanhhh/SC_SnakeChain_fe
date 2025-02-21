@@ -65,8 +65,8 @@ export default function Source() {
     },
   ];
   return (
-    <div className="flex p-4">
-      <div className="">
+    <div className="flex p-4 w-full">
+      <div className="w-full">
         {/* Hiển thị kết quả dựa trên filters */}
         {/* <pre>{JSON.stringify(filters, null, 2)}</pre> */}
         <Search

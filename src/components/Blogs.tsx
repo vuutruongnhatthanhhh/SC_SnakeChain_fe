@@ -12,9 +12,15 @@ interface FeaturedblogsProps {
   blogs: Blog[];
   title: string;
   allBlogLink: string;
+  showButton?: boolean;
 }
 
-const Blogs: React.FC<FeaturedblogsProps> = ({ blogs, title, allBlogLink }) => {
+const Blogs: React.FC<FeaturedblogsProps> = ({
+  blogs,
+  title,
+  allBlogLink,
+  showButton,
+}) => {
   return (
     <div className="py-12 px-4 sm:px-6 lg:px-8">
       <h2 className="text-3xl font-bold text-center mb-8">{title}</h2>
@@ -42,14 +48,16 @@ const Blogs: React.FC<FeaturedblogsProps> = ({ blogs, title, allBlogLink }) => {
           </a>
         ))}
       </div>
-      <div className="text-center mt-8">
-        <a
-          href={allBlogLink}
-          className="cursor-pointer inline-block py-2 px-4 bg-teal-600 text-white font-semibold rounded-lg hover:bg-teal-700 transition-colors duration-300"
-        >
-          Xem tất cả
-        </a>
-      </div>
+      {showButton && (
+        <div className="text-center mt-8">
+          <a
+            href={allBlogLink}
+            className="inline-block bg-teal-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-teal-700"
+          >
+            Xem tất cả
+          </a>
+        </div>
+      )}
     </div>
   );
 };

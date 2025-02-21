@@ -7,7 +7,7 @@ const ServicesSection: React.FC = () => {
     // bg-gray-100
     <section className="py-16 px-8  pb-10">
       <h2 className="text-3xl font-semibold text-center mb-8">
-        DỊCH VỤ THIẾT KẾ ỨNG DỤNG DI ĐỘNG
+        DỊCH VỤ THIẾT KẾ APP IOS & ANDROID
       </h2>
       <p className="text-center text-gray-700 mb-12">
         Snake Chain cung cấp các giải pháp công nghệ tiên tiến, mang đến đầy đủ

@@ -8,6 +8,7 @@
 
 .carouselTrack {
   display: flex;
+  width: max-content;
   animation: scroll 15s linear infinite;
 }
 
@@ -21,6 +22,6 @@
     transform: translateX(0);
   }
   100% {
-    transform: translateX(-100%);
+    transform: translateX(-50%);
   }
 }

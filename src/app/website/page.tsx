@@ -2,7 +2,7 @@ import React from "react";
 import ServicesWebSection from "@/components/ServiceWebSection";
 import WebCard from "@/components/WebCard";
 import WhyWebSection from "@/components/WhyWebSection";
-import ProcessSection from "@/components/ProcessSection";
+import ProcessWebSection from "@/components/ProcessWebSection";
 import QuoteRequestForm from "@/components/QuoteRequestForm";
 
 const Page: React.FC = () => {
@@ -59,7 +59,7 @@ const Page: React.FC = () => {
         </a>
       </div>
       <WhyWebSection />
-      <ProcessSection />
+      <ProcessWebSection />
       <QuoteRequestForm />
     </>
   );
