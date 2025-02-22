@@ -124,6 +124,9 @@ const Header: React.FC = () => {
             <Link href="/contact" className="text-white hover:text-[#319795]">
               Liên hệ
             </Link>
+            <Link href="/userInfo" className="text-white hover:text-[#319795]">
+              UserInfo
+            </Link>
           </>
         )}
       </div>
@@ -140,7 +143,7 @@ const Header: React.FC = () => {
         )}
 
         <button
-          className="bg-[#319795] hover:bg-[#2C7A7B] text-white px-4 py-2 rounded-md"
+          className="bg-buttonRoot px-4 py-2 rounded-md"
           onClick={() => setIsAuthOpen(true)}
         >
           {isMobile ? (
@@ -269,6 +272,19 @@ const Header: React.FC = () => {
           }}
         >
           Liên hệ
+        </Link>
+
+        <Link
+          href="/userInfo"
+          className="block px-6 py-3 hover:bg-[#319795] transition-colors duration-300"
+          onClick={(e) => {
+            if (pathname === "/userInfo") {
+              e.preventDefault();
+              setDropdownVisible(false);
+            }
+          }}
+        >
+          UserInfo
         </Link>
       </div>
 

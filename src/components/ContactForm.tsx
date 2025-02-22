@@ -100,7 +100,7 @@ export default function ContactForm() {
             <div className="text-center">
               <button
                 type="submit"
-                className="bg-teal-600 hover:bg-teal-700 text-white px-6 py-2 rounded-lg font-semibold transition-all"
+                className="bg-buttonRoot px-6 py-2 rounded-lg font-semibold transition-all"
               >
                 Gửi
               </button>

@@ -103,7 +103,7 @@ const QuoteRequestForm: React.FC = () => {
           ></textarea>
           <button
             type="submit"
-            className="w-full p-3 bg-teal-600 text-white font-semibold rounded-md hover:bg-teal-700 transition-colors"
+            className="w-full p-3  font-semibold rounded-md bg-buttonRoot transition-colors"
           >
             Gửi yêu cầu
           </button>

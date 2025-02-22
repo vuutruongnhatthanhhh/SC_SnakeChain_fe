@@ -2,6 +2,7 @@
 import React from "react";
 import styles from "@/styles/Slider.module.css";
 import { FaLongArrowAltRight } from "react-icons/fa";
+import config from "@/config";
 
 interface SliderProps {
   images: string[];
@@ -38,14 +39,14 @@ const Slider: React.FC<SliderProps> = ({ images }) => {
 
         <p className={`${styles.sliderText} mt-4`}>
           <span>
-            Snake Chain chia sẻ kiến thức và giúp bạn xây dựng ý tưởng với lập
-            trình Web, App.
+            {config.companyName} chia sẻ kiến thức và giúp bạn xây dựng ý tưởng
+            với lập trình Web, App.
           </span>
         </p>
         <div className="mt-6">
           <a
             href="#explore"
-            className="px-6 py-2 bg-[#319795] text-white font-semibold rounded-full hover:bg-[#2C7A7B] inline-block text-center
+            className="px-6 py-2 bg-buttonRoot font-semibold rounded-full ho inline-block text-center
       hidden lg:block w-[200px]"
           >
             Khám phá ngay

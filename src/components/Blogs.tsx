@@ -28,7 +28,8 @@ const Blogs: React.FC<FeaturedblogsProps> = ({
         {blogs.map((blog) => (
           <a
             key={blog.title}
-            href={blog.link}
+            // href={blog.link}
+            href="/blogDetail"
             className="bg-white shadow-lg rounded-lg overflow-hidden group transform transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-2xl block"
           >
             <img
@@ -52,7 +53,7 @@ const Blogs: React.FC<FeaturedblogsProps> = ({
         <div className="text-center mt-8">
           <a
             href={allBlogLink}
-            className="inline-block bg-teal-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-teal-700"
+            className="inline-block bg-buttonRoot px-4 py-2 rounded-lg font-semibold "
           >
             Xem tất cả
           </a>

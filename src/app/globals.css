@@ -21,6 +21,15 @@ body {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
+.bg-buttonRoot {
+  background-color: #0d9488;
+  color: white;
+}
+
+.bg-buttonRoot:hover {
+  background-color: #0f766e;
+}
+
 @media (max-width: 1300px) {
   .text-xl {
     font-size: 1rem;

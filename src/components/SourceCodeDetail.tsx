@@ -76,7 +76,7 @@ const SourceCodeDetail = () => {
           </span>
         </div>
 
-        <button className="w-1/2 mt-auto bg-teal-600 text-white py-2 px-6 rounded-lg hover:bg-teal-700 transition duration-200">
+        <button className="w-1/2 mt-auto py-2 px-6 rounded-lg transition duration-200 bg-buttonRoot">
           Mua ngay
         </button>
 

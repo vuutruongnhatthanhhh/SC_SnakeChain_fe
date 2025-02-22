@@ -5,6 +5,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Head from "next/head";
 import config from "@/config";
+import ZaloContact from "@/components/ZaloContact";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -36,6 +37,8 @@ export default function RootLayout({
         </Head>
         <Header />
         <main className="flex-grow w-full">{children}</main>
+        <ZaloContact />
+
         <Footer />
       </body>
     </html>

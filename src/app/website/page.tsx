@@ -53,7 +53,7 @@ const Page: React.FC = () => {
       <div className="text-center mt-8">
         <a
           href={"#"}
-          className="inline-block bg-teal-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-teal-700"
+          className="inline-block px-4 py-2 rounded-lg font-semibold bg-buttonRoot"
         >
           Xem tất cả
         </a>

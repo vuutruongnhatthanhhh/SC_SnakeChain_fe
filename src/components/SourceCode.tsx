@@ -29,7 +29,7 @@ const SourceCode: React.FC<FeaturedSourceCodeProps> = ({
           <a
             key={code.title}
             // href={code.link}
-            href="/sourcecode-detail"
+            href="/sourcecodeDetail"
             className="bg-white shadow-lg rounded-lg overflow-hidden group transform transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-2xl block"
           >
             <img

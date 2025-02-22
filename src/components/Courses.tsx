@@ -53,7 +53,7 @@ const Courses: React.FC<FeaturedCoursesProps> = ({
         <div className="text-center mt-8">
           <a
             href={allCoursesLink}
-            className="inline-block bg-teal-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-teal-700"
+            className="inline-block bg-buttonRoot px-4 py-2 rounded-lg font-semibold "
           >
             Xem tất cả
           </a>

@@ -61,7 +61,7 @@ const CourseContent = () => {
     <div className="flex flex-col md:flex-row w-full min-h-screen bg-gray-100">
       {/* Mobile Toggle Button */}
       <button
-        className="md:hidden fixed top-15 left-0 z-50 p-2 bg-teal-600 rounded-lg shadow-lg text-white"
+        className="md:hidden fixed top-15 left-0 z-50 p-2 rounded-lg shadow-lg bg-buttonRoot"
         onClick={toggleSidebar}
       >
         {isSidebarOpen ? <X size={15} /> : <Menu size={24} />}
