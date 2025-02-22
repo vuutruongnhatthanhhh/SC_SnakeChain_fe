@@ -1,4 +1,5 @@
 "use client";
+import config from "@/config";
 import React, { useState, useEffect } from "react";
 import { FaYoutube, FaFacebook, FaTiktok, FaInstagram } from "react-icons/fa";
 
@@ -113,7 +114,7 @@ const QuoteRequestForm: React.FC = () => {
           Bạn cần thiết kế website, ứng dụng di động?
         </h3>
         <p className="mb-2">
-          Liên hệ ngay với <strong>Snake Chain</strong>
+          Liên hệ ngay với <strong>{config.companyName}</strong>
         </p>
         <p className="mb-2">
           <strong>Điện thoại:</strong> 0911 622 262

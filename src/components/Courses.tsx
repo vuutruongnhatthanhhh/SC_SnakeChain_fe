@@ -28,7 +28,8 @@ const Courses: React.FC<FeaturedCoursesProps> = ({
         {courses.map((course) => (
           <a
             key={course.title}
-            href={course.link}
+            // href={course.link}
+            href="/courseDetail"
             className="bg-white shadow-lg rounded-lg overflow-hidden group transform transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-2xl block"
           >
             <img

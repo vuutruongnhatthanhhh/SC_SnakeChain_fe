@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import { FaRegCheckCircle } from "react-icons/fa"; // Thêm các icon từ react-icons
+import config from "@/config";
 
 interface ProcessStepProps {
   number: number;
@@ -31,8 +32,9 @@ const ProcessAppSection: React.FC = () => {
         QUY TRÌNH THIẾT KẾ APP MOBILE?
       </h2>
       <p className="text-center text-lg text-gray-700 mb-12">
-        Quy trình làm việc của Snake Chain bao gồm 4 bước. Đảm bảo nắm bắt được
-        yêu cầu, ý tưởng của khách hàng. Đưa ra sản phẩm thiết thực nhất.
+        Quy trình làm việc của {config.companyName} bao gồm 4 bước. Đảm bảo nắm
+        bắt được yêu cầu, ý tưởng của khách hàng. Đưa ra sản phẩm thiết thực
+        nhất.
       </p>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
         <ProcessStep

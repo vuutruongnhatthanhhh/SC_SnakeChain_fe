@@ -1,23 +1,28 @@
 import React, { useState, useEffect } from "react";
 import { FaYoutube, FaFacebook, FaTiktok, FaInstagram } from "react-icons/fa";
+import config from "@/config";
 
 const Footer = () => {
   return (
     <footer className="bg-gray-900 text-white py-8 px-4 w-full ">
       <div className=" mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
         <div>
-          <h3 className="text-xl font-semibold mb-4">Snake Chain</h3>
-          <p className="mb-2 text-gray-400">Điện thoại: 0911 622 262</p>
+          <h3 className="text-xl font-semibold mb-4">{config.companyName}</h3>
+          <p className="mb-2 text-gray-400">
+            Điện thoại: {config.companyPhone}
+          </p>
           <p className="mb-2 text-gray-400">
             Email:{" "}
             <a href="mailto:vuutruongnhatthanh@gmail.com" className="">
-              vuutruongnhatthanh@gmail.com
+              {config.companyEmail}
             </a>
           </p>
         </div>
 
         <div>
-          <h3 className="text-xl font-semibold mb-4">Về Snake Chain</h3>
+          <h3 className="text-xl font-semibold mb-4">
+            Về {config.companyName}
+          </h3>
           <ul>
             <li>
               <a href="#" className="text-gray-400 hover:underline">
@@ -55,10 +60,7 @@ const Footer = () => {
 
         <div>
           <h3 className="text-xl font-semibold mb-4">Lĩnh vực hoạt động</h3>
-          <p className="mb-2 text-gray-400">
-            Lập trình, thiết kế và phát triển website, ứng dụng di động theo yêu
-            cầu, cùng các giải pháp Blockchain tiên tiến.
-          </p>
+          <p className="mb-2 text-gray-400">{config.companyField}</p>
           <div className="mt-4 flex gap-4 justify-center sm:justify-start">
             <a href="#" className="text-blue-400 hover:text-blue-500">
               <FaYoutube className="h-6 w-6" />
@@ -77,7 +79,7 @@ const Footer = () => {
       </div>
 
       <div className="text-center mt-6 text-sm text-gray-400">
-        <p>&copy; 2025 Bản quyền © Snake Chain | Bảo lưu mọi quyền</p>
+        <p>&copy; 2025 Bản quyền © {config.companyName} | Bảo lưu mọi quyền</p>
       </div>
     </footer>
   );

@@ -4,6 +4,7 @@ import { FaUser } from "react-icons/fa";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import AuthForm from "./AuthForm";
+import config from "@/config";
 
 const Header: React.FC = () => {
   const [isDropdownVisible, setDropdownVisible] = useState<boolean>(false);
@@ -56,7 +57,7 @@ const Header: React.FC = () => {
         </Link>
         <Link href="/">
           <div className="text-xl font-semibold cursor-pointer">
-            Snake Chain
+            {config.companyName}
           </div>
         </Link>
       </div>

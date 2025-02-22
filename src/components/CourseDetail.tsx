@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { Menu, X } from "lucide-react";
+import { RiVipCrownLine } from "react-icons/ri";
 
 interface Lesson {
   id: number;
@@ -16,14 +17,14 @@ const lessons: Lesson[] = [
     title: "Giới thiệu khóa học",
     duration: "5:30",
     videoId: "PyoJ0fDnzR8",
-    completed: true,
+    completed: false,
   },
   {
     id: 2,
     title: "Cài đặt môi trường",
     duration: "10:15",
     videoId: "MoWApyUb5w8",
-    completed: true,
+    completed: false,
   },
   {
     id: 3,
@@ -37,7 +38,7 @@ const lessons: Lesson[] = [
     title: "Components và Props",
     duration: "20:00",
     videoId: "VIDEO_ID_4",
-    completed: false,
+    completed: true,
   },
   {
     id: 5,
@@ -60,10 +61,10 @@ const CourseContent = () => {
     <div className="flex flex-col md:flex-row w-full min-h-screen bg-gray-100">
       {/* Mobile Toggle Button */}
       <button
-        className="md:hidden fixed top-4 left-4 z-50 p-2 bg-white rounded-lg shadow-lg"
+        className="md:hidden fixed top-15 left-0 z-50 p-2 bg-teal-600 rounded-lg shadow-lg text-white"
         onClick={toggleSidebar}
       >
-        {isSidebarOpen ? <X size={24} /> : <Menu size={24} />}
+        {isSidebarOpen ? <X size={15} /> : <Menu size={24} />}
       </button>
 
       {/* Sidebar */}
@@ -105,7 +106,7 @@ const CourseContent = () => {
                       }
                     `}
                     >
-                      {lesson.completed ? "✓" : lesson.id}
+                      {lesson.completed ? <RiVipCrownLine /> : lesson.id}
                     </div>
                     <span className="font-medium">{lesson.title}</span>
                   </div>
@@ -121,11 +122,11 @@ const CourseContent = () => {
 
       {/* Main Content */}
       <div className="flex-1 p-4 md:p-8">
-        <div className="w-full ">
+        <div className="w-full">
           <div className="aspect-w-16 aspect-h-9 bg-black rounded-lg overflow-hidden mb-6">
             <iframe
               src={`https://www.youtube.com/embed/${selectedLesson.videoId}`}
-              className="w-full h-full"
+              className="w-full h-[500px]"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
             />

@@ -1,6 +1,7 @@
 import React from "react";
 import { FaCode, FaUser, FaTruck, FaMobileAlt } from "react-icons/fa";
 import ServiceCard from "./ServiceCard";
+import config from "@/config";
 
 const ServicesSection: React.FC = () => {
   return (
@@ -10,9 +11,9 @@ const ServicesSection: React.FC = () => {
         DỊCH VỤ THIẾT KẾ APP IOS & ANDROID
       </h2>
       <p className="text-center text-gray-700 mb-12">
-        Snake Chain cung cấp các giải pháp công nghệ tiên tiến, mang đến đầy đủ
-        dịch vụ thiết kế ứng dụng di động giúp công việc trở nên dễ dàng và
-        thuận tiện hợn
+        {config.companyName} cung cấp các giải pháp công nghệ tiên tiến, mang
+        đến đầy đủ dịch vụ thiết kế ứng dụng di động giúp công việc trở nên dễ
+        dàng và thuận tiện hợn
       </p>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         <ServiceCard

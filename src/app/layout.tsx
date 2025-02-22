@@ -4,6 +4,7 @@ import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Head from "next/head";
+import config from "@/config";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -16,8 +17,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Snake Chain",
-  description: "Khóa học, xây dựng website, app mobile và giải pháp blockchain",
+  title: `${config.title}`,
+  description: `${config.description}`,
 };
 
 export default function RootLayout({

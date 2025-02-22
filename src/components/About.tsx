@@ -1,5 +1,6 @@
 import React from "react";
 import Image from "next/image";
+import config from "@/config";
 
 const About: React.FC = () => {
   return (
@@ -8,7 +9,7 @@ const About: React.FC = () => {
         <div className="mb-12">
           <Image
             src="/images/logo.png"
-            alt="Snake Chain Logo"
+            alt={`${config.companyName} Logo`}
             width={150}
             height={150}
             className="mx-auto"
@@ -16,13 +17,13 @@ const About: React.FC = () => {
         </div>
 
         <h2 className="text-4xl font-semibold text-gray-800 mb-4">
-          Snake Chain
+          {config.companyName}
         </h2>
         <p className="text-lg text-gray-600 mb-8">
-          Snake Chain chuyên cung cấp dịch vụ đào tạo lập trình và phát triển
-          các giải pháp công nghệ, bao gồm thiết kế website và ứng dụng di động
-          theo yêu cầu. Với đội ngũ chuyên gia giàu kinh nghiệm, chúng tôi cam
-          kết mang đến những sản phẩm chất lượng và hiệu quả nhất cho khách
+          {config.companyName} chuyên cung cấp dịch vụ đào tạo lập trình và phát
+          triển các giải pháp công nghệ, bao gồm thiết kế website và ứng dụng di
+          động theo yêu cầu. Với đội ngũ chuyên gia giàu kinh nghiệm, chúng tôi
+          cam kết mang đến những sản phẩm chất lượng và hiệu quả nhất cho khách
           hàng.
         </p>
 
