@@ -20,11 +20,11 @@ export default function ZaloContact() {
       phone: "0911622262",
       zaloLink: "https://zalo.me/0911622262",
     },
-    {
-      name: "Thiên Phúc",
-      phone: "0963604877",
-      zaloLink: "https://zalo.me/0963604877",
-    },
+    // {
+    //   name: "Thiên Phúc",
+    //   phone: "0963604877",
+    //   zaloLink: "https://zalo.me/0963604877",
+    // },
   ];
 
   useEffect(() => {
