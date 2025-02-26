@@ -1,11 +1,19 @@
 "use client";
 import { useState } from "react";
+import { useAuth } from "@/hooks/useAuth";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { checkCode, retryActive } from "@/services/authService";
 
-export default function AuthForm() {
+interface AuthFormProps {
+  onLoginSuccess: () => void;
+}
+
+export default function AuthForm({ onLoginSuccess }: AuthFormProps) {
+  const { handleLogin, handleRegister, loading } = useAuth();
   const [isLogin, setIsLogin] = useState(true);
   const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [formData, setFormData] = useState({
+    name: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -13,14 +21,44 @@ export default function AuthForm() {
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [isVerifying, setIsVerifying] = useState(false); // ✅ Trạng thái xác thực
+  const [verificationCode, setVerificationCode] = useState(""); // ✅ Mã OTP
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(`${isLogin ? "Đăng nhập" : "Đăng ký"} với dữ liệu:`, formData);
+    setError(null);
+
+    if (!isLogin && formData.password !== formData.confirmPassword) {
+      setError("Mật khẩu không khớp.");
+      return;
+    }
+
+    try {
+      if (isLogin) {
+        await handleLogin(formData.email, formData.password);
+
+        window.location.reload();
+        onLoginSuccess();
+      } else {
+        const response = await handleRegister(
+          formData.email,
+          formData.password,
+          formData.name
+        );
+        setIsVerifying(true);
+      }
+    } catch (err: any) {
+      if (err === "Tài khoản chưa được kích hoạt") {
+        setIsVerifying(true);
+      } else {
+        setError(err);
+      }
+    }
   };
 
   const handleForgotPasswordSubmit = (e: React.FormEvent) => {
@@ -28,18 +66,86 @@ export default function AuthForm() {
     console.log("Quên mật khẩu với email:", formData.email);
   };
 
+  const handleVerifyCode = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+
+    try {
+      await checkCode(formData.email, verificationCode);
+
+      await handleLogin(formData.email, formData.password);
+      window.location.reload();
+      onLoginSuccess();
+    } catch (err: any) {
+      setError("Mã xác thực không hợp lệ");
+    }
+  };
+
+  const handleResendCode = async () => {
+    try {
+      await retryActive(formData.email);
+      alert("Mã xác thực mới đã được gửi!");
+    } catch (err) {
+      setError("Không thể gửi lại mã. Vui lòng thử lại.");
+    }
+  };
+
   return (
     <div className="flex items-center justify-center bg-gray-100">
       <div className="bg-white p-6 rounded-lg w-full">
         <h2 className="text-2xl font-bold text-center text-gray-700">
-          {isForgotPassword
+          {isVerifying
+            ? "Xác Thực Email"
+            : isForgotPassword
             ? "Quên Mật Khẩu"
             : isLogin
             ? "Đăng Nhập"
             : "Đăng Ký"}
         </h2>
 
-        {!isForgotPassword && (
+        {isVerifying && (
+          <form onSubmit={handleVerifyCode} className="mt-4 space-y-4">
+            <p className="text-center text-gray-600">
+              Nhập mã xác thực đã gửi đến email
+            </p>
+
+            <div>
+              <label className="block text-sm font-semibold text-gray-600">
+                Mã xác thực
+              </label>
+              <input
+                type="text"
+                name="verificationCode"
+                value={verificationCode}
+                onChange={(e) => setVerificationCode(e.target.value)}
+                placeholder="Nhập mã xác thực"
+                className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 text-black"
+                required
+              />
+            </div>
+
+            {error && <p className="text-red-500 text-center">{error}</p>}
+
+            <button
+              type="submit"
+              className="w-full bg-buttonRoot font-semibold py-2 rounded-md transition-all"
+            >
+              Xác thực
+            </button>
+
+            <p className="text-sm text-gray-600 text-center mt-4">
+              Không nhận được mã?{" "}
+              <button
+                onClick={handleResendCode}
+                className="text-blue-600 hover:underline font-semibold"
+              >
+                Gửi lại mã
+              </button>
+            </p>
+          </form>
+        )}
+
+        {!isForgotPassword && !isVerifying && (
           <form onSubmit={handleSubmit} className="mt-4 space-y-4">
             <div>
               <label className="block text-sm font-semibold text-gray-600">
@@ -55,6 +161,23 @@ export default function AuthForm() {
                 required
               />
             </div>
+
+            {!isLogin && (
+              <div>
+                <label className="block text-sm font-semibold text-gray-600">
+                  Tên người dùng
+                </label>
+                <input
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  placeholder="Nhập tên của bạn"
+                  className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 text-black"
+                  required
+                />
+              </div>
+            )}
 
             <div>
               <label className="block text-sm font-semibold text-gray-600">
@@ -80,7 +203,7 @@ export default function AuthForm() {
               </div>
             </div>
 
-            {!isLogin && (
+            {!isLogin && !isVerifying && (
               <div>
                 <label className="block text-sm font-semibold text-gray-600">
                   Xác nhận mật khẩu
@@ -105,6 +228,7 @@ export default function AuthForm() {
                 </div>
               </div>
             )}
+            {error && <p className="text-red-500 text-center">{error}</p>}
 
             <button
               type="submit"
@@ -116,7 +240,16 @@ export default function AuthForm() {
             <p className="text-sm text-gray-600 text-center mt-4">
               {isLogin ? "Chưa có tài khoản?" : "Đã có tài khoản?"}{" "}
               <button
-                onClick={() => setIsLogin(!isLogin)}
+                onClick={() => {
+                  setIsLogin(!isLogin);
+                  setFormData({
+                    email: "",
+                    password: "",
+                    confirmPassword: "",
+                    name: "",
+                  });
+                  setError(null);
+                }}
                 className="text-blue-600 hover:underline font-semibold"
               >
                 {isLogin ? "Đăng ký ngay" : "Đăng nhập"}
@@ -136,7 +269,7 @@ export default function AuthForm() {
           </form>
         )}
 
-        {/* Form quên mật khẩu */}
+        {/* Form forget pass */}
         {isForgotPassword && (
           <form
             onSubmit={handleForgotPasswordSubmit}

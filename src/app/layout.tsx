@@ -6,6 +6,7 @@ import Footer from "@/components/Footer";
 import Head from "next/head";
 import config from "@/config";
 import ZaloContact from "@/components/ZaloContact";
+import { AuthProvider } from "@/context/AuthContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -35,11 +36,13 @@ export default function RootLayout({
         <Head>
           <link rel="icon" href="/favicon.ico" />
         </Head>
-        <Header />
-        <main className="flex-grow w-full">{children}</main>
-        <ZaloContact />
+        <AuthProvider>
+          <Header />
+          <main className="flex-grow w-full"> {children}</main>
+          <ZaloContact />
 
-        <Footer />
+          <Footer />
+        </AuthProvider>
       </body>
     </html>
   );

@@ -5,14 +5,18 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import AuthForm from "./AuthForm";
 import config from "@/config";
+import { useAuth } from "@/context/AuthContext";
 
 const Header: React.FC = () => {
   const [isDropdownVisible, setDropdownVisible] = useState<boolean>(false);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState<boolean>(false);
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const menuRef = useRef<HTMLDivElement | null>(null);
+  const userMenuRef = useRef<HTMLDivElement | null>(null);
   const toggleButtonRef = useRef<HTMLButtonElement | null>(null);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const pathname = usePathname();
+  const { user, logoutUser } = useAuth();
 
   // Close dropdown when pathname changes
   useEffect(() => {
@@ -44,6 +48,27 @@ const Header: React.FC = () => {
       document.removeEventListener("click", handleClickOutside);
     };
   }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        userMenuRef.current &&
+        !userMenuRef.current.contains(event.target as Node)
+      ) {
+        setIsUserMenuOpen(false);
+      }
+    };
+
+    if (isUserMenuOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isUserMenuOpen]);
 
   return (
     <header className="sticky top-0 z-50 flex items-center justify-between p-4 text-white bg-gray-900">
@@ -124,9 +149,9 @@ const Header: React.FC = () => {
             <Link href="/contact" className="text-white hover:text-[#319795]">
               Liên hệ
             </Link>
-            <Link href="/userInfo" className="text-white hover:text-[#319795]">
+            {/* <Link href="/userInfo" className="text-white hover:text-[#319795]">
               UserInfo
-            </Link>
+            </Link> */}
           </>
         )}
       </div>
@@ -141,19 +166,45 @@ const Header: React.FC = () => {
             ☰
           </button>
         )}
-
-        <button
-          className="bg-buttonRoot px-4 py-2 rounded-md"
-          onClick={() => setIsAuthOpen(true)}
-        >
-          {isMobile ? (
-            <span role="img" aria-label="user" className="text-white">
+        {user ? (
+          <div className="relative" ref={userMenuRef}>
+            {" "}
+            <button
+              className="rounded-md flex items-center space-x-2"
+              onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+            >
+              {/* <p className="pointer-events-none text-sm">{user?.name}</p> */}
               <FaUser />
-            </span>
-          ) : (
-            "Đăng nhập"
-          )}
-        </button>
+            </button>
+            {isUserMenuOpen && (
+              <div className="absolute right-0 mt-2 bg-gray-800 text-white text-sm rounded-md shadow-lg w-40">
+                <Link
+                  href="/userInfo"
+                  className="block px-4 py-2 hover:bg-gray-700 transition-colors"
+                  onClick={() => setIsUserMenuOpen(false)}
+                >
+                  Thông tin cá nhân
+                </Link>
+                <button
+                  onClick={() => {
+                    logoutUser();
+                    setIsUserMenuOpen(false);
+                  }}
+                  className="block w-full text-left px-4 py-2 hover:bg-gray-700 transition-colors"
+                >
+                  Đăng xuất
+                </button>
+              </div>
+            )}
+          </div>
+        ) : (
+          <button
+            className="bg-buttonRoot px-4 py-2 rounded-md "
+            onClick={() => setIsAuthOpen(true)}
+          >
+            {isMobile ? <FaUser /> : "Đăng nhập"}
+          </button>
+        )}
       </div>
 
       {/* Mobile menu with transition */}
@@ -306,7 +357,7 @@ const Header: React.FC = () => {
               ✕
             </button>
             <div className="w-full">
-              <AuthForm />
+              <AuthForm onLoginSuccess={() => setIsAuthOpen(false)} />
             </div>
           </div>
         </div>
