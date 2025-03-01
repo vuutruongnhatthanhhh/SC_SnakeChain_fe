@@ -325,7 +325,7 @@ const Header: React.FC = () => {
           Liên hệ
         </Link>
 
-        <Link
+        {/* <Link
           href="/userInfo"
           className="block px-6 py-3 hover:bg-[#319795] transition-colors duration-300"
           onClick={(e) => {
@@ -336,7 +336,7 @@ const Header: React.FC = () => {
           }}
         >
           UserInfo
-        </Link>
+        </Link> */}
       </div>
 
       {/* Auth Modal */}

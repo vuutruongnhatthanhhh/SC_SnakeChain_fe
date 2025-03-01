@@ -3,6 +3,7 @@ import { createContext, useContext, useState, useEffect } from "react";
 import { login } from "@/services/authService";
 import { refreshAccessToken } from "@/services/authService";
 import { jwtDecode } from "jwt-decode";
+import { useRouter } from "next/navigation";
 
 interface User {
   email: string;
@@ -19,6 +20,7 @@ const AuthContext = createContext<AuthContextType | null>(null);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -34,7 +36,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
       if (!accessToken || !refreshToken) {
         console.log("Missing access_token or refresh_token. Logging out...");
-        logoutUser();
+        // logoutUser();
         return;
       }
 
@@ -92,7 +94,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     localStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token");
     localStorage.removeItem("user");
-
+    router.push("/");
     setUser(null);
   };
 

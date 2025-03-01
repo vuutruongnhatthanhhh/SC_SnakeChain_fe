@@ -1,6 +1,7 @@
 import axios from "axios";
 
 export interface User {
+  data(data: any): unknown;
   email: string;
   _id: string;
   name: string;
@@ -26,6 +27,20 @@ export interface RegisterRequest {
   email: string;
   password: string;
   name: string;
+}
+
+export interface ChangePassRequest {
+  code: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+}
+
+export interface ChangePassProfileRequest {
+  email: string;
+  oldPassword: string;
+  password: string;
+  confirmPassword: string;
 }
 
 export interface RegisterResponse {
@@ -79,4 +94,49 @@ export const checkCode = async (email: string, code: string): Promise<void> => {
 
 export const retryActive = async (email: string): Promise<void> => {
   await api.post("/auth/retry-active", { email });
+};
+
+export const retryPassword = async (email: string): Promise<void> => {
+  await api.post("/auth/retry-password", { email });
+};
+
+export const changePassword = async (
+  data: ChangePassRequest
+): Promise<void> => {
+  await api.post("/auth/change-password", data);
+};
+
+export const changePasswordProfile = async (
+  data: ChangePassProfileRequest
+): Promise<void> => {
+  const token = localStorage.getItem("access_token");
+  if (!token) {
+    throw new Error("No access token found");
+  }
+  await api.post("/auth/change-password-profile", data, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+
+export const getUserInfo = async (id: string): Promise<User | null> => {
+  try {
+    const token = localStorage.getItem("access_token");
+
+    if (!token) {
+      throw new Error("No access token found");
+    }
+
+    const response = await api.get<User>(`/auth/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error("Failed to fetch user info:", error);
+    return null;
+  }
 };

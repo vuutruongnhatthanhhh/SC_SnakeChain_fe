@@ -1,8 +1,9 @@
 "use client";
-
-import { useState } from "react";
+import * as jwt_decode from "jwt-decode";
+import { useState, useEffect } from "react";
 import { Home, Settings, Users, Menu, X } from "lucide-react";
 import UserManagement from "@/components/admin/UserManagement";
+import { useRouter } from "next/navigation";
 
 const menuItems = [
   { name: "Dashboard", icon: <Home size={20} />, component: <Dashboard /> },
@@ -32,10 +33,34 @@ export default function AdminPanel() {
     menuItems[0].component
   );
 
+  const router = useRouter();
+
   const handleMenuClick = (component: any) => {
     setActiveComponent(component);
     setIsSidebarOpen(false);
   };
+
+  const getUserRoleFromToken = (token: string): string | null => {
+    try {
+      const decoded: any = jwt_decode.jwtDecode(token);
+      return decoded.role;
+    } catch (error) {
+      console.error("Invalid token", error);
+      return null;
+    }
+  };
+
+  const fetchPage = async () => {
+    const token = localStorage.getItem("access_token");
+    if (!token || getUserRoleFromToken(token) !== "SNAKE") {
+      router.push("/");
+      return;
+    }
+  };
+
+  useEffect(() => {
+    fetchPage();
+  }, []);
 
   return (
     <div className="relative h-screen bg-gray-100">

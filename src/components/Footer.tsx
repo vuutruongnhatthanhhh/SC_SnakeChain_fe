@@ -25,12 +25,12 @@ const Footer = () => {
           </h3>
           <ul>
             <li>
-              <a href="#" className="text-gray-400 hover:underline">
+              <a href="/about" className="text-gray-400 hover:underline">
                 Giới thiệu
               </a>
             </li>
             <li>
-              <a href="#" className="text-gray-400 hover:underline">
+              <a href="/contact" className="text-gray-400 hover:underline">
                 Liên hệ
               </a>
             </li>
@@ -41,20 +41,25 @@ const Footer = () => {
           <h3 className="text-xl font-semibold mb-4">Sản phẩm / Dịch vụ</h3>
           <ul>
             <li>
-              <a href="#" className="text-gray-400 hover:underline">
+              <a href="/course" className="text-gray-400 hover:underline">
                 Khóa học
               </a>
             </li>
             <li>
-              <a href="#" className="text-gray-400 hover:underline">
-                Xây dựng website / ứng dụng di động
+              <a href="/website" className="text-gray-400 hover:underline">
+                Xây dựng website
               </a>
             </li>
             <li>
+              <a href="/mobile" className="text-gray-400 hover:underline">
+                Xây dựng ứng dụng di động
+              </a>
+            </li>
+            {/* <li>
               <a href="#" className="text-gray-400 hover:underline">
                 Giải pháp Blockchain
               </a>
-            </li>
+            </li> */}
           </ul>
         </div>
 
@@ -62,10 +67,18 @@ const Footer = () => {
           <h3 className="text-xl font-semibold mb-4">Lĩnh vực hoạt động</h3>
           <p className="mb-2 text-gray-400">{config.companyField}</p>
           <div className="mt-4 flex gap-4 justify-center sm:justify-start">
-            <a href="#" className="text-blue-400 hover:text-blue-500">
+            <a
+              href="https://www.youtube.com/@SnakeChain2801"
+              target="_blank"
+              className="text-blue-400 hover:text-blue-500"
+            >
               <FaYoutube className="h-6 w-6" />
             </a>
-            <a href="#" className="text-blue-400 hover:text-blue-500">
+            <a
+              href="https://www.facebook.com/people/Snake-Chain/61573199592592/"
+              target="_blank"
+              className="text-blue-400 hover:text-blue-500"
+            >
               <FaFacebook className="h-6 w-6" />
             </a>
             <a href="#" className="text-blue-400 hover:text-blue-500">

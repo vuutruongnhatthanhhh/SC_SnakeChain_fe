@@ -45,7 +45,7 @@ const Slider: React.FC<SliderProps> = ({ images }) => {
         </p>
         <div className="mt-6">
           <a
-            href="#explore"
+            href="/course"
             className="px-6 py-2 bg-buttonRoot font-semibold rounded-full ho inline-block text-center
       hidden lg:block w-[200px]"
           >
