@@ -4,7 +4,7 @@ import UserManagement from "@/components/admin/UserManagement";
 
 const DashBoardPage: React.FC = () => {
   return (
-    <div className="">
+    <div>
       <Sidebar />
 
       {/* <UserManagement /> */}

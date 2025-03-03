@@ -4,20 +4,25 @@ import { useState, useEffect } from "react";
 import { Home, Settings, Users, Menu, X } from "lucide-react";
 import UserManagement from "@/components/admin/UserManagement";
 import { useRouter } from "next/navigation";
+import Dashboard from "@/components/admin/Dashboard";
 
 const menuItems = [
-  { name: "Dashboard", icon: <Home size={20} />, component: <Dashboard /> },
-  { name: "Users", icon: <Users size={20} />, component: <UserManagement /> },
   {
-    name: "Settings",
+    name: "Tổng quan",
+    icon: <Home size={20} />,
+    component: <Dashboard />,
+  },
+  {
+    name: "Người dùng",
+    icon: <Users size={20} />,
+    component: <UserManagement />,
+  },
+  {
+    name: "Cài đặt",
     icon: <Settings size={20} />,
     component: <SettingsPage />,
   },
 ];
-
-function Dashboard() {
-  return <div className="p-5">Dashboard Content</div>;
-}
 
 function UsersPage() {
   return <div className="p-5">Users Management</div>;
@@ -52,7 +57,13 @@ export default function AdminPanel() {
 
   const fetchPage = async () => {
     const token = localStorage.getItem("access_token");
-    if (!token || getUserRoleFromToken(token) !== "SNAKE") {
+    if (
+      !token ||
+      !(
+        getUserRoleFromToken(token) === "SNAKE" ||
+        getUserRoleFromToken(token) === "WORM"
+      )
+    ) {
       router.push("/");
       return;
     }

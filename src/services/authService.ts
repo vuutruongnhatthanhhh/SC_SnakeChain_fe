@@ -83,7 +83,6 @@ export const refreshAccessToken = async () => {
     localStorage.setItem("access_token", response.data.data.access_token);
     return response.data.access_token;
   } catch (error) {
-    console.error("Failed to refresh access token:", error);
     throw error;
   }
 };
@@ -136,7 +135,6 @@ export const getUserInfo = async (id: string): Promise<User | null> => {
 
     return response.data;
   } catch (error) {
-    console.error("Failed to fetch user info:", error);
     return null;
   }
 };

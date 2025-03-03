@@ -1,103 +1,221 @@
 "use client";
 
-import { useState } from "react";
-import { FiEdit, FiTrash, FiPlus } from "react-icons/fi";
+import {
+  createUser,
+  deleteUser,
+  getAllUsers,
+  updateUser,
+} from "@/services/userService";
+import { useState, useEffect } from "react";
+import { FiEdit, FiTrash, FiPlus, FiEye, FiEyeOff } from "react-icons/fi";
+import dayjs from "dayjs";
+import SearchAdmin from "@/components/admin/SearchAdmin";
+import Pagination from "@/components/admin/Pagination";
 
 interface User {
-  id: number;
+  _id: string;
   name: string;
   email: string;
+  role: string;
+  accountType: string;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+  phone: string;
+  address: string;
+}
+
+interface Meta {
+  current: number;
+  pageSize: number;
+  pages: number;
+  total: number;
 }
 
 const UserManagement = () => {
-  const [users, setUsers] = useState<User[]>([
-    { id: 1, name: "Nguyễn Văn A", email: "a@example.com" },
-    { id: 2, name: "Trần Thị B", email: "b@example.com" },
-  ]);
-  const [newUser, setNewUser] = useState({ name: "", email: "" });
+  const [users, setUsers] = useState<User[]>([]);
+  const [newUser, setNewUser] = useState({
+    name: "",
+    email: "",
+    password: "",
+    phone: "",
+    address: "",
+    role: "USER",
+  });
+  const [meta, setMeta] = useState<Meta>({
+    current: 1,
+    pageSize: 10,
+    pages: 1,
+    total: 0,
+  });
   const [editingUser, setEditingUser] = useState<User | null>(null);
 
-  const handleAddUser = () => {
-    if (!newUser.name || !newUser.email) return;
-    const newUserId = users.length > 0 ? users[users.length - 1].id + 1 : 1;
-    setUsers([...users, { id: newUserId, ...newUser }]);
-    setNewUser({ name: "", email: "" });
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [isAdding, setIsAdding] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(2);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const fetchUsers = async () => {
+    setIsLoading(true);
+    try {
+      const fetchedData = await getAllUsers(
+        meta.current,
+        meta.pageSize,
+        searchTerm
+      );
+      if (fetchedData.data.results) {
+        setUsers(fetchedData.data.results);
+        setMeta(fetchedData.data.meta);
+      } else {
+        console.error("Failed to fetch users:", fetchedData.error);
+        alert("Tải danh sách người dùng không thành công");
+      }
+    } catch (error) {
+      console.error("Error fetching users:", error);
+      alert("Tải danh sách người dùng không thành công");
+    } finally {
+      setIsLoading(false);
+    }
   };
+
+  useEffect(() => {
+    fetchUsers();
+  }, [meta.current, meta.pageSize, searchTerm]);
 
   const handleEditUser = (user: User) => {
     setEditingUser(user);
+    setIsEditing(true);
   };
 
-  const handleUpdateUser = () => {
+  const handleUpdateUser = async () => {
     if (!editingUser) return;
-    setUsers(
-      users.map((user) => (user.id === editingUser.id ? editingUser : user))
-    );
-    setEditingUser(null);
+    try {
+      const updatedUser = await updateUser({
+        _id: editingUser._id,
+        name: editingUser.name,
+        phone: editingUser.phone,
+        address: editingUser.address,
+        role: editingUser.role,
+      });
+
+      if (updatedUser) {
+        alert("Cập nhật thông tin thành công");
+        setEditingUser(null);
+        fetchUsers();
+      }
+    } catch (error: any) {
+      alert(
+        error.response?.data?.message || "Có lỗi xảy ra, vui lòng thử lại."
+      );
+    }
   };
 
-  const handleDeleteUser = (id: number) => {
-    setUsers(users.filter((user) => user.id !== id));
+  const handleDeleteUser = async (id: string, name: string) => {
+    const confirmed = window.confirm(`Bạn muốn xóa người dùng ${name}?`);
+
+    if (confirmed) {
+      try {
+        await deleteUser(id);
+        fetchUsers();
+      } catch (error: any) {
+        alert(
+          error.response?.data?.message || "Có lỗi xảy ra, vui lòng thử lại."
+        );
+      }
+    }
+  };
+
+  const handleViewUser = (user: User) => {
+    setSelectedUser(user);
+  };
+
+  const closeModal = () => {
+    setIsEditing(false);
+    setSelectedUser(null);
+    setIsAdding(false);
+    setNewUser({
+      name: "",
+      email: "",
+      password: "",
+      phone: "",
+      address: "",
+      role: "USER",
+    });
+  };
+
+  const handleAddUser = async () => {
+    try {
+      await createUser(newUser);
+      setIsAdding(false);
+      fetchUsers();
+      alert("Thêm người dùng thành công");
+      setNewUser({
+        name: "",
+        email: "",
+        password: "",
+        phone: "",
+        address: "",
+        role: "USER",
+      });
+    } catch (error: any) {
+      alert(
+        error.response?.data?.message || "Có lỗi xảy ra, vui lòng thử lại."
+      );
+    }
+  };
+
+  const handleSearch = (query: string) => {
+    setSearchTerm(query);
+    setMeta((prev) => ({ ...prev, current: 1 })); // Reset to first page when searching
+  };
+
+  const handlePageChange = (page: number) => {
+    setMeta((prev) => ({ ...prev, current: page }));
+  };
+
+  const handlePageSizeChange = (size: number) => {
+    setMeta((prev) => ({ ...prev, pageSize: size, current: 1 }));
   };
 
   return (
     <div className="p-4 w-full">
-      <h2 className="text-xl font-bold mb-4">Quản lý người dùng</h2>
-      {/* <div className="mb-4 flex space-x-2">
-        <input
-          type="text"
-          placeholder="Tên"
-          className="border p-2"
-          value={editingUser ? editingUser.name : newUser.name}
-          onChange={(e) =>
-            editingUser
-              ? setEditingUser({ ...editingUser, name: e.target.value })
-              : setNewUser({ ...newUser, name: e.target.value })
-          }
-        />
-        <input
-          type="email"
-          placeholder="Email"
-          className="border p-2"
-          value={editingUser ? editingUser.email : newUser.email}
-          onChange={(e) =>
-            editingUser
-              ? setEditingUser({ ...editingUser, email: e.target.value })
-              : setNewUser({ ...newUser, email: e.target.value })
-          }
-        />
-        {editingUser ? (
-          <button
-            onClick={handleUpdateUser}
-            className="bg-blue-500 text-white p-2"
-          >
-            Cập nhật
-          </button>
-        ) : (
-          <button
-            onClick={handleAddUser}
-            className="bg-green-500 text-white p-2"
-          >
-            <FiPlus />
-          </button>
-        )}
-      </div> */}
+      <h2 className="text-xl font-bold mb-4 flex items-center">
+        Quản lý người dùng
+        <button
+          onClick={() => setIsAdding(true)}
+          className="ml-2 text-green-500"
+        >
+          <FiPlus />
+        </button>
+      </h2>
+      <SearchAdmin
+        onSearch={handleSearch}
+        placeholder="Tìm kiếm theo tên, email..."
+        initialValue={searchTerm}
+      />
       <table className="w-full border-collapse border border-gray-300">
         <thead>
           <tr className="bg-gray-200">
-            {/* <th className="border p-2">ID</th> */}
             <th className="border p-2">Tên</th>
-            <th className="border p-2">Email</th>
-            <th className="border p-2">Hành động</th>
+            <th className="border p-2"></th>
           </tr>
         </thead>
         <tbody>
           {users.map((user) => (
-            <tr key={user.id} className="text-center">
-              {/* <td className="border p-2">{user.id}</td> */}
+            <tr key={user._id} className="text-center">
               <td className="border p-2">{user.name}</td>
-              <td className="border p-2">{user.email}</td>
               <td className="border p-2 space-x-2">
+                <button
+                  onClick={() => handleViewUser(user)}
+                  className="text-orange-500"
+                >
+                  <FiEye />
+                </button>
                 <button
                   onClick={() => handleEditUser(user)}
                   className="text-blue-500"
@@ -105,7 +223,7 @@ const UserManagement = () => {
                   <FiEdit />
                 </button>
                 <button
-                  onClick={() => handleDeleteUser(user.id)}
+                  onClick={() => handleDeleteUser(user._id, user.name)}
                   className="text-red-500"
                 >
                   <FiTrash />
@@ -115,6 +233,245 @@ const UserManagement = () => {
           ))}
         </tbody>
       </table>
+
+      <Pagination
+        currentPage={meta.current}
+        totalPages={meta.pages}
+        onPageChange={handlePageChange}
+        onPageSizeChange={handlePageSizeChange}
+        pageSize={meta.pageSize}
+      />
+
+      {/* popup view user */}
+      {selectedUser && (
+        <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
+            <h2 className="text-xl font-bold mb-4">Thông tin người dùng</h2>
+            <p>
+              <strong>Id:</strong> {selectedUser._id}
+            </p>
+            <p>
+              <strong>Tên:</strong> {selectedUser.name}
+            </p>
+            <p>
+              <strong>Email:</strong> {selectedUser.email}
+            </p>
+            <p>
+              <strong>Số điện thoại:</strong> {selectedUser?.phone}
+            </p>
+            <p>
+              <strong>Địa chỉ:</strong> {selectedUser?.address}
+            </p>
+            <p>
+              <strong>Quyền:</strong>{" "}
+              <span className="text-blue-700 font-bold">
+                {selectedUser.role}
+              </span>
+            </p>
+            <p>
+              <strong>Tài khoản:</strong> {selectedUser.accountType}
+            </p>
+            <p>
+              <strong>Kích hoạt:</strong>{" "}
+              <span
+                className={`font-bold ${
+                  selectedUser.isActive ? "text-green-600" : "text-red-500"
+                }`}
+              >
+                {selectedUser.isActive ? "YES" : "NO"}
+              </span>
+            </p>
+            <p>
+              <strong>Ngày tạo:</strong>{" "}
+              {dayjs(selectedUser.createdAt).format("DD-MM-YYYY HH:mm")}
+            </p>
+            <p>
+              <strong>Cập nhật:</strong>{" "}
+              {dayjs(selectedUser.updatedAt).format("DD-MM-YYYY HH:mm")}
+            </p>
+            <div className="mt-4 flex justify-end space-x-2">
+              <button
+                onClick={closeModal}
+                className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
+              >
+                Đóng
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* popup edit user */}
+      {isEditing && editingUser && (
+        <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
+            <h2 className="text-xl font-bold mb-4">Chỉnh sửa người dùng</h2>
+            <div>
+              <label className="block">Tên:</label>
+              <input
+                type="text"
+                className="border p-2 w-full"
+                value={editingUser.name}
+                onChange={(e) =>
+                  setEditingUser({ ...editingUser, name: e.target.value })
+                }
+              />
+            </div>
+
+            <div className="mt-2">
+              <label className="block">Số điện thoại:</label>
+              <input
+                type="text"
+                className="border p-2 w-full"
+                value={editingUser?.phone || ""}
+                onChange={(e) =>
+                  setEditingUser({ ...editingUser, phone: e.target.value })
+                }
+              />
+            </div>
+            <div className="mt-2">
+              <label className="block">Địa chỉ:</label>
+              <input
+                type="text"
+                className="border p-2 w-full"
+                value={editingUser?.address || ""}
+                onChange={(e) =>
+                  setEditingUser({ ...editingUser, address: e.target.value })
+                }
+              />
+            </div>
+            <div className="mt-2">
+              <label className="block">Quyền:</label>
+              <select
+                className="border p-2 w-full"
+                value={editingUser.role}
+                onChange={(e) =>
+                  setEditingUser({ ...editingUser, role: e.target.value })
+                }
+              >
+                <option value="SNAKE">SNAKE</option>
+                <option value="WORM">WORM</option>
+                <option value="USER">USER</option>
+              </select>
+            </div>
+            <div className="mt-4 flex justify-end space-x-2">
+              <button
+                onClick={handleUpdateUser}
+                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+              >
+                Cập nhật
+              </button>
+              <button
+                onClick={closeModal}
+                className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
+              >
+                Hủy
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* popup add user */}
+      {isAdding && (
+        <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
+            <h2 className="text-xl font-bold mb-4">Thêm người dùng mới</h2>
+            <div>
+              <label className="block">Tên:</label>
+              <input
+                type="text"
+                className="border p-2 w-full"
+                value={newUser.name}
+                onChange={(e) =>
+                  setNewUser({ ...newUser, name: e.target.value })
+                }
+              />
+            </div>
+            <div className="mt-2">
+              <label className="block">Email:</label>
+              <input
+                type="email"
+                className="border p-2 w-full"
+                value={newUser.email}
+                onChange={(e) =>
+                  setNewUser({ ...newUser, email: e.target.value })
+                }
+              />
+            </div>
+            <div className="mt-2">
+              <label className="block">Mật khẩu:</label>
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  className="border p-2 w-full"
+                  value={newUser.password}
+                  onChange={(e) =>
+                    setNewUser({ ...newUser, password: e.target.value })
+                  }
+                />
+                <button
+                  type="button"
+                  className="absolute right-2 top-1/2 transform -translate-y-1/2"
+                  onClick={() => setShowPassword((prev) => !prev)}
+                >
+                  {showPassword ? <FiEyeOff /> : <FiEye />}
+                </button>
+              </div>
+            </div>
+            <div className="mt-2">
+              <label className="block">Số điện thoại:</label>
+              <input
+                type="text"
+                className="border p-2 w-full"
+                value={newUser.phone}
+                onChange={(e) =>
+                  setNewUser({ ...newUser, phone: e.target.value })
+                }
+              />
+            </div>
+            <div className="mt-2">
+              <label className="block">Địa chỉ:</label>
+              <input
+                type="text"
+                className="border p-2 w-full"
+                value={newUser.address}
+                onChange={(e) =>
+                  setNewUser({ ...newUser, address: e.target.value })
+                }
+              />
+            </div>
+            <div className="mt-2">
+              <label className="block">Quyền:</label>
+              <select
+                className="border p-2 w-full"
+                value={newUser.role}
+                onChange={(e) =>
+                  setNewUser({ ...newUser, role: e.target.value })
+                }
+              >
+                <option value="SNAKE">SNAKE</option>
+                <option value="WORM">WORM</option>
+                <option value="USER">USER</option>
+              </select>
+            </div>
+            <div className="mt-4 flex justify-end space-x-2">
+              <button
+                onClick={handleAddUser}
+                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+              >
+                Thêm
+              </button>
+              <button
+                onClick={closeModal}
+                className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
+              >
+                Hủy
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
