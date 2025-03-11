@@ -128,12 +128,12 @@ const Header: React.FC = () => {
                   >
                     Thiết kế website
                   </Link>
-                  <Link
+                  {/* <Link
                     href="/mobile"
                     className="block px-6 py-3 hover:bg-[#319795] transition-colors duration-300"
                   >
                     Thiết kế ứng dụng di động
-                  </Link>
+                  </Link> */}
                 </div>
               )}
             </div>
@@ -228,7 +228,7 @@ const Header: React.FC = () => {
         >
           Giới thiệu
         </Link>
-        <Link
+        {/* <Link
           href="/course"
           className="block px-6 py-3 hover:bg-[#319795] transition-colors duration-300"
           onClick={(e) => {
@@ -239,7 +239,7 @@ const Header: React.FC = () => {
           }}
         >
           Khóa học
-        </Link>
+        </Link> */}
         <Link
           href="/website"
           className="block px-6 py-3 hover:bg-[#319795] transition-colors duration-300"
@@ -252,7 +252,7 @@ const Header: React.FC = () => {
         >
           Thiết kế website
         </Link>
-        <Link
+        {/* <Link
           href="/mobile"
           className="block px-6 py-3 hover:bg-[#319795] transition-colors duration-300"
           onClick={(e) => {
@@ -263,7 +263,7 @@ const Header: React.FC = () => {
           }}
         >
           Thiết kế ứng dụng di động
-        </Link>
+        </Link> */}
         <Link
           href="/price"
           className="block px-6 py-3 hover:bg-[#319795] transition-colors duration-300"

@@ -17,7 +17,7 @@ export default function ZaloContact() {
   const contacts: Contact[] = [
     {
       name: "Nhật Thanh",
-      phone: "0911622262",
+      phone: "0911 622 262",
       zaloLink: "https://zalo.me/0911622262",
     },
     // {

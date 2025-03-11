@@ -1,5 +1,6 @@
 "use client";
-import { useState } from "react";
+// import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 const services = [
   {
@@ -9,123 +10,144 @@ const services = [
     plans: [
       {
         name: "Cơ Bản",
-        price: "5.000.000 VNĐ",
-        features: ["Giao diện đơn giản", "Tối ưu SEO cơ bản", "Bảo mật SSL"],
+        price: "6.000.000 VNĐ",
+        features: [
+          "Giao diện đơn giản",
+          "Tối ưu SEO cơ bản",
+          "Tặng 20 bài SEO",
+          "Form liên hệ chuyên nghiệp",
+          "Tên miền riêng",
+          "Bảo mật SSL",
+        ],
       },
       {
         name: "Nâng Cao",
-        price: "10.000.000 VNĐ",
-        features: ["Tích hợp CMS", "Giao diện tuỳ chỉnh", "Tối ưu tốc độ cao"],
+        price: "12.000.000 VNĐ",
+        features: [
+          "Tất cả tính năng của gói Cơ Bản",
+          "Giao diện tuỳ chỉnh",
+          "Tối ưu tốc độ cao",
+          "Tích hợp chatbot hỗ trợ khách hàng",
+          "Tích hợp email doanh nghiệp",
+          "Tự động gửi email giới thiệu sản phẩm",
+        ],
       },
       {
         name: "Doanh Nghiệp",
         price: "20.000.000 VNĐ",
         features: [
+          "Tất cả tính năng của gói Cơ Bản và Nâng Cao",
           "Website đa ngôn ngữ",
           "Tích hợp thanh toán",
+          "Tích hợp CRM hoặc ERP theo yêu cầu",
+          "Hỗ trợ ngay khi có vấn đề xảy ra",
           "Tối ưu bảo mật cao",
         ],
       },
     ],
   },
-  {
-    id: "mobile-app",
-    name: "Thiết Kế App Di Động",
-    description: "Phát triển ứng dụng mobile Android & iOS.",
-    plans: [
-      {
-        name: "Cơ Bản",
-        price: "15.000.000 VNĐ",
-        features: ["Giao diện cơ bản", "Chạy trên Android", "Hỗ trợ Firebase"],
-      },
-      {
-        name: "Nâng Cao",
-        price: "25.000.000 VNĐ",
-        features: [
-          "Chạy trên Android & iOS",
-          "Realtime Database",
-          "Tối ưu hiệu suất",
-        ],
-      },
-      {
-        name: "Doanh Nghiệp",
-        price: "50.000.000 VNĐ",
-        features: ["Cloud Hosting", "Bảo mật cao", "Tích hợp AI/ML"],
-      },
-    ],
-  },
-  {
-    id: "blockchain",
-    name: "Giải Pháp Blockchain",
-    description: "Tích hợp và phát triển giải pháp Blockchain.",
-    plans: [
-      {
-        name: "Cơ Bản",
-        price: "30.000.000 VNĐ",
-        features: [
-          "Smart Contract đơn giản",
-          "Ethereum Network",
-          "Ví lưu trữ crypto",
-        ],
-      },
-      {
-        name: "Nâng Cao",
-        price: "50.000.000 VNĐ",
-        features: ["Tích hợp DeFi", "Custom Token", "Bảo mật cao"],
-      },
-      {
-        name: "Doanh Nghiệp",
-        price: "100.000.000 VNĐ",
-        features: [
-          "Hệ thống Blockchain riêng",
-          "Smart Contract nâng cao",
-          "Tích hợp Oracle",
-        ],
-      },
-    ],
-  },
-  {
-    id: "desktop-software",
-    name: "Phần Mềm Desktop",
-    description: "Phát triển phần mềm trên Windows và macOS.",
-    plans: [
-      {
-        name: "Cơ Bản",
-        price: "10.000.000 VNĐ",
-        features: [
-          "Ứng dụng offline",
-          "Giao diện đơn giản",
-          "Tích hợp database",
-        ],
-      },
-      {
-        name: "Nâng Cao",
-        price: "20.000.000 VNĐ",
-        features: [
-          "Đồng bộ dữ liệu cloud",
-          "Giao diện tuỳ chỉnh",
-          "Bảo mật nâng cao",
-        ],
-      },
-      {
-        name: "Doanh Nghiệp",
-        price: "40.000.000 VNĐ",
-        features: ["Ứng dụng đa nền tảng", "Tích hợp API", "Hỗ trợ dài hạn"],
-      },
-    ],
-  },
+  // {
+  //   id: "mobile-app",
+  //   name: "Thiết Kế App Di Động",
+  //   description: "Phát triển ứng dụng mobile Android & iOS.",
+  //   plans: [
+  //     {
+  //       name: "Cơ Bản",
+  //       price: "15.000.000 VNĐ",
+  //       features: ["Giao diện cơ bản", "Chạy trên Android", "Hỗ trợ Firebase"],
+  //     },
+  //     {
+  //       name: "Nâng Cao",
+  //       price: "25.000.000 VNĐ",
+  //       features: [
+  //         "Chạy trên Android & iOS",
+  //         "Realtime Database",
+  //         "Tối ưu hiệu suất",
+  //       ],
+  //     },
+  //     {
+  //       name: "Doanh Nghiệp",
+  //       price: "50.000.000 VNĐ",
+  //       features: ["Cloud Hosting", "Bảo mật cao", "Tích hợp AI/ML"],
+  //     },
+  //   ],
+  // },
+  // {
+  //   id: "blockchain",
+  //   name: "Giải Pháp Blockchain",
+  //   description: "Tích hợp và phát triển giải pháp Blockchain.",
+  //   plans: [
+  //     {
+  //       name: "Cơ Bản",
+  //       price: "30.000.000 VNĐ",
+  //       features: [
+  //         "Smart Contract đơn giản",
+  //         "Ethereum Network",
+  //         "Ví lưu trữ crypto",
+  //       ],
+  //     },
+  //     {
+  //       name: "Nâng Cao",
+  //       price: "50.000.000 VNĐ",
+  //       features: ["Tích hợp DeFi", "Custom Token", "Bảo mật cao"],
+  //     },
+  //     {
+  //       name: "Doanh Nghiệp",
+  //       price: "100.000.000 VNĐ",
+  //       features: [
+  //         "Hệ thống Blockchain riêng",
+  //         "Smart Contract nâng cao",
+  //         "Tích hợp Oracle",
+  //       ],
+  //     },
+  //   ],
+  // },
+  // {
+  //   id: "desktop-software",
+  //   name: "Phần Mềm Desktop",
+  //   description: "Phát triển phần mềm trên Windows và macOS.",
+  //   plans: [
+  //     {
+  //       name: "Cơ Bản",
+  //       price: "10.000.000 VNĐ",
+  //       features: [
+  //         "Ứng dụng offline",
+  //         "Giao diện đơn giản",
+  //         "Tích hợp database",
+  //       ],
+  //     },
+  //     {
+  //       name: "Nâng Cao",
+  //       price: "20.000.000 VNĐ",
+  //       features: [
+  //         "Đồng bộ dữ liệu cloud",
+  //         "Giao diện tuỳ chỉnh",
+  //         "Bảo mật nâng cao",
+  //       ],
+  //     },
+  //     {
+  //       name: "Doanh Nghiệp",
+  //       price: "40.000.000 VNĐ",
+  //       features: ["Ứng dụng đa nền tảng", "Tích hợp API", "Hỗ trợ dài hạn"],
+  //     },
+  //   ],
+  // },
 ];
 
 export default function TablePricing() {
-  const [selectedService, setSelectedService] = useState(services[0].id);
+  // const [selectedService, setSelectedService] = useState(services[0].id);
+  const router = useRouter();
 
+  const handleSelectPlan = () => {
+    router.push(`/contact`);
+  };
   return (
     <div className="max-w-7xl mx-auto p-6">
       <h2 className="text-3xl font-semibold text-center mb-8">
         BẢNG GIÁ DỊCH VỤ
       </h2>
 
-      <div className="flex flex-wrap justify-center gap-4 mb-8">
+      {/* <div className="flex flex-wrap justify-center gap-4 mb-8">
         {services.map((service) => (
           <button
             key={service.id}
@@ -139,11 +161,11 @@ export default function TablePricing() {
             {service.name}
           </button>
         ))}
-      </div>
+      </div> */}
 
       <div className="bg-white shadow-lg rounded-xl p-6">
         {services
-          .filter((service) => service.id === selectedService)
+          // .filter((service) => service.id === selectedService)
           .map((service) => (
             <div key={service.id}>
               <h3 className="text-2xl font-bold text-center mb-4 text-gray-800">
@@ -172,7 +194,10 @@ export default function TablePricing() {
                         </li>
                       ))}
                     </ul>
-                    <button className="mt-6 bg-green-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-green-700">
+                    <button
+                      className="mt-6 bg-green-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-green-700"
+                      onClick={() => handleSelectPlan()}
+                    >
                       Chọn gói này
                     </button>
                   </div>

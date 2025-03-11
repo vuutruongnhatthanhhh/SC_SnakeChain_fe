@@ -39,12 +39,12 @@ const ServicesSection: React.FC = () => {
           description="Thiết kế website tùy chỉnh với giao diện và tính năng riêng biệt, bao gồm các dự án web code tay như website đặt tour, mạng xã hội, và nhiều hơn nữa."
           link={"#2"}
         />
-        <ServiceCard
+        {/* <ServiceCard
           icon={<FaMobileAlt />}
           title="Liên kết App điện thoại với website (IOS/Android)"
           description="Thiết kế ứng dụng di động + website đồng bộ với nhau với các tính năng gửi thông báo về điện thoại"
           link={"#3"}
-        />
+        /> */}
       </div>
     </section>
   );

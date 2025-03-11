@@ -1,84 +1,80 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import SourceCode from "@/components/SourceCode";
-import Search from "@/components/Search";
+import { getAllSourceCodeUser } from "@/services/sourceCodeService";
+import SearchInput from "@/components/SearchInput";
+import Select from "@/components/Select";
+
 export default function Source() {
-  const [filters, setFilters] = useState({
-    courses: [],
-    services: [],
-    sourceCode: [],
-  });
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [field, setField] = useState<string>("");
+  const [sourceCodes, setSourceCodes] = useState<any[]>([]);
 
-  const handleFilterChange = (newFilters: any) => {
-    setFilters(newFilters);
-    console.log("Selected Filters:", newFilters);
+  const [debounceTimeout, setDebounceTimeout] = useState<NodeJS.Timeout | null>(
+    null
+  );
+
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value;
+    setSearchTerm(value);
+
+    if (debounceTimeout) {
+      clearTimeout(debounceTimeout);
+    }
+
+    const newTimeout = setTimeout(() => {
+      fetchSourceCodes(value, field);
+    }, 500);
+
+    setDebounceTimeout(newTimeout);
   };
 
-  const handleSearch = (query: string) => {
-    console.log("Searching for:", query);
+  const handleFieldChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = event.target.value;
+    setField(value);
+
+    fetchSourceCodes(searchTerm, value);
   };
 
-  const [checkboxes, setCheckboxes] = useState([
-    { label: "Tất cả", checked: true },
-    { label: "Front end", checked: false },
-    { label: "Back end", checked: false },
-    { label: "Full-stack", checked: false },
-    { label: "Mobile", checked: false },
-  ]);
-
-  const handleCheckboxChange = (index: number, checked: boolean) => {
-    const newCheckboxes = [...checkboxes];
-    newCheckboxes[index].checked = checked;
-    setCheckboxes(newCheckboxes);
+  const fetchSourceCodes = async (query: string, field: string) => {
+    try {
+      const response = await getAllSourceCodeUser(query, field);
+      setSourceCodes(response.data.results);
+    } catch (error) {
+      console.error("Error fetching source codes:", error);
+    }
   };
 
-  const codes = [
-    {
-      title: "Full code dự án bán đồ nội thất",
-      description: "Nextjs + Nestjs + MongoDB",
-      imageUrl: "/images/sourcecode/source-code.png",
-      link: "/course/react",
-    },
-    {
-      title: "Full code dự án bán đồ nội thất 1",
-      description: "Nextjs + Nestjs + MongoDB",
-      imageUrl: "/images/sourcecode/source-code.png",
-      link: "/course/react",
-    },
-    {
-      title: "Full code dự án bán đồ nội thất 2",
-      description: "Nextjs + Nestjs + MongoDB",
-      imageUrl: "/images/sourcecode/source-code.png",
-      link: "/course/react",
-    },
-    {
-      title: "Full code dự án bán đồ nội thất 3",
-      description: "Nextjs + Nestjs + MongoDB",
-      imageUrl: "/images/sourcecode/source-code.png",
-      link: "/course/react",
-    },
-    {
-      title: "Full code dự án bán đồ nội thất 4",
-      description: "Nextjs + Nestjs + MongoDB",
-      imageUrl: "/images/sourcecode/source-code.png",
-      link: "/course/react",
-    },
-  ];
+  useEffect(() => {
+    if (searchTerm === "" && field === "") {
+      fetchSourceCodes("", "");
+    }
+  }, []);
+
   return (
     <div className="flex p-4 w-full">
       <div className="w-full">
-        {/* Hiển thị kết quả dựa trên filters */}
-        {/* <pre>{JSON.stringify(filters, null, 2)}</pre> */}
-        <Search
-          onSearch={handleSearch}
-          checkboxes={checkboxes}
-          onCheckboxChange={handleCheckboxChange}
+        <SearchInput
+          value={searchTerm}
+          onChange={handleSearchChange}
+          placeholder="Nhập tên hoặc mã..."
+          className="border p-2 mb-4 mr-3"
         />
-        <SourceCode
-          codes={codes}
-          title="Tất cả Source Code"
-          allCodeLink="#allcourse"
+
+        <Select
+          value={field}
+          onChange={handleFieldChange}
+          options={[
+            { value: "", label: "Tất cả" },
+            { value: "FRONTEND", label: "Front-end" },
+            { value: "BACKEND", label: "Back-end" },
+            { value: "FULLSTACK", label: "Full-stack" },
+            { value: "MOBILE", label: "Mobile" },
+            { value: "BLOCKCHAIN", label: "Blockchain" },
+          ]}
         />
+
+        <SourceCode codes={sourceCodes} title="" allCodeLink="#allcourse" />
       </div>
     </div>
   );

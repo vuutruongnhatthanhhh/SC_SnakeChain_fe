@@ -7,10 +7,12 @@ import {
   updateUser,
 } from "@/services/userService";
 import { useState, useEffect } from "react";
-import { FiEdit, FiTrash, FiPlus, FiEye, FiEyeOff } from "react-icons/fi";
+import { FiPlus, FiEye, FiEyeOff } from "react-icons/fi";
 import dayjs from "dayjs";
 import SearchAdmin from "@/components/admin/SearchAdmin";
 import Pagination from "@/components/admin/Pagination";
+import FilterAdmin from "@/components/admin/FilterAdmin";
+import Table from "@/components/admin/Table";
 
 interface User {
   _id: string;
@@ -55,37 +57,48 @@ const UserManagement = () => {
   const [isAdding, setIsAdding] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(2);
   const [searchTerm, setSearchTerm] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+
+  const [role, setRole] = useState("");
+  const [accountType, setAccountType] = useState("");
+  const [isActive, setIsActive] = useState<string>("");
+
+  const resetNewUser = () => {
+    setNewUser({
+      name: "",
+      email: "",
+      password: "",
+      phone: "",
+      address: "",
+      role: "USER",
+    });
+  };
 
   const fetchUsers = async () => {
-    setIsLoading(true);
     try {
       const fetchedData = await getAllUsers(
         meta.current,
         meta.pageSize,
-        searchTerm
+        searchTerm,
+        role,
+        accountType,
+        isActive
       );
       if (fetchedData.data.results) {
         setUsers(fetchedData.data.results);
         setMeta(fetchedData.data.meta);
       } else {
-        console.error("Failed to fetch users:", fetchedData.error);
         alert("Tải danh sách người dùng không thành công");
       }
-    } catch (error) {
-      console.error("Error fetching users:", error);
-      alert("Tải danh sách người dùng không thành công");
-    } finally {
-      setIsLoading(false);
+    } catch (error: any) {
+      console.log("Refresh token hết hạn hoặc lỗi không xác định");
+      return { error: error.message };
     }
   };
 
   useEffect(() => {
     fetchUsers();
-  }, [meta.current, meta.pageSize, searchTerm]);
+  }, [meta.current, meta.pageSize, searchTerm, role, accountType, isActive]);
 
   const handleEditUser = (user: User) => {
     setEditingUser(user);
@@ -134,34 +147,13 @@ const UserManagement = () => {
     setSelectedUser(user);
   };
 
-  const closeModal = () => {
-    setIsEditing(false);
-    setSelectedUser(null);
-    setIsAdding(false);
-    setNewUser({
-      name: "",
-      email: "",
-      password: "",
-      phone: "",
-      address: "",
-      role: "USER",
-    });
-  };
-
   const handleAddUser = async () => {
     try {
       await createUser(newUser);
       setIsAdding(false);
       fetchUsers();
       alert("Thêm người dùng thành công");
-      setNewUser({
-        name: "",
-        email: "",
-        password: "",
-        phone: "",
-        address: "",
-        role: "USER",
-      });
+      resetNewUser();
     } catch (error: any) {
       alert(
         error.response?.data?.message || "Có lỗi xảy ra, vui lòng thử lại."
@@ -169,9 +161,16 @@ const UserManagement = () => {
     }
   };
 
+  const closeModal = () => {
+    setIsEditing(false);
+    setSelectedUser(null);
+    setIsAdding(false);
+    resetNewUser();
+  };
+
   const handleSearch = (query: string) => {
     setSearchTerm(query);
-    setMeta((prev) => ({ ...prev, current: 1 })); // Reset to first page when searching
+    setMeta((prev) => ({ ...prev, current: 1 }));
   };
 
   const handlePageChange = (page: number) => {
@@ -193,12 +192,45 @@ const UserManagement = () => {
           <FiPlus />
         </button>
       </h2>
+
+      {/* Filter */}
+      <div className="mb-4 flex-col space-y-4 space-x-1">
+        <FilterAdmin
+          value={role}
+          options={[
+            { value: "", label: "Chọn quyền" },
+            { value: "SNAKE", label: "SNAKE" },
+            { value: "WORM", label: "WORM" },
+            { value: "USER", label: "USER" },
+          ]}
+          onChange={(e) => setRole(e.target.value)}
+        />
+        <FilterAdmin
+          value={accountType}
+          options={[
+            { value: "", label: "Chọn loại tài khoản" },
+            { value: "LOCAL", label: "LOCAL" },
+            { value: "GOOGLE", label: "GOOGLE" },
+          ]}
+          onChange={(e) => setAccountType(e.target.value)}
+        />
+        <FilterAdmin
+          value={isActive}
+          options={[
+            { value: "", label: "Chọn trạng thái kích hoạt" },
+            { value: "true", label: "Kích hoạt" },
+            { value: "false", label: "Chưa kích hoạt" },
+          ]}
+          onChange={(e) => setIsActive(e.target.value)}
+        />
+      </div>
+
       <SearchAdmin
         onSearch={handleSearch}
         placeholder="Tìm kiếm theo tên, email..."
         initialValue={searchTerm}
       />
-      <table className="w-full border-collapse border border-gray-300">
+      {/* <table className="w-full border-collapse border border-gray-300">
         <thead>
           <tr className="bg-gray-200">
             <th className="border p-2">Tên</th>
@@ -206,33 +238,49 @@ const UserManagement = () => {
           </tr>
         </thead>
         <tbody>
-          {users.map((user) => (
-            <tr key={user._id} className="text-center">
-              <td className="border p-2">{user.name}</td>
-              <td className="border p-2 space-x-2">
-                <button
-                  onClick={() => handleViewUser(user)}
-                  className="text-orange-500"
-                >
-                  <FiEye />
-                </button>
-                <button
-                  onClick={() => handleEditUser(user)}
-                  className="text-blue-500"
-                >
-                  <FiEdit />
-                </button>
-                <button
-                  onClick={() => handleDeleteUser(user._id, user.name)}
-                  className="text-red-500"
-                >
-                  <FiTrash />
-                </button>
+          {users.length === 0 ? (
+            <tr>
+              <td colSpan={2} className="text-center p-4 text-gray-500">
+                Không tìm thấy người dùng
               </td>
             </tr>
-          ))}
+          ) : (
+            users.map((user) => (
+              <tr key={user._id} className="text-center">
+                <td className="border p-2">{user.name}</td>
+                <td className="border p-2 space-x-2">
+                  <button
+                    onClick={() => handleViewUser(user)}
+                    className="text-orange-500"
+                  >
+                    <FiEye />
+                  </button>
+                  <button
+                    onClick={() => handleEditUser(user)}
+                    className="text-blue-500"
+                  >
+                    <FiEdit />
+                  </button>
+                  <button
+                    onClick={() => handleDeleteUser(user._id, user.name)}
+                    className="text-red-500"
+                  >
+                    <FiTrash />
+                  </button>
+                </td>
+              </tr>
+            ))
+          )}
         </tbody>
-      </table>
+      </table> */}
+
+      <Table
+        columns={[{ label: "Tên", key: "name" }]}
+        data={users}
+        handleView={handleViewUser}
+        handleEdit={handleEditUser}
+        handleDelete={(user: User) => handleDeleteUser(user._id, user.name)}
+      />
 
       <Pagination
         currentPage={meta.current}
@@ -303,7 +351,7 @@ const UserManagement = () => {
 
       {/* popup edit user */}
       {isEditing && editingUser && (
-        <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-gray-500  bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
             <h2 className="text-xl font-bold mb-4">Chỉnh sửa người dùng</h2>
             <div>

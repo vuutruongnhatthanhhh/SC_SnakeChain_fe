@@ -23,19 +23,30 @@ const Page: React.FC = () => {
         "/images/web/thiet-ke-website-cong-ty-khoan-cat-ep-coc-do-be-tong-01.jpg",
     },
     {
-      title: "Mẫu website Bán loa Audio",
-      imageUrl:
-        "/images/web/thiet-ke-website-ban-loa-ban-thiet-bi-am-thanh-audio-02.png",
+      title: "Mẫu website Spa, thẩm mỹ viện",
+      imageUrl: "/images/web/thiet-ke-website-spa-tham-my-vien.jpg",
     },
     {
-      title: "Mẫu website Công ty Luật",
+      title: "Mẫu website công ty đồng phục, xưởng may mặc",
       imageUrl:
-        "/images/web/thiet-ke-website-cong-ty-luat-su-van-phong-luat-su-tu-van-luat-03.jpg",
+        "/images/web/thiet-ke-website-cong-ty-dong-phuc-xuong-may-mac.jpg",
     },
     {
-      title: "Mẫu website Khoan Cắt Bê Tông",
+      title: "Mẫu website bán trà sữa",
+      imageUrl: "/images/web/thiet-ke-website-quan-tra-sua-ban-tra-sua.jpg",
+    },
+    {
+      title: "Mẫu website dịch vụ thú y",
+      imageUrl: "/images/web/thiet-ke-website-dich-vu-thu-y.jpg",
+    },
+    {
+      title: "Mẫu website siêu thị mini",
+      imageUrl: "/images/web/thiet-ke-website-sieu-thi-mini.jpg",
+    },
+    {
+      title: "Mẫu website bán đồ nội thất",
       imageUrl:
-        "/images/web/thiet-ke-website-cong-ty-khoan-cat-ep-coc-do-be-tong-01.jpg",
+        "/images/web/thiet-ke-website-ban-hang-noi-that-ban-do-noi-that.jpg",
     },
   ];
   return (
@@ -50,14 +61,14 @@ const Page: React.FC = () => {
           <WebCard key={index} title={image.title} imageUrl={image.imageUrl} />
         ))}
       </div>
-      <div className="text-center mt-8">
+      {/* <div className="text-center mt-8">
         <a
           href={"#"}
           className="inline-block px-4 py-2 rounded-lg font-semibold bg-buttonRoot"
         >
           Xem tất cả
         </a>
-      </div>
+      </div> */}
       <WhyWebSection />
       <ProcessWebSection />
       <QuoteRequestForm />

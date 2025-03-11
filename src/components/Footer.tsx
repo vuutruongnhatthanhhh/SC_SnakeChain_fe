@@ -50,11 +50,11 @@ const Footer = () => {
                 Xây dựng website
               </a>
             </li>
-            <li>
+            {/* <li>
               <a href="/mobile" className="text-gray-400 hover:underline">
                 Xây dựng ứng dụng di động
               </a>
-            </li>
+            </li> */}
             {/* <li>
               <a href="#" className="text-gray-400 hover:underline">
                 Giải pháp Blockchain
@@ -81,12 +81,12 @@ const Footer = () => {
             >
               <FaFacebook className="h-6 w-6" />
             </a>
-            <a href="#" className="text-blue-400 hover:text-blue-500">
+            {/* <a href="#" className="text-blue-400 hover:text-blue-500">
               <FaTiktok className="h-6 w-6" />
             </a>
             <a href="#" className="text-blue-400 hover:text-blue-500">
               <FaInstagram className="h-6 w-6" />
-            </a>
+            </a> */}
           </div>
         </div>
       </div>

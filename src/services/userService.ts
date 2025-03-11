@@ -1,6 +1,5 @@
-import axios from "axios";
+import api from "@/services/api";
 
-// Define types
 export interface UpdateUserDto {
   _id?: string;
   name?: string;
@@ -17,11 +16,6 @@ export interface CreateUserDto {
   address?: string;
   role?: string;
 }
-
-const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
-  withCredentials: true,
-});
 
 export const countUsers = async (): Promise<any> => {
   try {
@@ -42,36 +36,13 @@ export const countUsers = async (): Promise<any> => {
   }
 };
 
-// export const getAllUsers = async (
-//   current: number,
-//   pageSize: number
-// ): Promise<any> => {
-//   try {
-//     const token = localStorage.getItem("access_token");
-//     if (!token) {
-//       throw new Error("No access token found");
-//     }
-
-//     const response = await api.get("/users", {
-//       headers: {
-//         Authorization: `Bearer ${token}`,
-//       },
-//       params: {
-//         current,
-//         pageSize,
-//       },
-//     });
-
-//     return response.data;
-//   } catch (error) {
-//     return { allUsers: error };
-//   }
-// };
-
 export const getAllUsers = async (
   current: number,
   pageSize: number,
-  searchTerm: string = ""
+  searchTerm: string = "",
+  role: string = "",
+  accountType: string = "",
+  isActive: boolean | string = ""
 ): Promise<any> => {
   try {
     const token = localStorage.getItem("access_token");
@@ -88,6 +59,18 @@ export const getAllUsers = async (
       params.query = searchTerm;
     }
 
+    if (role && role.trim() !== "") {
+      params.role = role;
+    }
+
+    if (accountType && accountType.trim() !== "") {
+      params.accountType = accountType;
+    }
+
+    if (isActive !== "") {
+      params.isActive = isActive.toString();
+    }
+
     const response = await api.get("/users", {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -96,9 +79,8 @@ export const getAllUsers = async (
     });
 
     return response.data;
-  } catch (error) {
-    console.error("Error fetching users:", error);
-    return { error };
+  } catch (error: any) {
+    throw error;
   }
 };
 

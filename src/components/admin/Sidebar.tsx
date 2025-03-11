@@ -1,10 +1,12 @@
 "use client";
 import * as jwt_decode from "jwt-decode";
 import { useState, useEffect } from "react";
-import { Home, Settings, Users, Menu, X } from "lucide-react";
+import { Home, Settings, Users, Menu, X, Code, Newspaper } from "lucide-react";
 import UserManagement from "@/components/admin/UserManagement";
 import { useRouter } from "next/navigation";
 import Dashboard from "@/components/admin/Dashboard";
+import SourceCodeManagement from "@/components/admin/SourceCodeManagement";
+import BlogManagement from "@/components/admin/BlogManagement";
 
 const menuItems = [
   {
@@ -16,6 +18,16 @@ const menuItems = [
     name: "Người dùng",
     icon: <Users size={20} />,
     component: <UserManagement />,
+  },
+  {
+    name: "Source code",
+    icon: <Code size={20} />,
+    component: <SourceCodeManagement />,
+  },
+  {
+    name: "Blog",
+    icon: <Newspaper size={20} />,
+    component: <BlogManagement />,
   },
   {
     name: "Cài đặt",
@@ -74,7 +86,7 @@ export default function AdminPanel() {
   }, []);
 
   return (
-    <div className="relative h-screen bg-gray-100">
+    <div className="relative  bg-gray-100">
       {/* Sidebar Overlay */}
       {isSidebarOpen && (
         <div

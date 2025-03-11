@@ -1,4 +1,4 @@
-import axios from "axios";
+import api from "@/services/api";
 
 export interface User {
   data(data: any): unknown;
@@ -47,11 +47,6 @@ export interface RegisterResponse {
   data: any;
   _id: string;
 }
-
-const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
-  withCredentials: true, // if use HttpOnly cookie, turn on
-});
 
 export const login = async (data: LoginRequest): Promise<LoginResponse> => {
   const response = await api.post<LoginResponseData>("/auth/login", data);

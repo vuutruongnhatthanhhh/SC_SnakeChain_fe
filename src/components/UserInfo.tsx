@@ -114,12 +114,10 @@ const UserInfo: React.FC = () => {
         setUser(userData.data);
         setOriginalUser(userData.data);
       } else {
-        alert("Có lỗi xảy ra, vui lòng đăng nhập lại");
-        logoutUser();
+        console.log("Có lỗi xảy ra, vui lòng đăng nhập lại");
       }
     } catch (err) {
-      alert("Có lỗi xảy ra, vui lòng đăng nhập lại");
-      logoutUser();
+      console.log("Có lỗi xảy ra, vui lòng đăng nhập lại");
     }
   };
 
