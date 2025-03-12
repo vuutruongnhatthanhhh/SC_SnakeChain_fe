@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { Image } from "@tiptap/extension-image";
@@ -8,17 +8,29 @@ import Underline from "@tiptap/extension-underline";
 import TextStyle from "@tiptap/extension-text-style";
 import Heading from "@tiptap/extension-heading";
 import Color from "@tiptap/extension-color";
+import BulletList from "@tiptap/extension-bullet-list";
+import OrderedList from "@tiptap/extension-ordered-list";
+import ListItem from "@tiptap/extension-list-item";
 import { IoIosColorPalette } from "react-icons/io";
 import ImageServer from "./ImageServer";
+import { Link } from "@tiptap/extension-link";
+import { FaLink } from "react-icons/fa";
+import Paragraph from "@tiptap/extension-paragraph";
 
 const Editor = ({
   onContentChange,
+  initialContent = "",
 }: {
   onContentChange: (content: string) => void;
+  initialContent?: string;
 }) => {
   const [isColorPickerOpen, setColorPickerOpen] = useState(false);
   const colorPickerRef = useRef(null);
   const colorButtonRef = useRef(null);
+
+  const listDropdownRef = useRef<HTMLDivElement>(null);
+  const listButtonRef = useRef(null);
+  const [isListOpen, setIsListOpen] = useState(false);
 
   const handleClickOutside = (e: any) => {
     if (
@@ -42,7 +54,11 @@ const Editor = ({
       StarterKit.configure({
         heading: false,
       }),
-      Image,
+      Image.configure({
+        HTMLAttributes: {
+          class: "my-4", // Margin top and bottom
+        },
+      }),
       Bold,
       Italic,
       Underline,
@@ -50,15 +66,46 @@ const Editor = ({
       Color,
       Heading.configure({
         levels: [1, 2, 3],
+        HTMLAttributes: {
+          class: "font-bold my-4 text-2xl text-black",
+        },
+      }),
+      BulletList.configure({
+        HTMLAttributes: {
+          class: "list-disc ml-6",
+        },
+      }),
+      OrderedList.configure({
+        HTMLAttributes: {
+          class: "list-decimal ml-6",
+        },
+      }),
+      ListItem.configure({
+        HTMLAttributes: {
+          class: " ml-6",
+        },
+      }),
+      Link.configure({
+        openOnClick: true,
+        autolink: true,
+        linkOnPaste: true,
+        HTMLAttributes: {
+          class: "text-blue-600 underline cursor-pointer",
+        },
+      }),
+      Paragraph.configure({
+        HTMLAttributes: {
+          class: "text-lg text-black",
+        },
       }),
     ],
-    content: "",
+    content: initialContent,
     onUpdate: ({ editor }) => {
       onContentChange(editor.getHTML());
     },
     editorProps: {
       attributes: {
-        class: "min-h-[300px] p-2 border", // Đặt chiều cao tối thiểu và padding
+        class: "min-h-[300px] p-2 border",
       },
     },
   });
@@ -78,10 +125,24 @@ const Editor = ({
     setColorPickerOpen((prev) => !prev);
   };
 
+  const handleAddLink = () => {
+    const url = prompt("Nhập URL:");
+    if (!url) return;
+    const text = prompt("Nhập văn bản hiển thị:");
+    if (!text) return;
+
+    editor
+      ?.chain()
+      .focus()
+      .extendMarkRange("link")
+      .insertContent(`<a href="${url}" target="_blank">${text}</a>`)
+      .run();
+  };
+
   return (
     <div>
       {/* Toolbar */}
-      <div className="toolbar flex space-x-4 mb-4 items-center">
+      <div className="toolbar flex space-x-4 mb-4 items-center sticky top-0 bg-white z-10 p-2 shadow-md">
         <ImageServer handleImageSelect={handleImageSelect} />
 
         {/* Bold */}
@@ -106,6 +167,37 @@ const Editor = ({
           className="p-2 border rounded hover:bg-gray-200"
         >
           U
+        </button>
+
+        {/* List (Bullet List & Ordered List) */}
+        <div className="relative">
+          {/* Select Dropdown */}
+          <select
+            onClick={() => setIsListOpen((prev) => !prev)}
+            onChange={(e) => {
+              if (e.target.value === "bullet") {
+                editor?.chain().focus().toggleBulletList().run();
+              } else if (e.target.value === "ordered") {
+                editor?.chain().focus().toggleOrderedList().run();
+              }
+              setIsListOpen(false);
+            }}
+            className="p-2 border rounded hover:bg-gray-200"
+          >
+            <option value="" hidden>
+              📋
+            </option>
+            <option value="bullet">•</option>
+            <option value="ordered">1.</option>
+          </select>
+        </div>
+
+        {/* Link Button */}
+        <button
+          onClick={handleAddLink}
+          className="p-2 border rounded hover:bg-gray-200"
+        >
+          <FaLink />
         </button>
 
         {/* color */}
@@ -171,13 +263,11 @@ const Editor = ({
         >
           H3
         </button>
-
-        {/*  P */}
         <button
           onClick={() => editor?.chain().focus().setParagraph().run()}
           className="p-2 border rounded hover:bg-gray-200"
         >
-          P
+          p
         </button>
       </div>
 

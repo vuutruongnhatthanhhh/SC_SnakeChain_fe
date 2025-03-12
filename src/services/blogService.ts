@@ -4,6 +4,7 @@ export interface CreateBlogDto {
   title?: string;
   url?: string;
   image?: string;
+  shortDescription?: string;
   content?: string;
   author?: string;
   isHide?: boolean;
@@ -14,6 +15,7 @@ export interface UpdateBlogDto {
   title?: string;
   url?: string;
   image?: string;
+  shortDescription?: string;
   content?: string;
   author?: string;
   isHide?: boolean;

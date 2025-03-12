@@ -1,70 +1,55 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Blogs from "@/components/Blogs";
-import Search from "@/components/Search";
+import { getAllBlogUser } from "@/services/blogService";
+import SearchInput from "@/components/SearchInput";
 const BlogPage: React.FC = () => {
-  const [filters, setFilters] = useState({
-    courses: [],
-    services: [],
-    sourceCode: [],
-  });
+  const [blogs, setBlogs] = useState<any[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [debounceTimeout, setDebounceTimeout] = useState<NodeJS.Timeout | null>(
+    null
+  );
 
-  const handleFilterChange = (newFilters: any) => {
-    setFilters(newFilters);
-    console.log("Selected Filters:", newFilters);
+  const fetchBlogs = async (query: string) => {
+    try {
+      const data = await getAllBlogUser(query);
+      setBlogs(data.data.results);
+    } catch (error) {
+      console.error("Lỗi khi lấy danh sách blog:", error);
+    }
   };
 
-  const handleSearch = (query: string) => {
-    console.log("Searching for:", query);
+  useEffect(() => {
+    if (searchTerm === "") {
+      fetchBlogs("");
+    }
+  }, [searchTerm]);
+
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value;
+    setSearchTerm(value);
+
+    if (debounceTimeout) {
+      clearTimeout(debounceTimeout);
+    }
+
+    const newTimeout = setTimeout(() => {
+      fetchBlogs(value);
+    }, 500);
+
+    setDebounceTimeout(newTimeout);
   };
 
-  const [checkboxes, setCheckboxes] = useState([
-    { label: "Tất cả", checked: true },
-    { label: "Tin tức", checked: false },
-    { label: "Hữu ích", checked: false },
-    { label: "Hướng dẫn", checked: false },
-  ]);
-
-  const handleCheckboxChange = (index: number, checked: boolean) => {
-    const newCheckboxes = [...checkboxes];
-    newCheckboxes[index].checked = checked;
-    setCheckboxes(newCheckboxes);
-  };
-  const blogs = [
-    {
-      title: "Cách tối ưu SEO với Next.js",
-      description: "Tối ưu thứ hạng tìm kiếm google",
-      imageUrl: "/images/blogs/blog-nextjs.png",
-      link: "/course/react",
-    },
-    {
-      title: "Cách tối ưu SEO với Next.js 2",
-      description: "Tối ưu thứ hạng tìm kiếm google",
-      imageUrl: "/images/blogs/blog-nextjs.png",
-      link: "/course/react",
-    },
-    {
-      title: "Cách tối ưu SEO với Next.js 3",
-      description: "Tối ưu thứ hạng tìm kiếm google",
-      imageUrl: "/images/blogs/blog-nextjs.png",
-      link: "/course/react",
-    },
-    {
-      title: "Cách tối ưu SEO với Next.js 4",
-      description: "Tối ưu thứ hạng tìm kiếm google",
-      imageUrl: "/images/blogs/blog-nextjs.png",
-      link: "/course/react",
-    },
-  ];
   return (
     <div className="flex p-4 w-full">
       <div className="w-full">
-        <Search
-          onSearch={handleSearch}
-          checkboxes={checkboxes}
-          onCheckboxChange={handleCheckboxChange}
+        <SearchInput
+          value={searchTerm}
+          onChange={handleSearchChange}
+          placeholder="Nhập tên blog..."
+          className="border p-2 mb-4 mr-3"
         />
-        <Blogs blogs={blogs} title="Blog" allBlogLink="#allBlog" />
+        <Blogs blogs={blogs} title="" allBlogLink="#allBlog" />
       </div>
     </div>
   );

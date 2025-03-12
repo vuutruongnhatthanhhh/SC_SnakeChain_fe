@@ -11,16 +11,19 @@ import {
   createBlog,
   deleteBlog,
   getAllBlogs,
+  updateBlog,
   uploadImage,
 } from "@/services/blogService";
 import Editor from "./Editor";
 import ImageServer from "./ImageServer";
+import { Shojumaru } from "next/font/google";
 
 interface Blog {
   _id: string;
   title: string;
   url: string;
   image: string;
+  shortDescription: string;
   content: string;
   author: string;
   isHide: boolean;
@@ -37,12 +40,15 @@ interface Meta {
 
 const BlogManagement = () => {
   const [blogs, setBlogs] = useState<Blog[]>([]);
+  const storedUser = localStorage.getItem("user");
+  const user = storedUser ? JSON.parse(storedUser) : null;
   const [newBlog, setNewBlog] = useState({
     title: "",
     url: "",
     image: "",
+    shortDescription: "",
     content: "",
-    author: "",
+    author: user?.email,
     isHide: false,
   });
   const [meta, setMeta] = useState<Meta>({
@@ -88,27 +94,6 @@ const BlogManagement = () => {
     setImagePath(imageUrl);
   };
 
-  const handleExtendedImageChange = (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const files = e.target.files;
-    if (files) {
-      const selectedFiles = Array.from(files);
-
-      const previewUrls = selectedFiles.map((file) =>
-        URL.createObjectURL(file)
-      );
-
-      setImagePreviews((prevState) => [...prevState, ...previewUrls]);
-      setImageFiles((prevState) => [...prevState, ...selectedFiles]);
-    }
-  };
-
-  const handleDeleteImage = (index: number) => {
-    setImagePreviews((prevState) => prevState.filter((_, i) => i !== index));
-    setImageFiles((prevState) => prevState.filter((_, i) => i !== index));
-  };
-
   const handleClearImage = () => {
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
@@ -122,17 +107,18 @@ const BlogManagement = () => {
       title: "",
       url: "",
       image: "",
+      shortDescription: "",
       content: "",
-      author: "",
+      author: user?.email,
       isHide: false,
     });
   };
 
   const resetImage = () => {
-    setImageFile(null);
+    setImagePath(null);
     setImagePreview(null);
-    setImageFiles([]);
-    setImagePreviews([]);
+    // setImageFiles([]);
+    // setImagePreviews([]);
   };
 
   const fetchBlog = async () => {
@@ -164,85 +150,61 @@ const BlogManagement = () => {
     setIsEditing(true);
   };
 
-  // const handleUpdateBlog = async () => {
-  //   if (!editingBlog) return;
-  //   try {
-  //     setIsLoadingUpdate(true);
-  //     let imagePath;
-  //     let imageExtendedPath: string[] = [];
+  const handleUpdateBlog = async () => {
+    if (!editingBlog) return;
+    try {
+      setIsLoadingUpdate(true);
 
-  //     imageExtendedPath = (await handleAddImages()) || [];
-
-  //     if (!editingSourceCode.image) {
-  //       imagePath = await handleAddImage();
-
-  //       if (imagePath) {
-  //         const updatedSourceCode = await updateSourceCode({
-  //           _id: editingSourceCode._id,
-  //           code: editingSourceCode.code,
-  //           title: editingSourceCode.title,
-  //           url: editingSourceCode.url,
-  //           stack: editingSourceCode.stack,
-  //           field: editingSourceCode.field,
-  //           description: editingSourceCode.description,
-  //           extendedDescription: editingSourceCode.extendedDescription,
-  //           price: editingSourceCode.price,
-  //           originalPrice: editingSourceCode.originalPrice,
-  //           image: imagePath,
-  //           extendedImage: [
-  //             ...editingSourceCode.extendedImage,
-  //             ...imageExtendedPath,
-  //           ],
-  //           linkDoc: editingSourceCode.linkDoc,
-  //           linkYoutube: editingSourceCode.linkYoutube,
-  //           isHide: editingSourceCode.isHide,
-  //         });
-  //         if (updatedSourceCode) {
-  //           alert("Cập nhật thông tin thành công");
-  //           setEditingSourceCode(null);
-  //           resetImage();
-  //           fetchBlog();
-  //         }
-  //       }
-  //     } else {
-  //       const updatedSourceCode = await updateSourceCode({
-  //         _id: editingSourceCode._id,
-  //         code: editingSourceCode.code,
-  //         title: editingSourceCode.title,
-  //         url: editingSourceCode.url,
-  //         stack: editingSourceCode.stack,
-  //         field: editingSourceCode.field,
-  //         description: editingSourceCode.description,
-  //         extendedDescription: editingSourceCode.extendedDescription,
-  //         price: editingSourceCode.price,
-  //         originalPrice: editingSourceCode.originalPrice,
-  //         image: editingSourceCode.image,
-  //         extendedImage: [
-  //           ...editingSourceCode.extendedImage,
-  //           ...imageExtendedPath,
-  //         ],
-  //         linkDoc: editingSourceCode.linkDoc,
-  //         linkYoutube: editingSourceCode.linkYoutube,
-  //         isHide: editingSourceCode.isHide,
-  //       });
-  //       if (updatedSourceCode) {
-  //         alert("Cập nhật thông tin thành công");
-  //         setEditingSourceCode(null);
-  //         resetImage();
-  //         fetchBlog();
-  //       }
-  //     }
-  //   } catch (error: any) {
-  //     alert(
-  //       error.response?.data?.message || "Có lỗi xảy ra, vui lòng thử lại."
-  //     );
-  //   } finally {
-  //     setIsLoadingUpdate(false);
-  //   }
-  // };
+      if (!editingBlog.image) {
+        if (imagePath) {
+          const updatedBlog = await updateBlog({
+            _id: editingBlog._id,
+            title: editingBlog.title,
+            url: editingBlog.url,
+            image: imagePath,
+            shortDescription: editingBlog.shortDescription,
+            content: editingBlog.content,
+            author: editingBlog.author,
+            isHide: editingBlog.isHide,
+          });
+          if (updatedBlog) {
+            alert("Cập nhật thông tin thành công");
+            setEditingBlog(null);
+            resetImage();
+            fetchBlog();
+          }
+        } else {
+          alert("Vui lòng chọn hình ảnh để tải lên.");
+        }
+      } else {
+        const updatedBlog = await updateBlog({
+          _id: editingBlog._id,
+          title: editingBlog.title,
+          url: editingBlog.url,
+          image: editingBlog.image,
+          shortDescription: editingBlog.shortDescription,
+          content: editingBlog.content,
+          author: editingBlog.author,
+          isHide: editingBlog.isHide,
+        });
+        if (updatedBlog) {
+          alert("Cập nhật thông tin thành công");
+          setEditingBlog(null);
+          resetImage();
+          fetchBlog();
+        }
+      }
+    } catch (error: any) {
+      alert(
+        error.response?.data?.message || "Có lỗi xảy ra, vui lòng thử lại."
+      );
+    } finally {
+      setIsLoadingUpdate(false);
+    }
+  };
 
   const handleDeleteSourceCode = async (id: string, code: string) => {
-    const confirmed = window.confirm(`Bạn muốn xóa Source Code ${code}?`);
+    const confirmed = window.confirm(`Bạn muốn xóa Blog: ${code}?`);
 
     if (confirmed) {
       try {
@@ -285,8 +247,14 @@ const BlogManagement = () => {
   const handleContentChange = (content: string) => {
     setNewBlog((prevState) => ({
       ...prevState,
-      content: content, // Cập nhật nội dung của bài blog
+      content: content,
     }));
+  };
+
+  const handleContentUpdate = (content: string) => {
+    setEditingBlog((prevState) =>
+      prevState ? { ...prevState, content } : null
+    );
   };
 
   const handleAddBlog = async () => {
@@ -295,20 +263,14 @@ const BlogManagement = () => {
     }
     try {
       setIsLoadingAdd(true);
-      // let imageExtendedPath: string[] = [];
-      // const imagePath = await handleAddImage();
-      // if (imagePath) {
-      //   imageExtendedPath = (await handleAddImages()) || [];
-      // }
 
       if (imagePath) {
         setNewBlog((prevState) => ({
           ...prevState,
           image: imagePath,
-          // extendedImage: imageExtendedPath || [],
         }));
       } else {
-        alert("Vui lòng chọn hình ảnh chính để tải lên.");
+        alert("Vui lòng chọn hình ảnh để tải lên.");
       }
     } catch (error) {
       console.error(error);
@@ -371,7 +333,13 @@ const BlogManagement = () => {
   };
 
   const validateForm = () => {
-    if (!newBlog.title || !newBlog.url || !newBlog.content || !newBlog.author) {
+    if (
+      !newBlog.title ||
+      !newBlog.url ||
+      !newBlog.shortDescription ||
+      !newBlog.content ||
+      !newBlog.author
+    ) {
       alert("Vui lòng điền đầy đủ các thông tin bắt buộc.");
       return false;
     }
@@ -415,19 +383,6 @@ const BlogManagement = () => {
           ]}
           onChange={(e) => setIsHide(e.target.value)}
         />
-
-        <FilterAdmin
-          value={field}
-          options={[
-            { value: "", label: "Loại" },
-            { value: "FRONTEND", label: "Front end" },
-            { value: "BACKEND", label: "Back end" },
-            { value: "FULLSTACK", label: "Full stack" },
-            { value: "MOBILE", label: "Mobile" },
-            { value: "BLOCKCHAIN", label: "Blockchain" },
-          ]}
-          onChange={(e) => setField(e.target.value)}
-        />
       </div>
 
       <SearchAdmin
@@ -435,62 +390,15 @@ const BlogManagement = () => {
         placeholder="Tìm kiếm theo mã, tên..."
         initialValue={searchTerm}
       />
-      {/* <table className="w-full border-collapse border border-gray-300">
-        <thead>
-          <tr className="bg-gray-200">
-            <th className="border p-2">Mã</th>
-            <th className="border p-2">Tên</th>
-            <th className="border p-2"></th>
-          </tr>
-        </thead>
-        <tbody>
-          {sourceCodes.length === 0 ? (
-            <tr>
-              <td colSpan={2} className="text-center p-4 text-gray-500">
-                Không tìm thấy Source Code
-              </td>
-            </tr>
-          ) : (
-            sourceCodes.map((sourceCode) => (
-              <tr key={sourceCode._id} className="text-center">
-                <td className="border p-2">{sourceCode.code}</td>
-                <td className="border p-2">{sourceCode.title}</td>
-                <td className="border p-2 space-x-2">
-                  <button
-                    onClick={() => handleViewSourceCode(sourceCode)}
-                    className="text-orange-500"
-                  >
-                    <FiEye />
-                  </button>
-                  <button
-                    onClick={() => handleEditSourceCode(sourceCode)}
-                    className="text-blue-500"
-                  >
-                    <FiEdit />
-                  </button>
-                  <button
-                    onClick={() =>
-                      handleDeleteSourceCode(sourceCode._id, sourceCode.code)
-                    }
-                    className="text-red-500"
-                  >
-                    <FiTrash />
-                  </button>
-                </td>
-              </tr>
-            ))
-          )}
-        </tbody>
-      </table> */}
 
       <Table
         columns={[{ label: "Tên", key: "title" }]}
         data={blogs}
         handleView={handleViewBlog}
         handleEdit={handleEditBlog}
-        // handleDelete={(sourceCode: Blog) =>
-        //   handleDeleteSourceCode(sourceCode._id, sourceCode.code)
-        // }
+        handleDelete={(blog: Blog) =>
+          handleDeleteSourceCode(blog._id, blog.title)
+        }
       />
 
       <Pagination
@@ -504,84 +412,90 @@ const BlogManagement = () => {
       {/* popup view blog */}
       {selectedBlog && (
         <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full max-h-[80vh] overflow-y-auto">
-            <h2 className="text-xl font-bold mb-4">Thông tin Blog</h2>
-            <p className="break-words">
-              <strong>Id:</strong> {selectedBlog._id}
-            </p>
-            <p className="break-words">
-              <strong>Tiêu đề:</strong>{" "}
-              <span className="text-green-600 font-bold">
-                {selectedBlog.title}
-              </span>
-            </p>
-            <p className="break-words">
-              <strong>Url:</strong> {selectedBlog.url}
-            </p>
-            <p className="break-words">
-              <strong>Hình ảnh</strong>
-              {selectedBlog.image ? (
-                <img
-                  src={process.env.NEXT_PUBLIC_SERVER + selectedBlog.image}
-                  alt="Hình ảnh chính"
-                  className="w-32 h-32 object-cover mt-2 cursor-pointer"
-                  onClick={() =>
-                    openModalImage(
-                      process.env.NEXT_PUBLIC_SERVER + selectedBlog.image
-                    )
-                  }
-                />
-              ) : (
-                <span className="text-gray-500">Chưa có hình ảnh chính</span>
-              )}
-            </p>
-            <p className="break-words">
-              <strong>Nội dung:</strong>
-              {/* {selectedBlog.content} */} Xem chi tiết
-            </p>
-            <p className="break-words">
-              <strong>Tác giả:</strong> {selectedBlog.author}
-            </p>
-            <p className="break-words">
-              <strong>Trạng thái:</strong>{" "}
-              <span
-                className={`font-bold ${
-                  selectedBlog.isHide ? "text-red-600" : "text-blue-600"
-                }`}
-              >
-                {selectedBlog.isHide ? "Ẩn" : "Hiện"}
-              </span>
-            </p>
-            <p className="break-words">
-              <strong>Ngày tạo:</strong>{" "}
-              {dayjs(selectedBlog.createdAt).format("DD-MM-YYYY HH:mm")}
-            </p>
-            <p className="break-words">
-              <strong>Cập nhật:</strong>{" "}
-              {dayjs(selectedBlog.updatedAt).format("DD-MM-YYYY HH:mm")}
-            </p>
-
-            {/* Modal view image*/}
-            {isModalOpen && (
-              <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center z-50">
-                <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full max-h-[80vh] overflow-y-auto">
-                  <div className="flex justify-end">
-                    <button
-                      onClick={closeModalImage}
-                      className="text-red-600 font-bold"
-                    >
-                      Đóng
-                    </button>
-                  </div>
+          <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full max-h-screen overflow-y-auto">
+            <h2 className="text-xl font-bold mb-4  sticky top-0">
+              Thông tin Blog
+            </h2>
+            <div className="flex-1 overflow-y-auto max-h-[70vh] px-1">
+              <p className="break-words">
+                <strong>Id:</strong> {selectedBlog._id}
+              </p>
+              <p className="break-words">
+                <strong>Tiêu đề:</strong>{" "}
+                <span className="text-green-600 font-bold">
+                  {selectedBlog.title}
+                </span>
+              </p>
+              <p className="break-words">
+                <strong>Url:</strong> {selectedBlog.url}
+              </p>
+              <p className="break-words">
+                <strong>Hình ảnh</strong>
+                {selectedBlog.image ? (
                   <img
-                    src={modalImage}
-                    alt="Modal Image"
-                    className="w-full h-auto object-contain"
+                    src={process.env.NEXT_PUBLIC_SERVER + selectedBlog.image}
+                    alt="Hình ảnh chính"
+                    className="w-32 h-32 object-cover mt-2 cursor-pointer"
+                    onClick={() =>
+                      openModalImage(
+                        process.env.NEXT_PUBLIC_SERVER + selectedBlog.image
+                      )
+                    }
                   />
-                </div>
-              </div>
-            )}
+                ) : (
+                  <span className="text-gray-500">Chưa có hình ảnh chính</span>
+                )}
+              </p>
+              <p className="break-words">
+                <strong>Mô tả ngắn:</strong> {selectedBlog.shortDescription}
+              </p>
+              <p className="break-words">
+                <strong>Nội dung:</strong>
+                {/* {selectedBlog.content} */} Xem chi tiết
+              </p>
+              <p className="break-words">
+                <strong>Tác giả:</strong> {selectedBlog.author}
+              </p>
+              <p className="break-words">
+                <strong>Trạng thái:</strong>{" "}
+                <span
+                  className={`font-bold ${
+                    selectedBlog.isHide ? "text-red-600" : "text-blue-600"
+                  }`}
+                >
+                  {selectedBlog.isHide ? "Ẩn" : "Hiện"}
+                </span>
+              </p>
+              <p className="break-words">
+                <strong>Ngày tạo:</strong>{" "}
+                {dayjs(selectedBlog.createdAt).format("DD-MM-YYYY HH:mm")}
+              </p>
+              <p className="break-words">
+                <strong>Cập nhật:</strong>{" "}
+                {dayjs(selectedBlog.updatedAt).format("DD-MM-YYYY HH:mm")}
+              </p>
 
+              {/* Modal view image*/}
+              {isModalOpen && (
+                <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center z-50">
+                  <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full max-h-[80vh] overflow-y-auto">
+                    <div className="flex justify-end">
+                      <button
+                        onClick={closeModalImage}
+                        className="text-red-600 font-bold"
+                      >
+                        Đóng
+                      </button>
+                    </div>
+                    <img
+                      src={modalImage}
+                      alt="Modal Image"
+                      className="w-full h-auto object-contain"
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
             <div className="mt-4 flex justify-end space-x-2">
               <button
                 onClick={closeModal}
@@ -597,145 +511,156 @@ const BlogManagement = () => {
       {/* popup edit source code */}
       {isEditing && editingBlog && (
         <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg max-w-4xl w-full max-h-screen overflow-auto">
-            {" "}
-            <h2 className="text-xl font-bold mb-4">Chỉnh sửa Blog</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {" "}
+          <div className="bg-white p-6 rounded-lg shadow-lg max-w-4xl w-full max-h-screen overflow-y-auto">
+            <h2 className="text-xl font-bold mb-4 sticky top-0">
+              Chỉnh sửa Blog
+            </h2>
+            <div className="flex-1 overflow-y-auto max-h-[70vh] px-1">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block">
+                    Tiêu đề <span className="text-red-600">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    className="border p-2 w-full"
+                    value={editingBlog.title}
+                    onChange={(e) =>
+                      setEditingBlog({
+                        ...editingBlog,
+                        title: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+                <div>
+                  <label className="block">
+                    Url <span className="text-red-600">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    className="border p-2 w-full"
+                    value={editingBlog.url}
+                    onChange={(e) =>
+                      setEditingBlog({
+                        ...editingBlog,
+                        url: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+                <div className="mt-2">
+                  <label className="block">
+                    Hình ảnh <span className="text-red-600">* (800x400)</span>
+                  </label>
+
+                  {editingBlog.image && (
+                    <div className="mt-2 flex items-center">
+                      <img
+                        src={process.env.NEXT_PUBLIC_SERVER + editingBlog.image}
+                        alt="Hình ảnh chính"
+                        className="w-32 h-32 object-cover"
+                      />
+                      <button
+                        onClick={() => {
+                          const newBlog = { ...editingBlog };
+                          newBlog.image = "";
+                          setEditingBlog(newBlog);
+                        }}
+                        className="bg-red-500 text-white rounded-full w-6 h-6"
+                      >
+                        X
+                      </button>
+                    </div>
+                  )}
+                  {!editingBlog.image && (
+                    <div className="mt-2">
+                      {!imagePreview && (
+                        <ImageServer handleImageSelect={handleImageSelect} />
+                      )}
+
+                      {imagePreview && (
+                        <div className="flex items-center mt-2">
+                          <img
+                            src={imagePreview}
+                            alt="Preview"
+                            className="w-16 h-16 object-cover mr-2"
+                          />
+                          <button
+                            onClick={handleClearImage}
+                            className=" bg-red-500 text-white rounded-full w-6 h-6"
+                          >
+                            X
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+                <div>
+                  <label className="block">Tác giả</label>
+                  <input
+                    type="text"
+                    className="border p-2 w-full"
+                    value={editingBlog.author}
+                    onChange={(e) =>
+                      setEditingBlog({
+                        ...editingBlog,
+                        author: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+                <div>
+                  <label className="block">Trạng thái</label>
+                  <select
+                    className="border p-2 w-full"
+                    value={
+                      editingBlog.isHide !== undefined
+                        ? String(editingBlog.isHide)
+                        : "false"
+                    }
+                    onChange={(e) =>
+                      setEditingBlog({
+                        ...editingBlog,
+                        isHide: e.target.value === "true",
+                      })
+                    }
+                  >
+                    <option value="false">Hiện</option>
+                    <option value="true">Ẩn</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block">
+                    Mô tả ngắn <span className="text-red-600">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    className="border p-2 w-full"
+                    value={editingBlog.shortDescription}
+                    onChange={(e) =>
+                      setEditingBlog({
+                        ...editingBlog,
+                        shortDescription: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+              </div>
               <div>
                 <label className="block">
-                  Tiêu đề <span className="text-red-600">*</span>
+                  Nội dung <span className="text-red-600">*</span>
                 </label>
-                <input
-                  type="text"
-                  className="border p-2 w-full"
-                  value={editingBlog.title}
-                  onChange={(e) =>
-                    setEditingBlog({
-                      ...editingBlog,
-                      title: e.target.value,
-                    })
-                  }
+                <Editor
+                  initialContent={`${editingBlog.content}`}
+                  onContentChange={handleContentUpdate}
                 />
-              </div>
-              <div>
-                <label className="block">
-                  Url <span className="text-red-600">*</span>
-                </label>
-                <input
-                  type="text"
-                  className="border p-2 w-full"
-                  value={editingBlog.url}
-                  onChange={(e) =>
-                    setEditingBlog({
-                      ...editingBlog,
-                      url: e.target.value,
-                    })
-                  }
-                />
-              </div>
-              <div>
-                <label className="block">
-                  Hình ảnh <span className="text-red-600">* (800x400)</span>
-                </label>
-
-                {editingBlog.image && (
-                  <div className="mt-2 flex items-center">
-                    <img
-                      src={process.env.NEXT_PUBLIC_SERVER + editingBlog.image}
-                      alt="Hình ảnh chính"
-                      className="w-32 h-32 object-cover"
-                    />
-                    <button
-                      onClick={() => {
-                        const newBlog = { ...editingBlog };
-                        newBlog.image = "";
-                        setEditingBlog(newBlog);
-                      }}
-                      className="bg-red-500 text-white rounded-full w-6 h-6"
-                    >
-                      X
-                    </button>
-                  </div>
-                )}
-                {!editingBlog.image && (
-                  <div className="mt-2">
-                    {/* <input
-                      ref={fileInputRef}
-                      type="file"
-                      className="border p-2 w-full"
-                      onChange={handleImageChange}
-                      accept="image/*"
-                      style={{ display: "none" }}
-                      id="file-upload-main"
-                    />
-                    <label
-                      htmlFor="file-upload-main"
-                      className="cursor-pointer bg-blue-500 text-white py-2 px-4 rounded"
-                    >
-                      Chọn ảnh
-                    </label> */}
-
-                    {!imagePreview && (
-                      <ImageServer handleImageSelect={handleImageSelect} />
-                    )}
-
-                    {imagePreview && (
-                      <div className="flex items-center mt-2">
-                        <img
-                          src={imagePreview}
-                          alt="Preview"
-                          className="w-16 h-16 object-cover mr-2"
-                        />
-                        <button
-                          onClick={handleClearImage}
-                          className=" bg-red-500 text-white rounded-full w-6 h-6"
-                        >
-                          X
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-              <div>
-                <label className="block">Tác giả</label>
-                <input
-                  type="text"
-                  className="border p-2 w-full"
-                  value={editingBlog.author}
-                  onChange={(e) =>
-                    setEditingBlog({
-                      ...editingBlog,
-                      author: e.target.value,
-                    })
-                  }
-                />
-              </div>
-              <div>
-                <label className="block">Trạng thái:</label>
-                <select
-                  className="border p-2 w-full"
-                  value={
-                    editingBlog.isHide !== undefined
-                      ? String(editingBlog.isHide)
-                      : "false"
-                  }
-                  onChange={(e) =>
-                    setEditingBlog({
-                      ...editingBlog,
-                      isHide: e.target.value === "true",
-                    })
-                  }
-                >
-                  <option value="false">Hiện</option>
-                  <option value="true">Ẩn</option>
-                </select>
               </div>
             </div>
             <div className="mt-4 flex justify-end space-x-2">
               <button
-                // onClick={handleUpdateBlog}
+                onClick={handleUpdateBlog}
                 className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
                 disabled={isLoadingUpdate}
               >
@@ -806,19 +731,6 @@ const BlogManagement = () => {
                     Hình ảnh <span className="text-red-600">* (800x400)</span>
                   </label>
                   <div className="relative">
-                    {/* <input
-                      ref={fileInputRef}
-                      type="file"
-                      className="opacity-0 absolute top-0 left-0 w-full h-full cursor-pointer"
-                      onChange={handleImageChange}
-                      accept="image/*"
-                    />
-                    <button
-                      onClick={() => fileInputRef.current?.click()}
-                      className="bg-blue-500 text-white py-2 px-4 rounded"
-                    >
-                      Chọn ảnh
-                    </button> */}
                     {!imagePreview && (
                       <ImageServer handleImageSelect={handleImageSelect} />
                     )}
@@ -849,12 +761,7 @@ const BlogManagement = () => {
                     type="text"
                     className="border p-2 w-full"
                     value={newBlog.author}
-                    onChange={(e) =>
-                      setNewBlog({
-                        ...newBlog,
-                        author: e.target.value,
-                      })
-                    }
+                    readOnly
                   />
                 </div>
 
@@ -877,6 +784,23 @@ const BlogManagement = () => {
                     <option value="false">Hiện</option>
                     <option value="true">Ẩn</option>
                   </select>
+                </div>
+                <div>
+                  <label className="block">
+                    Mô tả ngắn <span className="text-red-600">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    className="border p-2 w-full"
+                    value={newBlog.shortDescription}
+                    onChange={(e) => {
+                      const shortDescription = e.target.value;
+                      setNewBlog({
+                        ...newBlog,
+                        shortDescription: shortDescription,
+                      });
+                    }}
+                  />
                 </div>
               </div>
               <div>

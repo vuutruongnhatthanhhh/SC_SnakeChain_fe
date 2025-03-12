@@ -1,10 +1,17 @@
+"use client";
 import Slider from "@/components/Slider";
 import Carousel from "@/components/TechCarousel";
 import Courses from "@/components/Courses";
 import Blogs from "@/components/Blogs";
 import QuoteRequestForm from "@/components/QuoteRequestForm";
+import { getAllBlogUser } from "@/services/blogService";
+import { useEffect, useState } from "react";
+import { getAllSourceCodeUser } from "@/services/sourceCodeService";
+import SourceCode from "@/components/SourceCode";
 
 export default function Home() {
+  const [relatedBlogs, setRelatedBlogs] = useState<any[]>([]);
+  const [sourceCodes, setSourceCodes] = useState<any[]>([]);
   const images = ["/images/banner-snake-chain.gif"];
   const techImages = [
     "/images/carousel/react-icon.png",
@@ -48,32 +55,29 @@ export default function Home() {
     },
   ];
 
-  const blogs = [
-    {
-      title: "Cách tối ưu SEO với Next.js",
-      description: "Tối ưu thứ hạng tìm kiếm google",
-      imageUrl: "/images/blogs/blog-nextjs.png",
-      link: "/course/react",
-    },
-    {
-      title: "Cách tối ưu SEO với Next.js 2",
-      description: "Tối ưu thứ hạng tìm kiếm google",
-      imageUrl: "/images/blogs/blog-nextjs.png",
-      link: "/course/react",
-    },
-    {
-      title: "Cách tối ưu SEO với Next.js 3",
-      description: "Tối ưu thứ hạng tìm kiếm google",
-      imageUrl: "/images/blogs/blog-nextjs.png",
-      link: "/course/react",
-    },
-    {
-      title: "Cách tối ưu SEO với Next.js 4",
-      description: "Tối ưu thứ hạng tìm kiếm google",
-      imageUrl: "/images/blogs/blog-nextjs.png",
-      link: "/course/react",
-    },
-  ];
+  const fetchRelatedBlogs = async (query: string) => {
+    try {
+      const data = await getAllBlogUser(query);
+      setRelatedBlogs(data.data.results);
+    } catch (error) {
+      console.error("Lỗi khi lấy danh sách blog:", error);
+    }
+  };
+
+  const fetchSourceCodes = async (query: string, field: string) => {
+    try {
+      const response = await getAllSourceCodeUser(query, field);
+      setSourceCodes(response.data.results);
+    } catch (error) {
+      console.error("Error fetching source codes:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchRelatedBlogs("");
+    fetchSourceCodes("", "");
+  }, []);
+
   return (
     <div>
       <Slider images={images} />
@@ -85,8 +89,19 @@ export default function Home() {
         showButton={true}
       />
       <QuoteRequestForm />
+      <SourceCode
+        codes={sourceCodes.slice(0, 4)}
+        title="Kho Source Code đa dạng"
+        allCodeLink="/sourcecode"
+        showButton={true}
+      />
 
-      <Blogs blogs={blogs} title="Blog" allBlogLink="/blog" showButton={true} />
+      <Blogs
+        blogs={relatedBlogs.slice(0, 4)}
+        title="Blog nổi bật"
+        allBlogLink="/blog"
+        showButton={true}
+      />
     </div>
   );
 }
