@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { FaYoutube, FaFileWord } from "react-icons/fa";
+import { IoEarthOutline } from "react-icons/io5";
 
 interface SourceCode {
   code: string;
@@ -15,6 +16,7 @@ interface SourceCode {
   extendedImage?: string[];
   linkDoc: string;
   linkYoutube: string;
+  linkWebsite: string;
 }
 
 interface SourceCodeDetailProps {
@@ -103,6 +105,19 @@ const SourceCodeDetail: React.FC<SourceCodeDetailProps> = ({ sourcecode }) => {
             Tổng quan dự án
           </a>
         </div>
+        {sourcecode.linkWebsite && (
+          <div className="flex items-center mt-4">
+            <IoEarthOutline className="text-green-600 mr-2" size={24} />
+            <a
+              href={sourcecode.linkWebsite}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-green-600 hover:underline cursor-pointer"
+            >
+              Link xem thực tế
+            </a>
+          </div>
+        )}
 
         <div className="mt-6 text-gray-700">
           <h3 className="text-lg font-semibold mb-2">Mô tả thêm</h3>

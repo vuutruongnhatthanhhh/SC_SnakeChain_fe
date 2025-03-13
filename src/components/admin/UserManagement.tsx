@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  countUsers,
   createUser,
   deleteUser,
   getAllUsers,
@@ -230,6 +231,10 @@ const UserManagement = () => {
         placeholder="Tìm kiếm theo tên, email..."
         initialValue={searchTerm}
       />
+      <p>
+        Số lượng:{" "}
+        <span className="text-blue-700 font-bold"> {users.length}</span>
+      </p>
       {/* <table className="w-full border-collapse border border-gray-300">
         <thead>
           <tr className="bg-gray-200">
@@ -293,50 +298,54 @@ const UserManagement = () => {
       {/* popup view user */}
       {selectedUser && (
         <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
-            <h2 className="text-xl font-bold mb-4">Thông tin người dùng</h2>
-            <p>
-              <strong>Id:</strong> {selectedUser._id}
-            </p>
-            <p>
-              <strong>Tên:</strong> {selectedUser.name}
-            </p>
-            <p>
-              <strong>Email:</strong> {selectedUser.email}
-            </p>
-            <p>
-              <strong>Số điện thoại:</strong> {selectedUser?.phone}
-            </p>
-            <p>
-              <strong>Địa chỉ:</strong> {selectedUser?.address}
-            </p>
-            <p>
-              <strong>Quyền:</strong>{" "}
-              <span className="text-blue-700 font-bold">
-                {selectedUser.role}
-              </span>
-            </p>
-            <p>
-              <strong>Tài khoản:</strong> {selectedUser.accountType}
-            </p>
-            <p>
-              <strong>Kích hoạt:</strong>{" "}
-              <span
-                className={`font-bold ${
-                  selectedUser.isActive ? "text-green-600" : "text-red-500"
-                }`}
-              >
-                {selectedUser.isActive ? "YES" : "NO"}
-              </span>
-            </p>
-            <p>
-              <strong>Ngày tạo:</strong>{" "}
-              {dayjs(selectedUser.createdAt).format("DD-MM-YYYY HH:mm")}
-            </p>
-            <p>
-              <strong>Cập nhật:</strong>{" "}
-              {dayjs(selectedUser.updatedAt).format("DD-MM-YYYY HH:mm")}
-            </p>
+          <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full max-h-screen overflow-y-auto">
+            <h2 className="text-xl font-bold mb-4 sticky top-0">
+              Thông tin người dùng
+            </h2>
+            <div className="flex-1 overflow-y-auto max-h-[70vh] px-1">
+              <p className="break-words">
+                <strong>Id:</strong> {selectedUser._id}
+              </p>
+              <p className="break-words">
+                <strong>Tên:</strong> {selectedUser.name}
+              </p>
+              <p className="break-words">
+                <strong>Email:</strong> {selectedUser.email}
+              </p>
+              <p className="break-words">
+                <strong>Số điện thoại:</strong> {selectedUser?.phone}
+              </p>
+              <p className="break-words">
+                <strong>Địa chỉ:</strong> {selectedUser?.address}
+              </p>
+              <p className="break-words">
+                <strong>Quyền:</strong>{" "}
+                <span className="text-blue-700 font-bold">
+                  {selectedUser.role}
+                </span>
+              </p>
+              <p className="break-words">
+                <strong>Tài khoản:</strong> {selectedUser.accountType}
+              </p>
+              <p className="break-words">
+                <strong>Kích hoạt:</strong>{" "}
+                <span
+                  className={`font-bold ${
+                    selectedUser.isActive ? "text-green-600" : "text-red-500"
+                  }`}
+                >
+                  {selectedUser.isActive ? "YES" : "NO"}
+                </span>
+              </p>
+              <p className="break-words">
+                <strong>Ngày tạo:</strong>{" "}
+                {dayjs(selectedUser.createdAt).format("DD-MM-YYYY HH:mm")}
+              </p>
+              <p className="break-words">
+                <strong>Cập nhật:</strong>{" "}
+                {dayjs(selectedUser.updatedAt).format("DD-MM-YYYY HH:mm")}
+              </p>
+            </div>
             <div className="mt-4 flex justify-end space-x-2">
               <button
                 onClick={closeModal}
@@ -352,55 +361,59 @@ const UserManagement = () => {
       {/* popup edit user */}
       {isEditing && editingUser && (
         <div className="fixed inset-0 bg-gray-500  bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
-            <h2 className="text-xl font-bold mb-4">Chỉnh sửa người dùng</h2>
-            <div>
-              <label className="block">Tên:</label>
-              <input
-                type="text"
-                className="border p-2 w-full"
-                value={editingUser.name}
-                onChange={(e) =>
-                  setEditingUser({ ...editingUser, name: e.target.value })
-                }
-              />
-            </div>
+          <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full max-h-screen overflow-y-auto">
+            <h2 className="text-xl font-bold mb-4 sticky top-0">
+              Chỉnh sửa người dùng
+            </h2>
+            <div className="flex-1 overflow-y-auto max-h-[70vh] px-1">
+              <div>
+                <label className="block">Tên:</label>
+                <input
+                  type="text"
+                  className="border p-2 w-full"
+                  value={editingUser.name}
+                  onChange={(e) =>
+                    setEditingUser({ ...editingUser, name: e.target.value })
+                  }
+                />
+              </div>
 
-            <div className="mt-2">
-              <label className="block">Số điện thoại:</label>
-              <input
-                type="text"
-                className="border p-2 w-full"
-                value={editingUser?.phone || ""}
-                onChange={(e) =>
-                  setEditingUser({ ...editingUser, phone: e.target.value })
-                }
-              />
-            </div>
-            <div className="mt-2">
-              <label className="block">Địa chỉ:</label>
-              <input
-                type="text"
-                className="border p-2 w-full"
-                value={editingUser?.address || ""}
-                onChange={(e) =>
-                  setEditingUser({ ...editingUser, address: e.target.value })
-                }
-              />
-            </div>
-            <div className="mt-2">
-              <label className="block">Quyền:</label>
-              <select
-                className="border p-2 w-full"
-                value={editingUser.role}
-                onChange={(e) =>
-                  setEditingUser({ ...editingUser, role: e.target.value })
-                }
-              >
-                <option value="SNAKE">SNAKE</option>
-                <option value="WORM">WORM</option>
-                <option value="USER">USER</option>
-              </select>
+              <div className="mt-2">
+                <label className="block">Số điện thoại:</label>
+                <input
+                  type="text"
+                  className="border p-2 w-full"
+                  value={editingUser?.phone || ""}
+                  onChange={(e) =>
+                    setEditingUser({ ...editingUser, phone: e.target.value })
+                  }
+                />
+              </div>
+              <div className="mt-2">
+                <label className="block">Địa chỉ:</label>
+                <input
+                  type="text"
+                  className="border p-2 w-full"
+                  value={editingUser?.address || ""}
+                  onChange={(e) =>
+                    setEditingUser({ ...editingUser, address: e.target.value })
+                  }
+                />
+              </div>
+              <div className="mt-2">
+                <label className="block">Quyền:</label>
+                <select
+                  className="border p-2 w-full"
+                  value={editingUser.role}
+                  onChange={(e) =>
+                    setEditingUser({ ...editingUser, role: e.target.value })
+                  }
+                >
+                  <option value="SNAKE">SNAKE</option>
+                  <option value="WORM">WORM</option>
+                  <option value="USER">USER</option>
+                </select>
+              </div>
             </div>
             <div className="mt-4 flex justify-end space-x-2">
               <button
@@ -423,85 +436,89 @@ const UserManagement = () => {
       {/* popup add user */}
       {isAdding && (
         <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
-            <h2 className="text-xl font-bold mb-4">Thêm người dùng mới</h2>
-            <div>
-              <label className="block">Tên:</label>
-              <input
-                type="text"
-                className="border p-2 w-full"
-                value={newUser.name}
-                onChange={(e) =>
-                  setNewUser({ ...newUser, name: e.target.value })
-                }
-              />
-            </div>
-            <div className="mt-2">
-              <label className="block">Email:</label>
-              <input
-                type="email"
-                className="border p-2 w-full"
-                value={newUser.email}
-                onChange={(e) =>
-                  setNewUser({ ...newUser, email: e.target.value })
-                }
-              />
-            </div>
-            <div className="mt-2">
-              <label className="block">Mật khẩu:</label>
-              <div className="relative">
+          <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full max-h-screen overflow-y-auto">
+            <h2 className="text-xl font-bold mb-4 sticky top-0">
+              Thêm người dùng mới
+            </h2>
+            <div className="flex-1 overflow-y-auto max-h-[70vh] px-1">
+              <div>
+                <label className="block">Tên:</label>
                 <input
-                  type={showPassword ? "text" : "password"}
+                  type="text"
                   className="border p-2 w-full"
-                  value={newUser.password}
+                  value={newUser.name}
                   onChange={(e) =>
-                    setNewUser({ ...newUser, password: e.target.value })
+                    setNewUser({ ...newUser, name: e.target.value })
                   }
                 />
-                <button
-                  type="button"
-                  className="absolute right-2 top-1/2 transform -translate-y-1/2"
-                  onClick={() => setShowPassword((prev) => !prev)}
-                >
-                  {showPassword ? <FiEyeOff /> : <FiEye />}
-                </button>
               </div>
-            </div>
-            <div className="mt-2">
-              <label className="block">Số điện thoại:</label>
-              <input
-                type="text"
-                className="border p-2 w-full"
-                value={newUser.phone}
-                onChange={(e) =>
-                  setNewUser({ ...newUser, phone: e.target.value })
-                }
-              />
-            </div>
-            <div className="mt-2">
-              <label className="block">Địa chỉ:</label>
-              <input
-                type="text"
-                className="border p-2 w-full"
-                value={newUser.address}
-                onChange={(e) =>
-                  setNewUser({ ...newUser, address: e.target.value })
-                }
-              />
-            </div>
-            <div className="mt-2">
-              <label className="block">Quyền:</label>
-              <select
-                className="border p-2 w-full"
-                value={newUser.role}
-                onChange={(e) =>
-                  setNewUser({ ...newUser, role: e.target.value })
-                }
-              >
-                <option value="SNAKE">SNAKE</option>
-                <option value="WORM">WORM</option>
-                <option value="USER">USER</option>
-              </select>
+              <div className="mt-2">
+                <label className="block">Email:</label>
+                <input
+                  type="email"
+                  className="border p-2 w-full"
+                  value={newUser.email}
+                  onChange={(e) =>
+                    setNewUser({ ...newUser, email: e.target.value })
+                  }
+                />
+              </div>
+              <div className="mt-2">
+                <label className="block">Mật khẩu:</label>
+                <div className="relative">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    className="border p-2 w-full"
+                    value={newUser.password}
+                    onChange={(e) =>
+                      setNewUser({ ...newUser, password: e.target.value })
+                    }
+                  />
+                  <button
+                    type="button"
+                    className="absolute right-2 top-1/2 transform -translate-y-1/2"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                  >
+                    {showPassword ? <FiEyeOff /> : <FiEye />}
+                  </button>
+                </div>
+              </div>
+              <div className="mt-2">
+                <label className="block">Số điện thoại:</label>
+                <input
+                  type="text"
+                  className="border p-2 w-full"
+                  value={newUser.phone}
+                  onChange={(e) =>
+                    setNewUser({ ...newUser, phone: e.target.value })
+                  }
+                />
+              </div>
+              <div className="mt-2">
+                <label className="block">Địa chỉ:</label>
+                <input
+                  type="text"
+                  className="border p-2 w-full"
+                  value={newUser.address}
+                  onChange={(e) =>
+                    setNewUser({ ...newUser, address: e.target.value })
+                  }
+                />
+              </div>
+              <div className="mt-2">
+                <label className="block">Quyền:</label>
+                <select
+                  className="border p-2 w-full"
+                  value={newUser.role}
+                  onChange={(e) =>
+                    setNewUser({ ...newUser, role: e.target.value })
+                  }
+                >
+                  <option value="SNAKE">SNAKE</option>
+                  <option value="WORM">WORM</option>
+                  <option value="USER">USER</option>
+                </select>
+              </div>
             </div>
             <div className="mt-4 flex justify-end space-x-2">
               <button

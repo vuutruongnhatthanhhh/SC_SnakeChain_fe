@@ -1,12 +1,24 @@
 "use client";
 import * as jwt_decode from "jwt-decode";
 import { useState, useEffect } from "react";
-import { Home, Settings, Users, Menu, X, Code, Newspaper } from "lucide-react";
+import {
+  Home,
+  Settings,
+  Users,
+  Menu,
+  X,
+  Code,
+  Newspaper,
+  School,
+  Book,
+  GraduationCap,
+} from "lucide-react";
 import UserManagement from "@/components/admin/UserManagement";
 import { useRouter } from "next/navigation";
 import Dashboard from "@/components/admin/Dashboard";
 import SourceCodeManagement from "@/components/admin/SourceCodeManagement";
 import BlogManagement from "@/components/admin/BlogManagement";
+import CourseManagement from "@/components/admin/CourseManagement";
 
 const menuItems = [
   {
@@ -28,6 +40,16 @@ const menuItems = [
     name: "Blog",
     icon: <Newspaper size={20} />,
     component: <BlogManagement />,
+  },
+  {
+    name: "Khóa học",
+    icon: <GraduationCap size={20} />,
+    component: <CourseManagement />,
+  },
+  {
+    name: "Bài học",
+    icon: <Book size={20} />,
+    component: <CourseManagement />,
   },
   {
     name: "Cài đặt",

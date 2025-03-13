@@ -16,6 +16,7 @@ import {
 import FilterAdmin from "./FilterAdmin";
 import Table from "./Table";
 import ImageServer from "./ImageServer";
+import { link } from "fs";
 
 interface SourceCode {
   _id: string;
@@ -32,6 +33,7 @@ interface SourceCode {
   extendedImage: string[];
   linkDoc: string;
   linkYoutube: string;
+  linkWebsite: string;
   isHide: boolean;
   createdAt: string;
   updatedAt: string;
@@ -60,6 +62,7 @@ const SourceCodeManagement = () => {
     extendedImage: [] as string[],
     linkDoc: "",
     linkYoutube: "",
+    linkWebsite: "",
     isHide: false,
   });
   const [meta, setMeta] = useState<Meta>({
@@ -92,6 +95,8 @@ const SourceCodeManagement = () => {
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [imagePath, setImagePath] = useState<string | null>(null);
   const [imageExtendedPath, setImageExtendedPath] = useState<string[]>([]);
+  const [selectedCategory, setSelectedCategory] =
+    useState<string>("uploadSourceCode");
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const file = e.target.files ? e.target.files[0] : null;
@@ -146,6 +151,7 @@ const SourceCodeManagement = () => {
       extendedImage: [],
       linkDoc: "",
       linkYoutube: "",
+      linkWebsite: "",
       isHide: false,
     });
   };
@@ -218,6 +224,7 @@ const SourceCodeManagement = () => {
             ],
             linkDoc: editingSourceCode.linkDoc,
             linkYoutube: editingSourceCode.linkYoutube,
+            linkWebsite: editingSourceCode.linkWebsite,
             isHide: editingSourceCode.isHide,
           });
           if (updatedSourceCode) {
@@ -248,6 +255,7 @@ const SourceCodeManagement = () => {
           ],
           linkDoc: editingSourceCode.linkDoc,
           linkYoutube: editingSourceCode.linkYoutube,
+          linkWebsite: editingSourceCode.linkWebsite,
           isHide: editingSourceCode.isHide,
         });
         if (updatedSourceCode) {
@@ -531,6 +539,10 @@ const SourceCodeManagement = () => {
         </tbody>
       </table> */}
 
+      <p>
+        Số lượng:{" "}
+        <span className="text-blue-700 font-bold"> {sourceCodes.length}</span>
+      </p>
       <Table
         columns={[
           { label: "Mã", key: "code" },
@@ -555,137 +567,168 @@ const SourceCodeManagement = () => {
       {/* popup view source code */}
       {selectedSourceCode && (
         <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full max-h-[80vh] overflow-y-auto">
-            <h2 className="text-xl font-bold mb-4">Thông tin Source Code</h2>
-            <p className="break-words">
-              <strong>Id:</strong> {selectedSourceCode._id}
-            </p>
-            <p className="break-words">
-              <strong>Mã:</strong>{" "}
-              <span className="text-green-600 font-bold">
-                {selectedSourceCode.code}
-              </span>
-            </p>
-            <p className="break-words">
-              <strong>Tên:</strong> {selectedSourceCode.title}
-            </p>
-            <p className="break-words">
-              <strong>Url:</strong> {selectedSourceCode.url}
-            </p>
-            <p className="break-words">
-              <strong>Công nghệ:</strong> {selectedSourceCode.stack}
-            </p>
-            <p className="break-words">
-              <strong>Loại:</strong> {selectedSourceCode.field}
-            </p>
-            <p className="break-words">
-              <strong>Mô tả chính:</strong> {selectedSourceCode.description}
-            </p>
-            <p className="break-words">
-              <strong>Mô tả phụ:</strong>{" "}
-              {selectedSourceCode?.extendedDescription}
-            </p>
-            <p className="break-words">
-              <strong>Giá bán:</strong>{" "}
-              <span className="text-green-600 font-bold">
-                {selectedSourceCode.price.toLocaleString("vi-VN")}
-              </span>
-            </p>
-            <p className="break-words">
-              <strong>Giá gốc:</strong>{" "}
-              {selectedSourceCode?.originalPrice !== undefined &&
-              selectedSourceCode?.originalPrice !== null
-                ? selectedSourceCode.originalPrice.toLocaleString("vi-VN")
-                : "Chưa có giá"}
-            </p>
-            <p className="break-words">
-              <strong>Hình ảnh chính:</strong>
-              {selectedSourceCode.image ? (
-                <img
-                  src={
-                    process.env.NEXT_PUBLIC_SERVER + selectedSourceCode.image
-                  }
-                  alt="Hình ảnh chính"
-                  className="w-32 h-32 object-cover mt-2 cursor-pointer"
-                  onClick={() =>
-                    openModalImage(
-                      process.env.NEXT_PUBLIC_SERVER + selectedSourceCode.image
-                    )
-                  }
-                />
-              ) : (
-                <span className="text-gray-500">Chưa có hình ảnh chính</span>
-              )}
-            </p>
-
-            <div className="break-words">
-              <strong>Hình ảnh phụ:</strong>
-              <div className="flex flex-wrap mt-2">
-                {Array.isArray(selectedSourceCode.extendedImage) &&
-                selectedSourceCode.extendedImage.length > 0 ? (
-                  selectedSourceCode.extendedImage.map((image, index) => (
-                    <div key={index} className="mr-2 mb-2">
-                      <img
-                        src={process.env.NEXT_PUBLIC_SERVER + image}
-                        alt={`Hình ảnh phụ ${index}`}
-                        className="w-32 h-32 object-cover cursor-pointer"
-                        onClick={() =>
-                          openModalImage(process.env.NEXT_PUBLIC_SERVER + image)
-                        }
-                      />
-                    </div>
-                  ))
-                ) : (
-                  <span className="text-gray-500">Chưa có hình ảnh phụ</span>
-                )}
-              </div>
-            </div>
-
-            {/* Modal view image*/}
-            {isModalOpen && (
-              <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center z-50">
-                <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full max-h-[80vh] overflow-y-auto">
-                  <div className="flex justify-end">
-                    <button
-                      onClick={closeModalImage}
-                      className="text-red-600 font-bold"
-                    >
-                      Đóng
-                    </button>
-                  </div>
+          <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full max-h-screen overflow-y-auto">
+            <h2 className="text-xl font-bold mb-4 sticky top-0">
+              Thông tin Source Code
+            </h2>
+            <div className="flex-1 overflow-y-auto max-h-[70vh] px-1">
+              <p className="break-words">
+                <strong>Id:</strong> {selectedSourceCode._id}
+              </p>
+              <p className="break-words">
+                <strong>Mã:</strong>{" "}
+                <span className="text-green-600 font-bold">
+                  {selectedSourceCode.code}
+                </span>
+              </p>
+              <p className="break-words">
+                <strong>Tên:</strong> {selectedSourceCode.title}
+              </p>
+              <p className="break-words">
+                <strong>Url:</strong> {selectedSourceCode.url}
+              </p>
+              <p className="break-words">
+                <strong>Công nghệ:</strong> {selectedSourceCode.stack}
+              </p>
+              <p className="break-words">
+                <strong>Loại:</strong> {selectedSourceCode.field}
+              </p>
+              <p className="break-words">
+                <strong>Mô tả chính:</strong> {selectedSourceCode.description}
+              </p>
+              <p className="break-words">
+                <strong>Mô tả phụ:</strong>{" "}
+                {selectedSourceCode?.extendedDescription}
+              </p>
+              <p className="break-words">
+                <strong>Giá bán:</strong>{" "}
+                <span className="text-green-600 font-bold">
+                  {selectedSourceCode.price.toLocaleString("vi-VN")}
+                </span>
+              </p>
+              <p className="break-words">
+                <strong>Giá gốc:</strong>{" "}
+                {selectedSourceCode?.originalPrice !== undefined &&
+                selectedSourceCode?.originalPrice !== null
+                  ? selectedSourceCode.originalPrice.toLocaleString("vi-VN")
+                  : "Chưa có giá"}
+              </p>
+              <p className="break-words">
+                <strong>Hình ảnh chính:</strong>
+                {selectedSourceCode.image ? (
                   <img
-                    src={modalImage}
-                    alt="Modal Image"
-                    className="w-full h-auto object-contain"
+                    src={
+                      process.env.NEXT_PUBLIC_SERVER + selectedSourceCode.image
+                    }
+                    alt="Hình ảnh chính"
+                    className="w-32 h-32 object-cover mt-2 cursor-pointer"
+                    onClick={() =>
+                      openModalImage(
+                        process.env.NEXT_PUBLIC_SERVER +
+                          selectedSourceCode.image
+                      )
+                    }
                   />
+                ) : (
+                  <span className="text-gray-500">Chưa có hình ảnh chính</span>
+                )}
+              </p>
+
+              <div className="break-words">
+                <strong>Hình ảnh phụ:</strong>
+                <div className="flex flex-wrap mt-2">
+                  {Array.isArray(selectedSourceCode.extendedImage) &&
+                  selectedSourceCode.extendedImage.length > 0 ? (
+                    selectedSourceCode.extendedImage.map((image, index) => (
+                      <div key={index} className="mr-2 mb-2">
+                        <img
+                          src={process.env.NEXT_PUBLIC_SERVER + image}
+                          alt={`Hình ảnh phụ ${index}`}
+                          className="w-32 h-32 object-cover cursor-pointer"
+                          onClick={() =>
+                            openModalImage(
+                              process.env.NEXT_PUBLIC_SERVER + image
+                            )
+                          }
+                        />
+                      </div>
+                    ))
+                  ) : (
+                    <span className="text-gray-500">Chưa có hình ảnh phụ</span>
+                  )}
                 </div>
               </div>
-            )}
 
-            <p className="break-words">
-              <strong>Link doc:</strong> {selectedSourceCode.linkDoc}
-            </p>
-            <p className="break-words">
-              <strong>Link Youtube:</strong> {selectedSourceCode.linkYoutube}
-            </p>
-            <p className="break-words">
-              <strong>Trạng thái:</strong>{" "}
-              <span
-                className={`font-bold ${
-                  selectedSourceCode.isHide ? "text-red-600" : "text-blue-600"
-                }`}
-              >
-                {selectedSourceCode.isHide ? "Ẩn" : "Hiện"}
-              </span>
-            </p>
-            <p className="break-words">
-              <strong>Ngày tạo:</strong>{" "}
-              {dayjs(selectedSourceCode.createdAt).format("DD-MM-YYYY HH:mm")}
-            </p>
-            <p className="break-words">
-              <strong>Cập nhật:</strong>{" "}
-              {dayjs(selectedSourceCode.updatedAt).format("DD-MM-YYYY HH:mm")}
-            </p>
+              {/* Modal view image*/}
+              {isModalOpen && (
+                <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center z-50">
+                  <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full max-h-[80vh] overflow-y-auto">
+                    <div className="flex justify-end">
+                      <button
+                        onClick={closeModalImage}
+                        className="text-red-600 font-bold"
+                      >
+                        Đóng
+                      </button>
+                    </div>
+                    <img
+                      src={modalImage}
+                      alt="Modal Image"
+                      className="w-full h-auto object-contain"
+                    />
+                  </div>
+                </div>
+              )}
+
+              <p className="break-words">
+                <strong>Link doc:</strong>{" "}
+                <a
+                  className="text-blue-600 hover:underline"
+                  href={selectedSourceCode.linkDoc}
+                  target="_blank"
+                >
+                  {selectedSourceCode.linkDoc}
+                </a>
+              </p>
+              <p className="break-words">
+                <strong>Link Youtube:</strong>{" "}
+                <a
+                  className="text-blue-600 hover:underline"
+                  href={selectedSourceCode.linkYoutube}
+                  target="_blank"
+                >
+                  {selectedSourceCode.linkYoutube}
+                </a>
+              </p>
+              <p className="break-words">
+                <strong>Link Website:</strong>{" "}
+                <a
+                  className="text-blue-600 hover:underline"
+                  href={selectedSourceCode.linkWebsite}
+                  target="_blank"
+                >
+                  {selectedSourceCode.linkWebsite}
+                </a>
+              </p>
+              <p className="break-words">
+                <strong>Trạng thái:</strong>{" "}
+                <span
+                  className={`font-bold ${
+                    selectedSourceCode.isHide ? "text-red-600" : "text-blue-600"
+                  }`}
+                >
+                  {selectedSourceCode.isHide ? "Ẩn" : "Hiện"}
+                </span>
+              </p>
+              <p className="break-words">
+                <strong>Ngày tạo:</strong>{" "}
+                {dayjs(selectedSourceCode.createdAt).format("DD-MM-YYYY HH:mm")}
+              </p>
+              <p className="break-words">
+                <strong>Cập nhật:</strong>{" "}
+                {dayjs(selectedSourceCode.updatedAt).format("DD-MM-YYYY HH:mm")}
+              </p>
+            </div>
             <div className="mt-4 flex justify-end space-x-2">
               <button
                 onClick={closeModal}
@@ -703,133 +746,137 @@ const SourceCodeManagement = () => {
         <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg max-w-4xl w-full max-h-screen overflow-auto">
             {" "}
-            <h2 className="text-xl font-bold mb-4">Chỉnh sửa Source Code</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {" "}
-              <div>
-                <label className="block">
-                  Mã <span className="text-red-600">*</span>
-                </label>
-                <input
-                  type="text"
-                  className="border p-2 w-full"
-                  value={editingSourceCode.code}
-                  onChange={(e) =>
-                    setEditingSourceCode({
-                      ...editingSourceCode,
-                      code: e.target.value,
-                    })
-                  }
-                />
-              </div>
-              <div>
-                <label className="block">
-                  Tên <span className="text-red-600">*</span>
-                </label>
-                <input
-                  type="text"
-                  className="border p-2 w-full"
-                  value={editingSourceCode.title}
-                  onChange={(e) =>
-                    setEditingSourceCode({
-                      ...editingSourceCode,
-                      title: e.target.value,
-                    })
-                  }
-                />
-              </div>
-              <div>
-                <label className="block">
-                  Công nghệ <span className="text-red-600">*</span>
-                </label>
-                <input
-                  type="text"
-                  className="border p-2 w-full"
-                  value={editingSourceCode.stack}
-                  onChange={(e) =>
-                    setEditingSourceCode({
-                      ...editingSourceCode,
-                      stack: e.target.value,
-                    })
-                  }
-                />
-              </div>
-              <div>
-                <label className="block">
-                  Mô tả chính <span className="text-red-600">*</span>
-                </label>
-                <input
-                  type="text"
-                  className="border p-2 w-full"
-                  value={editingSourceCode.description}
-                  onChange={(e) =>
-                    setEditingSourceCode({
-                      ...editingSourceCode,
-                      description: e.target.value,
-                    })
-                  }
-                />
-              </div>
-              <div>
-                <label className="block">
-                  Giá bán <span className="text-red-600">*</span>
-                </label>
-                <input
-                  type="number"
-                  className="border p-2 w-full"
-                  value={String(editingSourceCode.price)}
-                  onChange={(e) =>
-                    setEditingSourceCode({
-                      ...editingSourceCode,
-                      price: Number(e.target.value),
-                    })
-                  }
-                />
-              </div>
-              <div>
-                <label className="block">Giá gốc</label>
-                <input
-                  type="number"
-                  className="border p-2 w-full"
-                  value={String(editingSourceCode?.originalPrice) || ""}
-                  onChange={(e) =>
-                    setEditingSourceCode({
-                      ...editingSourceCode,
-                      originalPrice: Number(e.target.value),
-                    })
-                  }
-                />
-              </div>
-              <div>
-                <label className="block">
-                  Hình ảnh chính{" "}
-                  <span className="text-red-600">* (800x400)</span>
-                </label>
+            <h2 className="text-xl font-bold mb-4 sticky top-0">
+              Chỉnh sửa Source Code
+            </h2>
+            <div className="flex-1 overflow-y-auto max-h-[70vh] px-1">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {" "}
+                <div>
+                  <label className="block">
+                    Mã <span className="text-red-600">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    className="border p-2 w-full"
+                    value={editingSourceCode.code}
+                    onChange={(e) =>
+                      setEditingSourceCode({
+                        ...editingSourceCode,
+                        code: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+                <div>
+                  <label className="block">
+                    Tên <span className="text-red-600">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    className="border p-2 w-full"
+                    value={editingSourceCode.title}
+                    onChange={(e) =>
+                      setEditingSourceCode({
+                        ...editingSourceCode,
+                        title: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+                <div>
+                  <label className="block">
+                    Công nghệ <span className="text-red-600">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    className="border p-2 w-full"
+                    value={editingSourceCode.stack}
+                    onChange={(e) =>
+                      setEditingSourceCode({
+                        ...editingSourceCode,
+                        stack: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+                <div>
+                  <label className="block">
+                    Mô tả chính <span className="text-red-600">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    className="border p-2 w-full"
+                    value={editingSourceCode.description}
+                    onChange={(e) =>
+                      setEditingSourceCode({
+                        ...editingSourceCode,
+                        description: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+                <div>
+                  <label className="block">
+                    Giá bán <span className="text-red-600">*</span>
+                  </label>
+                  <input
+                    type="number"
+                    className="border p-2 w-full"
+                    value={String(editingSourceCode.price)}
+                    onChange={(e) =>
+                      setEditingSourceCode({
+                        ...editingSourceCode,
+                        price: Number(e.target.value),
+                      })
+                    }
+                  />
+                </div>
+                <div>
+                  <label className="block">Giá gốc</label>
+                  <input
+                    type="number"
+                    className="border p-2 w-full"
+                    value={String(editingSourceCode?.originalPrice) || ""}
+                    onChange={(e) =>
+                      setEditingSourceCode({
+                        ...editingSourceCode,
+                        originalPrice: Number(e.target.value),
+                      })
+                    }
+                  />
+                </div>
+                <div>
+                  <label className="block">
+                    Hình ảnh chính{" "}
+                    <span className="text-red-600">* (800x400)</span>
+                  </label>
 
-                {editingSourceCode.image && (
-                  <div className="mt-2 flex items-center">
-                    <img
-                      src={
-                        process.env.NEXT_PUBLIC_SERVER + editingSourceCode.image
-                      }
-                      alt="Hình ảnh chính"
-                      className="w-32 h-32 object-cover"
-                    />
-                    <button
-                      onClick={() => {
-                        const newSourceCode = { ...editingSourceCode };
-                        newSourceCode.image = "";
-                        setEditingSourceCode(newSourceCode);
-                      }}
-                      className="bg-red-500 text-white rounded-full w-6 h-6"
-                    >
-                      X
-                    </button>
-                  </div>
-                )}
-                {!editingSourceCode.image && (
-                  <div className="mt-2">
-                    {/* <input
+                  {editingSourceCode.image && (
+                    <div className="mt-2 flex items-center">
+                      <img
+                        src={
+                          process.env.NEXT_PUBLIC_SERVER +
+                          editingSourceCode.image
+                        }
+                        alt="Hình ảnh chính"
+                        className="w-32 h-32 object-cover"
+                      />
+                      <button
+                        onClick={() => {
+                          const newSourceCode = { ...editingSourceCode };
+                          newSourceCode.image = "";
+                          setEditingSourceCode(newSourceCode);
+                        }}
+                        className="bg-red-500 text-white rounded-full w-6 h-6"
+                      >
+                        X
+                      </button>
+                    </div>
+                  )}
+                  {!editingSourceCode.image && (
+                    <div className="mt-2">
+                      {/* <input
                       ref={fileInputRef}
                       type="file"
                       className="border p-2 w-full"
@@ -845,83 +892,86 @@ const SourceCodeManagement = () => {
                       Chọn ảnh
                     </label> */}
 
-                    <div className="relative">
-                      {!imagePreview && (
-                        <ImageServer handleImageSelect={handleImageSelect} />
-                      )}
-                    </div>
-                    {imagePreview && (
-                      <div className="flex items-center mt-2">
-                        <img
-                          src={imagePreview}
-                          alt="Preview"
-                          className="w-16 h-16 object-cover mr-2"
-                        />
-                        <button
-                          onClick={handleClearImage}
-                          className=" bg-red-500 text-white rounded-full w-6 h-6"
-                        >
-                          X
-                        </button>
+                      <div className="relative">
+                        {!imagePreview && (
+                          <ImageServer
+                            folder="uploadSourceCode"
+                            handleImageSelect={handleImageSelect}
+                          />
+                        )}
                       </div>
-                    )}
-                  </div>
-                )}
-              </div>
-              <div>
-                <label className="block">
-                  Hình ảnh phụ{" "}
-                  <span className="text-red-600"> (600x400, tối đa 10)</span>
-                </label>
-                {editingSourceCode.extendedImage ? (
-                  <div className="flex flex-wrap mt-2">
-                    {editingSourceCode.extendedImage.map((image, index) => (
-                      <div key={index} className="relative mr-2 mb-2">
-                        <img
-                          src={process.env.NEXT_PUBLIC_SERVER + image}
-                          alt={`Hình ảnh phụ ${index}`}
-                          className="w-32 h-32 object-cover"
-                        />
-                        <button
-                          onClick={() => {
-                            const newSourceCode = { ...editingSourceCode };
-                            newSourceCode.extendedImage =
-                              newSourceCode.extendedImage.filter(
-                                (_, i) => i !== index
-                              );
-                            setEditingSourceCode(newSourceCode);
-                          }}
-                          className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center"
-                        >
-                          X
-                        </button>
-                      </div>
-                    ))}
-                    {imagePreviews.length > 0 ? (
-                      imagePreviews.map((image, index) => (
-                        <div key={index} className="relative w-32 h-32 p-2">
+                      {imagePreview && (
+                        <div className="flex items-center mt-2">
                           <img
-                            src={image}
-                            alt={`Preview ${index}`}
-                            className="object-cover w-full h-full rounded"
+                            src={imagePreview}
+                            alt="Preview"
+                            className="w-16 h-16 object-cover mr-2"
                           />
                           <button
-                            onClick={() => handleDeleteImage(index)}
+                            onClick={handleClearImage}
+                            className=" bg-red-500 text-white rounded-full w-6 h-6"
+                          >
+                            X
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+                <div>
+                  <label className="block">
+                    Hình ảnh phụ{" "}
+                    <span className="text-red-600"> (600x400, tối đa 10)</span>
+                  </label>
+                  {editingSourceCode.extendedImage ? (
+                    <div className="flex flex-wrap mt-2">
+                      {editingSourceCode.extendedImage.map((image, index) => (
+                        <div key={index} className="relative mr-2 mb-2">
+                          <img
+                            src={process.env.NEXT_PUBLIC_SERVER + image}
+                            alt={`Hình ảnh phụ ${index}`}
+                            className="w-32 h-32 object-cover"
+                          />
+                          <button
+                            onClick={() => {
+                              const newSourceCode = { ...editingSourceCode };
+                              newSourceCode.extendedImage =
+                                newSourceCode.extendedImage.filter(
+                                  (_, i) => i !== index
+                                );
+                              setEditingSourceCode(newSourceCode);
+                            }}
                             className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center"
                           >
                             X
                           </button>
                         </div>
-                      ))
-                    ) : (
-                      <p></p>
-                    )}
-                  </div>
-                ) : (
-                  <span className="text-gray-500"></span>
-                )}
-                <div className="mt-2">
-                  {/* <input
+                      ))}
+                      {imagePreviews.length > 0 ? (
+                        imagePreviews.map((image, index) => (
+                          <div key={index} className="relative w-32 h-32 p-2">
+                            <img
+                              src={image}
+                              alt={`Preview ${index}`}
+                              className="object-cover w-full h-full rounded"
+                            />
+                            <button
+                              onClick={() => handleDeleteImage(index)}
+                              className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center"
+                            >
+                              X
+                            </button>
+                          </div>
+                        ))
+                      ) : (
+                        <p></p>
+                      )}
+                    </div>
+                  ) : (
+                    <span className="text-gray-500"></span>
+                  )}
+                  <div className="mt-2">
+                    {/* <input
                     type="file"
                     className="border p-2 w-full"
                     onChange={(e) => handleExtendedImageChange(e)}
@@ -936,113 +986,129 @@ const SourceCodeManagement = () => {
                   >
                     Chọn ảnh
                   </label> */}
-                  <ImageServer
-                    handleImageSelect={(imageUrl) =>
-                      handleImageExtendSelect([imageUrl])
+                    <ImageServer
+                      handleImageSelect={(imageUrl) =>
+                        handleImageExtendSelect([imageUrl])
+                      }
+                      folder="uploadSourceCode"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="block">Loại</label>
+                  <select
+                    className="border p-2 w-full"
+                    value={editingSourceCode.field}
+                    onChange={(e) =>
+                      setEditingSourceCode({
+                        ...editingSourceCode,
+                        field: e.target.value,
+                      })
+                    }
+                  >
+                    <option value="FRONTEND">Front end</option>
+                    <option value="BACKEND">Back end</option>
+                    <option value="FULLSTACK">Full stack</option>
+                    <option value="MOBILE">Mobile</option>
+                    <option value="BLOCKCHAIN">Blockchain</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block">Mô tả phụ</label>
+                  <input
+                    type="text"
+                    className="border p-2 w-full"
+                    value={editingSourceCode?.extendedDescription || ""}
+                    onChange={(e) =>
+                      setEditingSourceCode({
+                        ...editingSourceCode,
+                        extendedDescription: e.target.value,
+                      })
                     }
                   />
                 </div>
-              </div>
-              <div>
-                <label className="block">Loại</label>
-                <select
-                  className="border p-2 w-full"
-                  value={editingSourceCode.field}
-                  onChange={(e) =>
-                    setEditingSourceCode({
-                      ...editingSourceCode,
-                      field: e.target.value,
-                    })
-                  }
-                >
-                  <option value="FRONTEND">Front end</option>
-                  <option value="BACKEND">Back end</option>
-                  <option value="FULLSTACK">Full stack</option>
-                  <option value="MOBILE">Mobile</option>
-                  <option value="BLOCKCHAIN">Blockchain</option>
-                </select>
-              </div>
-              <div>
-                <label className="block">Mô tả phụ</label>
-                <input
-                  type="text"
-                  className="border p-2 w-full"
-                  value={editingSourceCode?.extendedDescription || ""}
-                  onChange={(e) =>
-                    setEditingSourceCode({
-                      ...editingSourceCode,
-                      extendedDescription: e.target.value,
-                    })
-                  }
-                />
-              </div>
-              <div>
-                <label className="block">
-                  Link doc <span className="text-red-600">*</span>
-                </label>
-                <input
-                  type="text"
-                  className="border p-2 w-full"
-                  value={editingSourceCode.linkDoc}
-                  onChange={(e) =>
-                    setEditingSourceCode({
-                      ...editingSourceCode,
-                      linkDoc: e.target.value,
-                    })
-                  }
-                />
-              </div>
-              <div>
-                <label className="block">
-                  Link youtube <span className="text-red-600">*</span>
-                </label>
-                <input
-                  type="text"
-                  className="border p-2 w-full"
-                  value={editingSourceCode.linkYoutube}
-                  onChange={(e) =>
-                    setEditingSourceCode({
-                      ...editingSourceCode,
-                      linkYoutube: e.target.value,
-                    })
-                  }
-                />
-              </div>
-              <div>
-                <label className="block">Trạng thái:</label>
-                <select
-                  className="border p-2 w-full"
-                  value={
-                    editingSourceCode.isHide !== undefined
-                      ? String(editingSourceCode.isHide)
-                      : "false"
-                  }
-                  onChange={(e) =>
-                    setEditingSourceCode({
-                      ...editingSourceCode,
-                      isHide: e.target.value === "true",
-                    })
-                  }
-                >
-                  <option value="false">Hiện</option>
-                  <option value="true">Ẩn</option>
-                </select>
-              </div>
-              <div>
-                <label className="block">
-                  Url <span className="text-red-600">*</span>
-                </label>
-                <input
-                  type="text"
-                  className="border p-2 w-full"
-                  value={editingSourceCode.url}
-                  onChange={(e) =>
-                    setEditingSourceCode({
-                      ...editingSourceCode,
-                      url: e.target.value,
-                    })
-                  }
-                />
+                <div>
+                  <label className="block">
+                    Link doc <span className="text-red-600">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    className="border p-2 w-full"
+                    value={editingSourceCode.linkDoc}
+                    onChange={(e) =>
+                      setEditingSourceCode({
+                        ...editingSourceCode,
+                        linkDoc: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+                <div>
+                  <label className="block">
+                    Link youtube <span className="text-red-600">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    className="border p-2 w-full"
+                    value={editingSourceCode.linkYoutube}
+                    onChange={(e) =>
+                      setEditingSourceCode({
+                        ...editingSourceCode,
+                        linkYoutube: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+                <div>
+                  <label className="block">Link website</label>
+                  <input
+                    type="text"
+                    className="border p-2 w-full"
+                    value={editingSourceCode?.linkWebsite || ""}
+                    onChange={(e) =>
+                      setEditingSourceCode({
+                        ...editingSourceCode,
+                        linkWebsite: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+                <div>
+                  <label className="block">Trạng thái:</label>
+                  <select
+                    className="border p-2 w-full"
+                    value={
+                      editingSourceCode.isHide !== undefined
+                        ? String(editingSourceCode.isHide)
+                        : "false"
+                    }
+                    onChange={(e) =>
+                      setEditingSourceCode({
+                        ...editingSourceCode,
+                        isHide: e.target.value === "true",
+                      })
+                    }
+                  >
+                    <option value="false">Hiện</option>
+                    <option value="true">Ẩn</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block">
+                    Url <span className="text-red-600">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    className="border p-2 w-full"
+                    value={editingSourceCode.url}
+                    onChange={(e) =>
+                      setEditingSourceCode({
+                        ...editingSourceCode,
+                        url: e.target.value,
+                      })
+                    }
+                  />
+                </div>
               </div>
             </div>
             <div className="mt-4 flex justify-end space-x-2">
@@ -1074,108 +1140,113 @@ const SourceCodeManagement = () => {
       {isAdding && (
         <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg max-w-4xl w-full max-h-screen overflow-y-auto">
-            <h2 className="text-xl font-bold mb-4">Thêm Source Code mới</h2>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block">
-                  Mã <span className="text-red-600">*</span>
-                </label>
-                <input
-                  type="text"
-                  className="border p-2 w-full"
-                  value={newSourceCode.code}
-                  onChange={(e) =>
-                    setNewSourceCode({ ...newSourceCode, code: e.target.value })
-                  }
-                />
-              </div>
-              <div>
-                <label className="block">
-                  Tên<span className="text-red-600">*</span>
-                </label>
-                <input
-                  type="text"
-                  className="border p-2 w-full"
-                  value={newSourceCode.title}
-                  onChange={(e) => {
-                    const title = e.target.value;
-                    setNewSourceCode({
-                      ...newSourceCode,
-                      title: title,
-                      url: convertToUrl(title),
-                    });
-                  }}
-                />
-              </div>
-              <div>
-                <label className="block">
-                  Công nghệ <span className="text-red-600">*</span>
-                </label>
-                <input
-                  type="text"
-                  className="border p-2 w-full"
-                  value={newSourceCode.stack}
-                  onChange={(e) =>
-                    setNewSourceCode({
-                      ...newSourceCode,
-                      stack: e.target.value,
-                    })
-                  }
-                />
-              </div>
-              <div>
-                <label className="block">
-                  Mô tả chính <span className="text-red-600">*</span>
-                </label>
-                <input
-                  type="text"
-                  className="border p-2 w-full"
-                  value={newSourceCode.description}
-                  onChange={(e) =>
-                    setNewSourceCode({
-                      ...newSourceCode,
-                      description: e.target.value,
-                    })
-                  }
-                />
-              </div>
-              <div>
-                <label className="block">
-                  Giá bán<span className="text-red-600">*</span>
-                </label>
-                <input
-                  type="number"
-                  className="border p-2 w-full"
-                  value={String(newSourceCode.price)}
-                  onChange={(e) =>
-                    setNewSourceCode({
-                      ...newSourceCode,
-                      price: Number(e.target.value),
-                    })
-                  }
-                />
-              </div>
-              <div>
-                <label className="block">Giá gốc</label>
-                <input
-                  type="number"
-                  className="border p-2 w-full"
-                  value={String(newSourceCode.originalPrice)}
-                  onChange={(e) =>
-                    setNewSourceCode({
-                      ...newSourceCode,
-                      originalPrice: Number(e.target.value),
-                    })
-                  }
-                />
-              </div>
-              <div className="mt-2">
-                <label className="block">
-                  Hình ảnh chính{" "}
-                  <span className="text-red-600">* (800x400)</span>
-                </label>
-                {/* <div className="relative">
+            <h2 className="text-xl font-bold mb-4 sticky top-0">
+              Thêm Source Code mới
+            </h2>
+            <div className="flex-1 overflow-y-auto max-h-[70vh] px-1">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block">
+                    Mã <span className="text-red-600">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    className="border p-2 w-full"
+                    value={newSourceCode.code}
+                    onChange={(e) =>
+                      setNewSourceCode({
+                        ...newSourceCode,
+                        code: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+                <div>
+                  <label className="block">
+                    Tên<span className="text-red-600">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    className="border p-2 w-full"
+                    value={newSourceCode.title}
+                    onChange={(e) => {
+                      const title = e.target.value;
+                      setNewSourceCode({
+                        ...newSourceCode,
+                        title: title,
+                        url: convertToUrl(title),
+                      });
+                    }}
+                  />
+                </div>
+                <div>
+                  <label className="block">
+                    Công nghệ <span className="text-red-600">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    className="border p-2 w-full"
+                    value={newSourceCode.stack}
+                    onChange={(e) =>
+                      setNewSourceCode({
+                        ...newSourceCode,
+                        stack: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+                <div>
+                  <label className="block">
+                    Mô tả chính <span className="text-red-600">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    className="border p-2 w-full"
+                    value={newSourceCode.description}
+                    onChange={(e) =>
+                      setNewSourceCode({
+                        ...newSourceCode,
+                        description: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+                <div>
+                  <label className="block">
+                    Giá bán<span className="text-red-600">*</span>
+                  </label>
+                  <input
+                    type="number"
+                    className="border p-2 w-full"
+                    value={String(newSourceCode.price)}
+                    onChange={(e) =>
+                      setNewSourceCode({
+                        ...newSourceCode,
+                        price: Number(e.target.value),
+                      })
+                    }
+                  />
+                </div>
+                <div>
+                  <label className="block">Giá gốc</label>
+                  <input
+                    type="number"
+                    className="border p-2 w-full"
+                    value={String(newSourceCode.originalPrice)}
+                    onChange={(e) =>
+                      setNewSourceCode({
+                        ...newSourceCode,
+                        originalPrice: Number(e.target.value),
+                      })
+                    }
+                  />
+                </div>
+                <div className="mt-2">
+                  <label className="block">
+                    Hình ảnh chính{" "}
+                    <span className="text-red-600">* (800x400)</span>
+                  </label>
+                  {/* <div className="relative">
                   <input
                     ref={fileInputRef}
                     type="file"
@@ -1190,34 +1261,37 @@ const SourceCodeManagement = () => {
                     Chọn ảnh
                   </button>
                 </div> */}
-                <div className="relative">
-                  {!imagePreview && (
-                    <ImageServer handleImageSelect={handleImageSelect} />
+                  <div className="relative">
+                    {!imagePreview && (
+                      <ImageServer
+                        folder="uploadSourceCode"
+                        handleImageSelect={handleImageSelect}
+                      />
+                    )}
+                  </div>
+
+                  {imagePreview && (
+                    <div className="flex items-center mt-2">
+                      <img
+                        src={imagePreview}
+                        alt="Preview"
+                        className="w-16 h-16 object-cover mr-2"
+                      />
+                      <button
+                        onClick={handleClearImage}
+                        className=" bg-red-500 text-white rounded-full w-6 h-6"
+                      >
+                        X
+                      </button>
+                    </div>
                   )}
                 </div>
-
-                {imagePreview && (
-                  <div className="flex items-center mt-2">
-                    <img
-                      src={imagePreview}
-                      alt="Preview"
-                      className="w-16 h-16 object-cover mr-2"
-                    />
-                    <button
-                      onClick={handleClearImage}
-                      className=" bg-red-500 text-white rounded-full w-6 h-6"
-                    >
-                      X
-                    </button>
-                  </div>
-                )}
-              </div>
-              <div>
-                <label className="block">
-                  Hình ảnh phụ{" "}
-                  <span className="text-red-600">(600x400, tối đa 10)</span>
-                </label>
-                {/* <div className="relative">
+                <div>
+                  <label className="block">
+                    Hình ảnh phụ{" "}
+                    <span className="text-red-600">(600x400, tối đa 10)</span>
+                  </label>
+                  {/* <div className="relative">
                   <input
                     type="file"
                     className="border p-2 w-full opacity-0 absolute top-0 left-0 cursor-pointer"
@@ -1229,137 +1303,153 @@ const SourceCodeManagement = () => {
                     Chọn ảnh
                   </button>
                 </div> */}
-                <div className="relative">
-                  <ImageServer
-                    handleImageSelect={(imageUrl) =>
-                      handleImageExtendSelect([imageUrl])
+                  <div className="relative">
+                    <ImageServer
+                      handleImageSelect={(imageUrl) =>
+                        handleImageExtendSelect([imageUrl])
+                      }
+                      folder="uploadSourceCode"
+                    />
+                  </div>
+                  <div className="flex flex-wrap mt-4">
+                    {imagePreviews.length > 0 ? (
+                      imagePreviews.map((image, index) => (
+                        <div key={index} className="relative w-24 h-24 p-2">
+                          <img
+                            src={image}
+                            alt={`Preview ${index}`}
+                            className="object-cover w-full h-full rounded"
+                          />
+                          <button
+                            onClick={() => handleDeleteImage(index)}
+                            className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center"
+                          >
+                            X
+                          </button>
+                        </div>
+                      ))
+                    ) : (
+                      <p></p>
+                    )}
+                  </div>
+                </div>
+                <div>
+                  <label className="block">Loại</label>
+                  <select
+                    className="border p-2 w-full"
+                    value={newSourceCode.field}
+                    onChange={(e) =>
+                      setNewSourceCode({
+                        ...newSourceCode,
+                        field: e.target.value,
+                      })
+                    }
+                  >
+                    <option value="FRONTEND">Front end</option>
+                    <option value="BACKEND">Back end</option>
+                    <option value="FULLSTACK">Full stack</option>
+                    <option value="MOBILE">Mobile</option>
+                    <option value="BLOCKCHAIN">Blockchain</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block">Mô tả phụ</label>
+                  <input
+                    type="text"
+                    className="border p-2 w-full"
+                    value={newSourceCode.extendedDescription}
+                    onChange={(e) =>
+                      setNewSourceCode({
+                        ...newSourceCode,
+                        extendedDescription: e.target.value,
+                      })
                     }
                   />
                 </div>
-                <div className="flex flex-wrap mt-4">
-                  {imagePreviews.length > 0 ? (
-                    imagePreviews.map((image, index) => (
-                      <div key={index} className="relative w-24 h-24 p-2">
-                        <img
-                          src={image}
-                          alt={`Preview ${index}`}
-                          className="object-cover w-full h-full rounded"
-                        />
-                        <button
-                          onClick={() => handleDeleteImage(index)}
-                          className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center"
-                        >
-                          X
-                        </button>
-                      </div>
-                    ))
-                  ) : (
-                    <p></p>
-                  )}
+
+                <div>
+                  <label className="block">
+                    Link doc <span className="text-red-600">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    className="border p-2 w-full"
+                    value={newSourceCode.linkDoc}
+                    onChange={(e) =>
+                      setNewSourceCode({
+                        ...newSourceCode,
+                        linkDoc: e.target.value,
+                      })
+                    }
+                  />
                 </div>
-              </div>
-              <div>
-                <label className="block">Loại</label>
-                <select
-                  className="border p-2 w-full"
-                  value={newSourceCode.field}
-                  onChange={(e) =>
-                    setNewSourceCode({
-                      ...newSourceCode,
-                      field: e.target.value,
-                    })
-                  }
-                >
-                  <option value="FRONTEND">Front end</option>
-                  <option value="BACKEND">Back end</option>
-                  <option value="FULLSTACK">Full stack</option>
-                  <option value="MOBILE">Mobile</option>
-                  <option value="BLOCKCHAIN">Blockchain</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block">Mô tả phụ</label>
-                <input
-                  type="text"
-                  className="border p-2 w-full"
-                  value={newSourceCode.extendedDescription}
-                  onChange={(e) =>
-                    setNewSourceCode({
-                      ...newSourceCode,
-                      extendedDescription: e.target.value,
-                    })
-                  }
-                />
-              </div>
-
-              <div>
-                <label className="block">
-                  Link doc <span className="text-red-600">*</span>
-                </label>
-                <input
-                  type="text"
-                  className="border p-2 w-full"
-                  value={newSourceCode.linkDoc}
-                  onChange={(e) =>
-                    setNewSourceCode({
-                      ...newSourceCode,
-                      linkDoc: e.target.value,
-                    })
-                  }
-                />
-              </div>
-              <div>
-                <label className="block">
-                  Link youtube <span className="text-red-600">*</span>
-                </label>
-                <input
-                  type="text"
-                  className="border p-2 w-full"
-                  value={newSourceCode.linkYoutube}
-                  onChange={(e) =>
-                    setNewSourceCode({
-                      ...newSourceCode,
-                      linkYoutube: e.target.value,
-                    })
-                  }
-                />
-              </div>
-              <div>
-                <label className="block">Trạng thái</label>
-                <select
-                  className="border p-2 w-full"
-                  value={
-                    newSourceCode.isHide !== undefined
-                      ? String(newSourceCode.isHide)
-                      : "false"
-                  }
-                  onChange={(e) =>
-                    setNewSourceCode({
-                      ...newSourceCode,
-                      isHide: e.target.value === "true",
-                    })
-                  }
-                >
-                  <option value="false">Hiện</option>
-                  <option value="true">Ẩn</option>
-                </select>
-              </div>
-              <div>
-                <label className="block">
-                  Url <span className="text-red-600">*</span>
-                </label>
-                <input
-                  type="text"
-                  className="border p-2 w-full"
-                  value={newSourceCode.url}
-                  onChange={(e) =>
-                    setNewSourceCode({
-                      ...newSourceCode,
-                      url: e.target.value,
-                    })
-                  }
-                />
+                <div>
+                  <label className="block">
+                    Link youtube <span className="text-red-600">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    className="border p-2 w-full"
+                    value={newSourceCode.linkYoutube}
+                    onChange={(e) =>
+                      setNewSourceCode({
+                        ...newSourceCode,
+                        linkYoutube: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+                <div>
+                  <label className="block">Link website</label>
+                  <input
+                    type="text"
+                    className="border p-2 w-full"
+                    value={newSourceCode.linkWebsite}
+                    onChange={(e) =>
+                      setNewSourceCode({
+                        ...newSourceCode,
+                        linkWebsite: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+                <div>
+                  <label className="block">Trạng thái</label>
+                  <select
+                    className="border p-2 w-full"
+                    value={
+                      newSourceCode.isHide !== undefined
+                        ? String(newSourceCode.isHide)
+                        : "false"
+                    }
+                    onChange={(e) =>
+                      setNewSourceCode({
+                        ...newSourceCode,
+                        isHide: e.target.value === "true",
+                      })
+                    }
+                  >
+                    <option value="false">Hiện</option>
+                    <option value="true">Ẩn</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block">
+                    Url <span className="text-red-600">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    className="border p-2 w-full"
+                    value={newSourceCode.url}
+                    onChange={(e) =>
+                      setNewSourceCode({
+                        ...newSourceCode,
+                        url: e.target.value,
+                      })
+                    }
+                  />
+                </div>
               </div>
             </div>
 

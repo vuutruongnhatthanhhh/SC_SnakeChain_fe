@@ -20,9 +20,11 @@ import Paragraph from "@tiptap/extension-paragraph";
 const Editor = ({
   onContentChange,
   initialContent = "",
+  folder = "",
 }: {
   onContentChange: (content: string) => void;
   initialContent?: string;
+  folder: string;
 }) => {
   const [isColorPickerOpen, setColorPickerOpen] = useState(false);
   const colorPickerRef = useRef(null);
@@ -143,7 +145,7 @@ const Editor = ({
     <div>
       {/* Toolbar */}
       <div className="toolbar flex space-x-4 mb-4 items-center sticky top-0 bg-white z-10 p-2 shadow-md">
-        <ImageServer handleImageSelect={handleImageSelect} />
+        <ImageServer folder={folder} handleImageSelect={handleImageSelect} />
 
         {/* Bold */}
         <button

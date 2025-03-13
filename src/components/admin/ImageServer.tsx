@@ -14,12 +14,16 @@ interface UploadedImage {
 
 interface ImageButtonProps {
   handleImageSelect: (imageUrl: string) => void;
+  folder: string;
 }
 
-const ImageServer: React.FC<ImageButtonProps> = ({ handleImageSelect }) => {
+const ImageServer: React.FC<ImageButtonProps> = ({
+  handleImageSelect,
+  folder,
+}) => {
   const [showImageModal, setShowImageModal] = useState(false);
-  const [selectedCategory, setSelectedCategory] =
-    useState<string>("uploadBlog");
+  const [selectedCategory, setSelectedCategory] = useState<string>(folder);
+  // const [localCategory, setLocalCategory] = useState<string>(selectedCategory);
   const [uploadedImages, setUploadedImages] = useState<UploadedImage[]>([]);
   const [search, setSearch] = useState<string>("");
   const [viewMode, setViewMode] = useState<"image" | "name">("image");

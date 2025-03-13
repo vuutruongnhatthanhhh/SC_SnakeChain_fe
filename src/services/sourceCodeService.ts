@@ -14,6 +14,7 @@ export interface CreateSourceCodeDto {
   extendedImage?: string[];
   linkDoc?: string;
   linkYoutube?: string;
+  linkWebsite?: string;
   isHide?: boolean;
 }
 
@@ -32,6 +33,7 @@ export interface UpdateSourceCodeDto {
   extendedImage?: string[];
   linkDoc?: string;
   linkYoutube?: string;
+  linkWebsite?: string;
   isHide?: boolean;
 }
 
@@ -225,5 +227,24 @@ export const uploadImages = async (imageFiles: File[]): Promise<string[]> => {
     }
   } catch (error: any) {
     throw error;
+  }
+};
+
+export const countSourceCode = async (): Promise<any> => {
+  try {
+    const token = localStorage.getItem("access_token");
+    if (!token) {
+      throw new Error("No access token found");
+    }
+
+    const response = await api.get("/sourcecode/count/count", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    return { totalUsers: error };
   }
 };

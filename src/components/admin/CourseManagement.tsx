@@ -17,16 +17,17 @@ import {
 import Editor from "./Editor";
 import ImageServer from "./ImageServer";
 import { Shojumaru } from "next/font/google";
+import { getAllCourse } from "@/services/courseService";
 
-interface Blog {
+interface Course {
   _id: string;
   title: string;
   url: string;
   image: string;
   shortDescription: string;
-  content: string;
-  author: string;
+  category: string;
   isHide: boolean;
+  lessons: string[];
   createdAt: string;
   updatedAt: string;
 }
@@ -38,8 +39,8 @@ interface Meta {
   total: number;
 }
 
-const BlogManagement = () => {
-  const [blogs, setBlogs] = useState<Blog[]>([]);
+const CourseManagement = () => {
+  const [courses, setCourses] = useState<Course[]>([]);
   const storedUser = localStorage.getItem("user");
   const user = storedUser ? JSON.parse(storedUser) : null;
   const [newBlog, setNewBlog] = useState({
@@ -58,9 +59,9 @@ const BlogManagement = () => {
     total: 0,
   });
 
-  const [editingBlog, setEditingBlog] = useState<Blog | null>(null);
+  const [editingBlog, setEditingBlog] = useState<Course | null>(null);
 
-  const [selectedBlog, setSelectedBlog] = useState<Blog | null>(null);
+  const [selectedBlog, setSelectedBlog] = useState<Course | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
 
@@ -70,6 +71,7 @@ const BlogManagement = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [isHide, setIsHide] = useState<string>("");
   const [field, setField] = useState<string>("");
+  const [category, setCategory] = useState<string>("");
 
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -123,19 +125,20 @@ const BlogManagement = () => {
     // setImagePreviews([]);
   };
 
-  const fetchBlog = async () => {
+  const fetchCourses = async () => {
     try {
-      const fetchedData = await getAllBlogs(
+      const fetchedData = await getAllCourse(
         meta.current,
         meta.pageSize,
         searchTerm,
-        isHide
+        isHide,
+        category
       );
       if (fetchedData.data.results) {
-        setBlogs(fetchedData.data.results);
+        setCourses(fetchedData.data.results);
         setMeta(fetchedData.data.meta);
       } else {
-        alert("Tải danh sách blog không thành công");
+        alert("Tải danh sách course không thành công");
       }
     } catch (error: any) {
       console.log("Refresh token hết hạn hoặc lỗi không xác định");
@@ -144,66 +147,66 @@ const BlogManagement = () => {
   };
 
   useEffect(() => {
-    fetchBlog();
-  }, [meta.current, meta.pageSize, searchTerm, isHide, field]);
+    fetchCourses();
+  }, [meta.current, meta.pageSize, searchTerm, isHide, category]);
 
-  const handleEditBlog = (blog: Blog) => {
-    setEditingBlog(blog);
+  const handleEditBlog = (course: Course) => {
+    setEditingBlog(course);
     setIsEditing(true);
   };
 
-  const handleUpdateBlog = async () => {
-    if (!editingBlog) return;
-    try {
-      setIsLoadingUpdate(true);
+  // const handleUpdateBlog = async () => {
+  //   if (!editingBlog) return;
+  //   try {
+  //     setIsLoadingUpdate(true);
 
-      if (!editingBlog.image) {
-        if (imagePath) {
-          const updatedBlog = await updateBlog({
-            _id: editingBlog._id,
-            title: editingBlog.title,
-            url: editingBlog.url,
-            image: imagePath,
-            shortDescription: editingBlog.shortDescription,
-            content: editingBlog.content,
-            author: editingBlog.author,
-            isHide: editingBlog.isHide,
-          });
-          if (updatedBlog) {
-            alert("Cập nhật thông tin thành công");
-            setEditingBlog(null);
-            resetImage();
-            fetchBlog();
-          }
-        } else {
-          alert("Vui lòng chọn hình ảnh để tải lên.");
-        }
-      } else {
-        const updatedBlog = await updateBlog({
-          _id: editingBlog._id,
-          title: editingBlog.title,
-          url: editingBlog.url,
-          image: editingBlog.image,
-          shortDescription: editingBlog.shortDescription,
-          content: editingBlog.content,
-          author: editingBlog.author,
-          isHide: editingBlog.isHide,
-        });
-        if (updatedBlog) {
-          alert("Cập nhật thông tin thành công");
-          setEditingBlog(null);
-          resetImage();
-          fetchBlog();
-        }
-      }
-    } catch (error: any) {
-      alert(
-        error.response?.data?.message || "Có lỗi xảy ra, vui lòng thử lại."
-      );
-    } finally {
-      setIsLoadingUpdate(false);
-    }
-  };
+  //     if (!editingBlog.image) {
+  //       if (imagePath) {
+  //         const updatedBlog = await updateBlog({
+  //           _id: editingBlog._id,
+  //           title: editingBlog.title,
+  //           url: editingBlog.url,
+  //           image: imagePath,
+  //           shortDescription: editingBlog.shortDescription,
+  //           content: editingBlog.content,
+  //           author: editingBlog.author,
+  //           isHide: editingBlog.isHide,
+  //         });
+  //         if (updatedBlog) {
+  //           alert("Cập nhật thông tin thành công");
+  //           setEditingBlog(null);
+  //           resetImage();
+  //           fetchCourses();
+  //         }
+  //       } else {
+  //         alert("Vui lòng chọn hình ảnh để tải lên.");
+  //       }
+  //     } else {
+  //       const updatedBlog = await updateBlog({
+  //         _id: editingBlog._id,
+  //         title: editingBlog.title,
+  //         url: editingBlog.url,
+  //         image: editingBlog.image,
+  //         shortDescription: editingBlog.shortDescription,
+  //         content: editingBlog.content,
+  //         author: editingBlog.author,
+  //         isHide: editingBlog.isHide,
+  //       });
+  //       if (updatedBlog) {
+  //         alert("Cập nhật thông tin thành công");
+  //         setEditingBlog(null);
+  //         resetImage();
+  //         fetchCourses();
+  //       }
+  //     }
+  //   } catch (error: any) {
+  //     alert(
+  //       error.response?.data?.message || "Có lỗi xảy ra, vui lòng thử lại."
+  //     );
+  //   } finally {
+  //     setIsLoadingUpdate(false);
+  //   }
+  // };
 
   const handleDeleteSourceCode = async (id: string, code: string) => {
     const confirmed = window.confirm(`Bạn muốn xóa Blog: ${code}?`);
@@ -211,7 +214,7 @@ const BlogManagement = () => {
     if (confirmed) {
       try {
         await deleteBlog(id);
-        fetchBlog();
+        fetchCourses();
       } catch (error: any) {
         alert(
           error.response?.data?.message || "Có lỗi xảy ra, vui lòng thử lại."
@@ -220,8 +223,8 @@ const BlogManagement = () => {
     }
   };
 
-  const handleViewBlog = (blog: Blog) => {
-    setSelectedBlog(blog);
+  const handleViewBlog = (course: Course) => {
+    setSelectedBlog(course);
   };
 
   const closeModal = () => {
@@ -287,7 +290,7 @@ const BlogManagement = () => {
         try {
           await createBlog(newBlog);
           setIsAdding(false);
-          fetchBlog();
+          fetchCourses();
           alert("Thêm Blog thành công");
           resetBlogState();
           setImageFile(null);
@@ -365,7 +368,7 @@ const BlogManagement = () => {
   return (
     <div className="p-4 w-full">
       <h2 className="text-xl font-bold mb-4 flex items-center">
-        Quản lý Blog
+        Quản lý khóa học
         <button
           onClick={() => setIsAdding(true)}
           className="ml-2 text-green-500"
@@ -385,6 +388,18 @@ const BlogManagement = () => {
           ]}
           onChange={(e) => setIsHide(e.target.value)}
         />
+
+        <FilterAdmin
+          value={category}
+          options={[
+            { value: "", label: "Loại" },
+            { value: "WEBSITE", label: "Website" },
+            { value: "BLOCKCHAIN", label: "Blockchain" },
+            { value: "MOBILE", label: "Mobile" },
+            { value: "SOFTWARE", label: "Software" },
+          ]}
+          onChange={(e) => setCategory(e.target.value)}
+        />
       </div>
 
       <SearchAdmin
@@ -395,16 +410,16 @@ const BlogManagement = () => {
 
       <p>
         Số lượng:{" "}
-        <span className="text-blue-700 font-bold"> {blogs.length}</span>
+        <span className="text-blue-700 font-bold"> {courses.length}</span>
       </p>
 
       <Table
         columns={[{ label: "Tên", key: "title" }]}
-        data={blogs}
+        data={courses}
         handleView={handleViewBlog}
         handleEdit={handleEditBlog}
-        handleDelete={(blog: Blog) =>
-          handleDeleteSourceCode(blog._id, blog.title)
+        handleDelete={(course: Course) =>
+          handleDeleteSourceCode(course._id, course.title)
         }
       />
 
@@ -458,7 +473,7 @@ const BlogManagement = () => {
               </p>
               <p className="break-words">
                 <strong>Nội dung:</strong>
-                {/* {selectedBlog.content} */}{" "}
+
                 <a
                   className="text-blue-600 hover:underline"
                   href={`/blog/${selectedBlog.url}`}
@@ -467,9 +482,9 @@ const BlogManagement = () => {
                   Xem chi tiết
                 </a>
               </p>
-              <p className="break-words">
+              {/* <p className="break-words">
                 <strong>Tác giả:</strong> {selectedBlog.author}
-              </p>
+              </p> */}
               <p className="break-words">
                 <strong>Trạng thái:</strong>{" "}
                 <span
@@ -614,7 +629,7 @@ const BlogManagement = () => {
                     </div>
                   )}
                 </div>
-                <div>
+                {/* <div>
                   <label className="block">Tác giả</label>
                   <input
                     type="text"
@@ -627,7 +642,7 @@ const BlogManagement = () => {
                       })
                     }
                   />
-                </div>
+                </div> */}
                 <div>
                   <label className="block">Trạng thái</label>
                   <select
@@ -665,7 +680,7 @@ const BlogManagement = () => {
                   />
                 </div>
               </div>
-              <div>
+              {/* <div>
                 <label className="block">
                   Nội dung <span className="text-red-600">*</span>
                 </label>
@@ -674,9 +689,9 @@ const BlogManagement = () => {
                   initialContent={`${editingBlog.content}`}
                   onContentChange={handleContentUpdate}
                 />
-              </div>
+              </div> */}
             </div>
-            <div className="mt-4 flex justify-end space-x-2">
+            {/* <div className="mt-4 flex justify-end space-x-2">
               <button
                 onClick={handleUpdateBlog}
                 className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
@@ -696,7 +711,7 @@ const BlogManagement = () => {
               >
                 Hủy
               </button>
-            </div>
+            </div> */}
           </div>
         </div>
       )}
@@ -863,4 +878,4 @@ const BlogManagement = () => {
   );
 };
 
-export default BlogManagement;
+export default CourseManagement;

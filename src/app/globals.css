@@ -59,3 +59,46 @@ body {
   font-weight: bold;
   margin: 0.6em 0;
 }
+
+@keyframes shake {
+  0% {
+    transform: rotate(0deg);
+  }
+  15% {
+    transform: rotate(10deg);
+  }
+  30% {
+    transform: rotate(-10deg);
+  }
+  45% {
+    transform: rotate(10deg);
+  }
+  60% {
+    transform: rotate(-10deg);
+  }
+  75% {
+    transform: rotate(10deg);
+  }
+  90% {
+    transform: rotate(-10deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes glow {
+  0% {
+    box-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 15px rgba(0, 255, 0, 1);
+  }
+  100% {
+    box-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+  }
+}
+
+.animate-shake {
+  animation: shake 1s ease-in-out infinite, glow 1s infinite alternate;
+}

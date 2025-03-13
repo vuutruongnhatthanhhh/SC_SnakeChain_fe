@@ -5,7 +5,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Head from "next/head";
 import config from "@/config";
-import ZaloContact from "@/components/ZaloContact";
+import ContactBox from "@/components/ContactBox";
 import { AuthProvider } from "@/context/AuthContext";
 
 const geistSans = Geist({
@@ -39,7 +39,7 @@ export default function RootLayout({
         <AuthProvider>
           <Header />
           <main className="flex-grow w-full"> {children}</main>
-          <ZaloContact />
+          <ContactBox />
 
           <Footer />
         </AuthProvider>

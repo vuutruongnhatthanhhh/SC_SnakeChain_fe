@@ -251,3 +251,22 @@ export const deleteUploadedImage = async (
     throw error;
   }
 };
+
+export const countBlogs = async (): Promise<any> => {
+  try {
+    const token = localStorage.getItem("access_token");
+    if (!token) {
+      throw new Error("No access token found");
+    }
+
+    const response = await api.get("/blogs/count/count", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    return { totalUsers: error };
+  }
+};
