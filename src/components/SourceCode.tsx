@@ -1,5 +1,6 @@
 // components/Featuredcodes.tsx
 import React from "react";
+import Link from "next/link";
 
 interface SourceCode {
   _id: string;
@@ -35,9 +36,8 @@ const SourceCode: React.FC<FeaturedSourceCodeProps> = ({
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {codes.map((code) => (
-          <a
+          <Link
             key={code._id}
-            // href={code.link}
             href={`/sourcecode/${code.url}`}
             className="bg-white shadow-lg rounded-lg overflow-hidden group transform transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-2xl block"
           >
@@ -56,7 +56,7 @@ const SourceCode: React.FC<FeaturedSourceCodeProps> = ({
                 Xem chi tiết
               </span>
             </div>
-          </a>
+          </Link>
         ))}
       </div>
       {showButton && (

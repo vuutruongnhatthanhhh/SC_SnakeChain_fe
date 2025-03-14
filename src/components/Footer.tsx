@@ -30,6 +30,11 @@ const Footer = () => {
               </a>
             </li>
             <li>
+              <a href="/blog" className="text-gray-400 hover:underline">
+                Blog
+              </a>
+            </li>
+            <li>
               <a href="/contact" className="text-gray-400 hover:underline">
                 Liên hệ
               </a>
@@ -41,15 +46,26 @@ const Footer = () => {
           <h3 className="text-xl font-semibold mb-4">Sản phẩm / Dịch vụ</h3>
           <ul>
             <li>
+              <a href="/website" className="text-gray-400 hover:underline">
+                Thiết kế website
+              </a>
+            </li>
+            <li>
               <a href="/course" className="text-gray-400 hover:underline">
                 Khóa học
               </a>
             </li>
             <li>
-              <a href="/website" className="text-gray-400 hover:underline">
-                Xây dựng website
+              <a href="/sourcecode" className="text-gray-400 hover:underline">
+                Source Code
               </a>
             </li>
+            <li>
+              <a href="/price" className="text-gray-400 hover:underline">
+                Bảng giá
+              </a>
+            </li>
+
             {/* <li>
               <a href="/mobile" className="text-gray-400 hover:underline">
                 Xây dựng ứng dụng di động

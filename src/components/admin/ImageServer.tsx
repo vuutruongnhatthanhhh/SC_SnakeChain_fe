@@ -181,6 +181,7 @@ const ImageServer: React.FC<ImageButtonProps> = ({
               >
                 <option value="uploadBlog">Blog</option>
                 <option value="uploadSourceCode">Source code</option>
+                <option value="uploadCourse">Khóa học</option>
               </select>
             </div>
             <SearchAdmin

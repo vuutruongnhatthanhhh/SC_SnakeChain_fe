@@ -8,10 +8,14 @@ import { getAllBlogUser } from "@/services/blogService";
 import { useEffect, useState } from "react";
 import { getAllSourceCodeUser } from "@/services/sourceCodeService";
 import SourceCode from "@/components/SourceCode";
+import { getAllCourseUser } from "@/services/courseService";
 
 export default function Home() {
   const [relatedBlogs, setRelatedBlogs] = useState<any[]>([]);
   const [sourceCodes, setSourceCodes] = useState<any[]>([]);
+  const [courses, setCourses] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string>("");
   const images = ["/images/banner-snake-chain.gif"];
   const techImages = [
     "/images/carousel/react-icon.png",
@@ -28,32 +32,14 @@ export default function Home() {
     "/images/carousel/solidity-icon.png",
   ];
 
-  const courses = [
-    {
-      title: "Khóa học lập trình React",
-      description: "Học React từ cơ bản đến nâng cao",
-      imageUrl: "/images/courses/course-reactjs.png",
-      link: "/course/react",
-    },
-    {
-      title: "Khóa học lập trình Node.js",
-      description: "Lập trình backend với Node.js",
-      imageUrl: "/images/courses/course-reactjs.png",
-      link: "/course/nodejs",
-    },
-    {
-      title: "Khóa học Python cho người mới bắt đầu",
-      description: "Học Python dễ dàng với các bài tập thực hành",
-      imageUrl: "/images/courses/course-reactjs.png",
-      link: "/course/python",
-    },
-    {
-      title: "Khóa học Machine Learning",
-      description: "Khám phá thế giới học máy và AI",
-      imageUrl: "/images/courses/course-reactjs.png",
-      link: "/course/ml",
-    },
-  ];
+  const fetchCourse = async (query: string, category: string) => {
+    try {
+      const response = await getAllCourseUser(query, category);
+      setCourses(response.data.results);
+    } catch (error) {
+      console.error("Error fetching course:", error);
+    }
+  };
 
   const fetchRelatedBlogs = async (query: string) => {
     try {
@@ -76,24 +62,29 @@ export default function Home() {
   useEffect(() => {
     fetchRelatedBlogs("");
     fetchSourceCodes("", "");
+    fetchCourse("", "");
+    setLoading(false);
   }, []);
+
+  if (loading) return <div className="min-h-screen">Đang tải...</div>;
+  if (error) return <div>{error}</div>;
 
   return (
     <div>
       <Slider images={images} />
       <Carousel images={techImages} />
       <Courses
-        courses={courses}
+        courses={courses.slice(0, 4)}
         title="Khóa học nổi bật"
         allCoursesLink="#allcourse"
-        showButton={true}
+        // showButton={true}
       />
-      <QuoteRequestForm />
+
       <SourceCode
         codes={sourceCodes.slice(0, 4)}
         title="Kho Source Code đa dạng"
         allCodeLink="/sourcecode"
-        showButton={true}
+        // showButton={true}
       />
 
       <Blogs
@@ -102,6 +93,7 @@ export default function Home() {
         allBlogLink="/blog"
         showButton={true}
       />
+      <QuoteRequestForm />
     </div>
   );
 }

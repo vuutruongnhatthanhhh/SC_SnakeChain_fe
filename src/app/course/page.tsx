@@ -1,96 +1,85 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Courses from "@/components/Courses";
 import Search from "@/components/Search";
+import { getAllCourseUser } from "@/services/courseService";
+import SearchInput from "@/components/SearchInput";
+import Select from "@/components/Select";
 export default function Course() {
   const [filters, setFilters] = useState({
     courses: [],
     services: [],
     sourceCode: [],
   });
+  const [courses, setCourses] = useState<any[]>([]);
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [category, setCategory] = useState<string>("");
+  const [debounceTimeout, setDebounceTimeout] = useState<NodeJS.Timeout | null>(
+    null
+  );
 
-  const handleFilterChange = (newFilters: any) => {
-    setFilters(newFilters);
-    console.log("Selected Filters:", newFilters);
+  const handleCategoryChange = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    const value = event.target.value;
+    setCategory(value);
+
+    fetchCourse(searchTerm, value);
   };
 
-  const handleSearch = (query: string) => {
-    console.log("Searching for:", query);
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value;
+    setSearchTerm(value);
+
+    if (debounceTimeout) {
+      clearTimeout(debounceTimeout);
+    }
+
+    const newTimeout = setTimeout(() => {
+      fetchCourse(value, category);
+    }, 500);
+
+    setDebounceTimeout(newTimeout);
   };
 
-  const [checkboxes, setCheckboxes] = useState([
-    { label: "Tất cả", checked: true },
-    { label: "Front end", checked: false },
-    { label: "Back end", checked: false },
-    { label: "Databases", checked: false },
-    { label: "Mobile", checked: false },
-  ]);
-
-  const handleCheckboxChange = (index: number, checked: boolean) => {
-    const newCheckboxes = [...checkboxes];
-    newCheckboxes[index].checked = checked;
-    setCheckboxes(newCheckboxes);
+  const fetchCourse = async (query: string, category: string) => {
+    try {
+      const response = await getAllCourseUser(query, category);
+      setCourses(response.data.results);
+    } catch (error) {
+      console.error("Error fetching course:", error);
+    }
   };
 
-  const courses = [
-    {
-      title: "Khóa học lập trình React",
-      description: "Học React từ cơ bản đến nâng cao",
-      imageUrl: "/images/courses/course-reactjs.png",
-      link: "/course/react",
-    },
-    {
-      title: "Khóa học lập trình Node.js",
-      description: "Lập trình backend với Node.js",
-      imageUrl: "/images/courses/course-reactjs.png",
-      link: "/course/nodejs",
-    },
-    {
-      title: "Khóa học Python cho người mới bắt đầu",
-      description: "Học Python dễ dàng với các bài tập thực hành",
-      imageUrl: "/images/courses/course-reactjs.png",
-      link: "/course/python",
-    },
-    {
-      title: "Khóa học Machine Learning",
-      description: "Khám phá thế giới học máy và AI",
-      imageUrl: "/images/courses/course-reactjs.png",
-      link: "/course/ml",
-    },
-    {
-      title: "Khóa học Machine Learning 2",
-      description: "Khám phá thế giới học máy và AI",
-      imageUrl: "/images/courses/course-reactjs.png",
-      link: "/course/ml",
-    },
-    {
-      title: "Khóa học Machine Learning 3",
-      description: "Khám phá thế giới học máy và AI",
-      imageUrl: "/images/courses/course-reactjs.png",
-      link: "/course/ml",
-    },
-    {
-      title: "Khóa học Machine Learning 4",
-      description: "Khám phá thế giới học máy và AI",
-      imageUrl: "/images/courses/course-reactjs.png",
-      link: "/course/ml",
-    },
-  ];
+  useEffect(() => {
+    if (searchTerm === "" && category === "") {
+      fetchCourse("", "");
+    }
+  }, []);
+
   return (
     <div className="flex p-4 w-full">
       <div className="w-full">
         {/* Hiển thị kết quả dựa trên filters */}
         {/* <pre>{JSON.stringify(filters, null, 2)}</pre> */}
-        <Search
-          onSearch={handleSearch}
-          checkboxes={checkboxes}
-          onCheckboxChange={handleCheckboxChange}
+        <SearchInput
+          value={searchTerm}
+          onChange={handleSearchChange}
+          placeholder="Nhập tên khóa học..."
+          className="border p-2 mb-4 mr-3"
         />
-        <Courses
-          courses={courses}
-          title="Tất cả khóa học"
-          allCoursesLink="#allcourse"
+        <Select
+          value={category}
+          onChange={handleCategoryChange}
+          options={[
+            { value: "", label: "Tất cả" },
+            { value: "WEBSITE", label: "Website" },
+            { value: "BLOCKCHAIN", label: "Blockchain" },
+            { value: "MOBILE", label: "Mobile" },
+            { value: "SOFTWARE", label: "Software" },
+          ]}
         />
+        <Courses courses={courses} title="" allCoursesLink="#allcourse" />
       </div>
     </div>
   );

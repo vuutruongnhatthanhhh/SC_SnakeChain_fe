@@ -1,57 +1,58 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { RiVipCrownLine } from "react-icons/ri";
+import { getLessonsUser } from "@/services/lessonService";
+import dayjs from "dayjs";
 
-interface Lesson {
-  id: number;
+interface Course {
+  _id: number;
   title: string;
-  duration: string;
-  videoId: string;
-  completed: boolean;
+  url: string;
+  image: string;
+  shortDescription: string;
+  category: string;
+  isHide: boolean;
+  lessons: string[];
 }
 
-const lessons: Lesson[] = [
-  {
-    id: 1,
-    title: "Giới thiệu khóa học",
-    duration: "5:30",
-    videoId: "PyoJ0fDnzR8",
-    completed: false,
-  },
-  {
-    id: 2,
-    title: "Cài đặt môi trường",
-    duration: "10:15",
-    videoId: "MoWApyUb5w8",
-    completed: false,
-  },
-  {
-    id: 3,
-    title: "Tổng quan về React",
-    duration: "15:45",
-    videoId: "VIDEO_ID_3",
-    completed: false,
-  },
-  {
-    id: 4,
-    title: "Components và Props",
-    duration: "20:00",
-    videoId: "VIDEO_ID_4",
-    completed: true,
-  },
-  {
-    id: 5,
-    title: "State và Lifecycle",
-    duration: "18:30",
-    videoId: "VIDEO_ID_5",
-    completed: false,
-  },
-];
+interface CourseDetailProps {
+  course: Course;
+}
 
-const CourseContent = () => {
-  const [selectedLesson, setSelectedLesson] = useState<Lesson>(lessons[0]);
+interface Lesson {
+  _id: string;
+  title: string;
+  content: string;
+  videoUrl: string;
+  price: number;
+  isHide: boolean;
+  createdAt: string;
+}
+
+const CourseContent: React.FC<CourseDetailProps> = ({ course }) => {
+  const [lessons, setLessons] = useState<Lesson[]>([]);
+  const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  const fetchLessonsOnCourse = async () => {
+    try {
+      const lessonDetails = await Promise.all(
+        course.lessons.map((lesson) => getLessonsUser(lesson))
+      );
+      const lessonData = lessonDetails.map((res) => res.data); // Giả sử API trả về dữ liệu trong res.data
+      setLessons(lessonData);
+      if (lessonData.length > 0) {
+        setSelectedLesson(lessonData[0]); // Chọn bài học đầu tiên mặc định
+      }
+    } catch (error) {
+      console.error("Lỗi khi tải bài học:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchLessonsOnCourse();
+  }, [course.lessons]);
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -61,7 +62,7 @@ const CourseContent = () => {
     <div className="flex flex-col md:flex-row w-full min-h-screen bg-gray-100">
       {/* Mobile Toggle Button */}
       <button
-        className="md:hidden fixed top-15 left-0 z-50 p-2 rounded-lg shadow-lg bg-buttonRoot"
+        className="lg:hidden fixed top-15 left-0 z-50 p-2 rounded-lg shadow-lg bg-buttonRoot"
         onClick={toggleSidebar}
       >
         {isSidebarOpen ? <X size={15} /> : <Menu size={24} />}
@@ -70,9 +71,9 @@ const CourseContent = () => {
       {/* Sidebar */}
       <div
         className={`
-        fixed md:relative w-96 h-96 bg-white shadow-lg transition-transform duration-300 ease-in-out
-        ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"} 
-        md:translate-x-0
+        fixed lg:relative w-96 h-96 bg-white shadow-lg transition-transform duration-300 ease-in-out
+        ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}
+        lg:translate-x-0 lg:block
       `}
       >
         <div className="p-4 ">
@@ -80,7 +81,7 @@ const CourseContent = () => {
           <div className="space-y-2">
             {lessons.map((lesson) => (
               <button
-                key={lesson.id}
+                key={lesson._id}
                 onClick={() => {
                   setSelectedLesson(lesson);
                   setIsSidebarOpen(false);
@@ -88,7 +89,7 @@ const CourseContent = () => {
                 className={`
                   w-full p-3 rounded-lg text-left transition-all
                   ${
-                    selectedLesson.id === lesson.id
+                    selectedLesson?._id === lesson._id
                       ? "bg-blue-100 text-blue-600"
                       : "hover:bg-gray-100"
                   }
@@ -100,19 +101,22 @@ const CourseContent = () => {
                       className={`
                       w-6 h-6 rounded-full flex items-center justify-center text-sm
                       ${
-                        lesson.completed
+                        lesson.price !== 0
                           ? "bg-green-500 text-white"
                           : "bg-gray-200"
                       }
                     `}
                     >
-                      {lesson.completed ? <RiVipCrownLine /> : lesson.id}
+                      {lesson.price !== 0 ? (
+                        <RiVipCrownLine />
+                      ) : (
+                        <RiVipCrownLine />
+                      )}
                     </div>
-                    <span className="font-medium">{lesson.title}</span>
+                    <span className="font-medium truncate max-w-[300px] overflow-hidden text-ellipsis whitespace-nowrap">
+                      {lesson.title}
+                    </span>
                   </div>
-                  <span className="text-sm text-gray-500">
-                    {lesson.duration}
-                  </span>
                 </div>
               </button>
             ))}
@@ -121,22 +125,31 @@ const CourseContent = () => {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 p-4 md:p-8">
+      <div className="flex-1 p-4 ">
         <div className="w-full">
-          <div className="aspect-w-16 aspect-h-9 bg-black rounded-lg overflow-hidden mb-6">
-            <iframe
-              src={`https://www.youtube.com/embed/${selectedLesson.videoId}`}
-              className="w-full h-[500px]"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            />
+          <div className="aspect-w-16 aspect-h-9 max-w-[1200px] bg-black rounded-lg overflow-hidden mb-6">
+            {selectedLesson && (
+              <iframe
+                src={`https://www.youtube.com/embed/${selectedLesson.videoUrl}`}
+                className="w-full h-[700px]"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            )}
           </div>
 
-          <div className="bg-white rounded-lg p-6 shadow-lg">
-            <h1 className="text-2xl font-bold mb-2">{selectedLesson.title}</h1>
-            <p className="text-gray-600">
-              Thời lượng: {selectedLesson.duration}
+          <div className="bg-white rounded-lg p-6 shadow-lg max-w-[1200px]">
+            <h1 className="text-2xl font-bold mb-2">{selectedLesson?.title}</h1>
+            <p className="text-gray-600 mb-2">
+              Ngày xuất bản:{" "}
+              {dayjs(selectedLesson?.createdAt).format("DD-MM-YYYY HH:mm")}
             </p>
+            <div
+              className="text-black"
+              dangerouslySetInnerHTML={{
+                __html: selectedLesson?.content || "",
+              }}
+            ></div>
           </div>
         </div>
       </div>

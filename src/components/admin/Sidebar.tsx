@@ -19,6 +19,7 @@ import Dashboard from "@/components/admin/Dashboard";
 import SourceCodeManagement from "@/components/admin/SourceCodeManagement";
 import BlogManagement from "@/components/admin/BlogManagement";
 import CourseManagement from "@/components/admin/CourseManagement";
+import LessonsManagement from "./LessonsManagement";
 
 const menuItems = [
   {
@@ -49,7 +50,7 @@ const menuItems = [
   {
     name: "Bài học",
     icon: <Book size={20} />,
-    component: <CourseManagement />,
+    component: <LessonsManagement />,
   },
   {
     name: "Cài đặt",

@@ -1,32 +1,30 @@
 import api from "@/services/api";
 
-export interface CreateCourseDto {
+export interface CreateLessonDto {
   title?: string;
-  url?: string;
-  image?: string;
-  shortDescription?: string;
-  category?: string;
+  content?: string;
+  videoUrl?: string;
+  price?: Number;
   isHide?: boolean;
-  lessons?: string[];
+  course?: string;
 }
 
-export interface UpdateCourseDto {
+export interface UpdateLessonDto {
   _id?: string;
   title?: string;
-  url?: string;
-  image?: string;
-  shortDescription?: string;
-  category?: string;
+  content?: string;
+  videoUrl?: string;
+  price?: Number;
   isHide?: boolean;
-  lessons?: string[];
+  course?: string;
 }
 
-export const getAllCourse = async (
+export const getAllLessons = async (
   current: number,
   pageSize: number,
   searchTerm: string = "",
   isHide: boolean | string = "",
-  category: string = ""
+  course: string = ""
 ): Promise<any> => {
   try {
     const token = localStorage.getItem("access_token");
@@ -47,11 +45,11 @@ export const getAllCourse = async (
       params.isHide = isHide.toString();
     }
 
-    if (category && category.trim() !== "") {
-      params.category = category;
+    if (course && course.trim() !== "") {
+      params.course = course;
     }
 
-    const response = await api.get("/courses", {
+    const response = await api.get("/lessons", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -64,39 +62,14 @@ export const getAllCourse = async (
   }
 };
 
-export const getAllCourseUser = async (
-  searchTerm: string = "",
-  category: string = ""
-): Promise<any> => {
-  try {
-    const params: Record<string, any> = {};
-
-    if (searchTerm && searchTerm.trim() !== "") {
-      params.query = searchTerm;
-    }
-
-    if (category && category.trim() !== "") {
-      params.category = category;
-    }
-
-    const response = await api.get("/courses/userCourses", {
-      params,
-    });
-
-    return response.data;
-  } catch (error: any) {
-    throw error;
-  }
-};
-
-export const createCourse = async (data: CreateCourseDto): Promise<any> => {
+export const createLesson = async (data: CreateLessonDto): Promise<any> => {
   try {
     const token = localStorage.getItem("access_token");
     if (!token) {
       throw new Error("No access token found");
     }
 
-    const response = await api.post("/courses", data, {
+    const response = await api.post("/lessons", data, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -108,14 +81,14 @@ export const createCourse = async (data: CreateCourseDto): Promise<any> => {
   }
 };
 
-export const updateCourse = async (data: UpdateCourseDto): Promise<any> => {
+export const updateLesson = async (data: UpdateLessonDto): Promise<any> => {
   try {
     const token = localStorage.getItem("access_token");
     if (!token) {
       throw new Error("No access token found");
     }
 
-    const response = await api.patch("/courses", data, {
+    const response = await api.patch("/lessons", data, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -127,14 +100,14 @@ export const updateCourse = async (data: UpdateCourseDto): Promise<any> => {
   }
 };
 
-export const deleteCourse = async (id: string): Promise<any> => {
+export const deleteLesson = async (id: string): Promise<any> => {
   try {
     const token = localStorage.getItem("access_token");
     if (!token) {
       throw new Error("No access token found");
     }
 
-    const response = await api.delete(`/courses/${id}`, {
+    const response = await api.delete(`/lessons/${id}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -146,9 +119,9 @@ export const deleteCourse = async (id: string): Promise<any> => {
   }
 };
 
-export const getCourseUser = async (url: string): Promise<any> => {
+export const getLessonsUser = async (id: string): Promise<any> => {
   try {
-    const response = await api.get(`/courses/${url}`);
+    const response = await api.get(`/lessons/${id}`);
     return response.data;
   } catch (error: any) {
     throw error;

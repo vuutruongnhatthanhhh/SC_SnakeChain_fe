@@ -28,7 +28,7 @@ const SourceCodeDetailPage: React.FC = () => {
     fetchSourceCode();
   }, [url]);
 
-  if (loading) return <div>Đang tải...</div>;
+  if (loading) return <div className="min-h-screen">Đang tải...</div>;
   if (error) return <div>{error}</div>;
 
   return <SourceCodeDetail sourcecode={sourceCode} />;

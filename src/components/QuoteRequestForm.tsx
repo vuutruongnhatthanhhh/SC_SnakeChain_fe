@@ -20,12 +20,6 @@ const QuoteRequestForm: React.FC = () => {
     description: "",
   });
 
-  const [isClient, setIsClient] = useState(false); // Kiểm tra môi trường client
-
-  useEffect(() => {
-    setIsClient(true); // Set lại state khi component mount trên client
-  }, []);
-
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
@@ -42,8 +36,6 @@ const QuoteRequestForm: React.FC = () => {
     e.preventDefault();
     console.log(formData);
   };
-
-  if (!isClient) return null;
 
   return (
     <div className="flex flex-col lg:flex-row items-center bg-white p-8 rounded-2xl shadow-lg max-w-6xl w-full mx-auto mb-4">
@@ -88,9 +80,8 @@ const QuoteRequestForm: React.FC = () => {
               Ngân sách
             </option>
             <option value="dưới 10 triệu">Dưới 10 triệu</option>
-            <option value="10 - 30 triệu">10 - 30 triệu</option>
-            <option value="30 - 50 triệu">30 - 50 triệu</option>
-            <option value="trên 50 triệu">Trên 50 triệu</option>
+            <option value="10 - 15 triệu">10 - 15 triệu</option>
+            <option value="15 - 20 triệu">15 - 20 triệu</option>
           </select>
           <textarea
             name="description"
@@ -111,7 +102,7 @@ const QuoteRequestForm: React.FC = () => {
       </div>
       <div className="w-full lg:w-1/2 p-4">
         <h3 className="text-2xl font-semibold mb-4">
-          Bạn cần thiết kế website, ứng dụng di động?
+          Bạn cần thiết kế website?
         </h3>
         <p className="mb-2">
           Liên hệ ngay với <strong>{config.companyName}</strong>
@@ -124,26 +115,26 @@ const QuoteRequestForm: React.FC = () => {
         </p>
         <div className="flex space-x-4 mt-4">
           <a
-            href="https://facebook.com"
-            target="_blank"
-            className="text-blue-600 hover:text-blue-700"
-          >
-            <FaFacebook size={24} />
-          </a>
-          <a
-            href="https://t.me"
-            target="_blank"
-            className="text-blue-600 hover:text-blue-700"
-          >
-            <FaTiktok size={24} />
-          </a>
-          <a
-            href="https://youtube.com"
+            href="https://www.youtube.com/@SnakeChain2801"
             target="_blank"
             className="text-blue-600 hover:text-blue-700"
           >
             <FaYoutube size={24} />
           </a>
+          <a
+            href="https://www.facebook.com/people/Snake-Chain/61573199592592/"
+            target="_blank"
+            className="text-blue-600 hover:text-blue-700"
+          >
+            <FaFacebook size={24} />
+          </a>
+          {/* <a
+            href="https://t.me"
+            target="_blank"
+            className="text-blue-600 hover:text-blue-700"
+          >
+            <FaTiktok size={24} />
+          </a> */}
         </div>
       </div>
     </div>

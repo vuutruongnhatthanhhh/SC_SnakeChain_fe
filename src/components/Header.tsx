@@ -228,18 +228,6 @@ const Header: React.FC = () => {
         >
           Giới thiệu
         </Link>
-        {/* <Link
-          href="/course"
-          className="block px-6 py-3 hover:bg-[#319795] transition-colors duration-300"
-          onClick={(e) => {
-            if (pathname === "/course") {
-              e.preventDefault();
-              setDropdownVisible(false);
-            }
-          }}
-        >
-          Khóa học
-        </Link> */}
         <Link
           href="/website"
           className="block px-6 py-3 hover:bg-[#319795] transition-colors duration-300"
@@ -252,18 +240,6 @@ const Header: React.FC = () => {
         >
           Thiết kế website
         </Link>
-        {/* <Link
-          href="/mobile"
-          className="block px-6 py-3 hover:bg-[#319795] transition-colors duration-300"
-          onClick={(e) => {
-            if (pathname === "/mobile") {
-              e.preventDefault();
-              setDropdownVisible(false);
-            }
-          }}
-        >
-          Thiết kế ứng dụng di động
-        </Link> */}
         <Link
           href="/price"
           className="block px-6 py-3 hover:bg-[#319795] transition-colors duration-300"
@@ -276,6 +252,32 @@ const Header: React.FC = () => {
         >
           Bảng giá dịch vụ
         </Link>
+        <Link
+          href="/course"
+          className="block px-6 py-3 hover:bg-[#319795] transition-colors duration-300"
+          onClick={(e) => {
+            if (pathname === "/course") {
+              e.preventDefault();
+              setDropdownVisible(false);
+            }
+          }}
+        >
+          Khóa học
+        </Link>
+
+        {/* <Link
+          href="/mobile"
+          className="block px-6 py-3 hover:bg-[#319795] transition-colors duration-300"
+          onClick={(e) => {
+            if (pathname === "/mobile") {
+              e.preventDefault();
+              setDropdownVisible(false);
+            }
+          }}
+        >
+          Thiết kế ứng dụng di động
+        </Link> */}
+
         {/* <Link
           href="#"
           className="block px-6 py-3 hover:bg-[#319795] transition-colors duration-300"

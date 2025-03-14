@@ -1,6 +1,7 @@
 // components/Featuredblogs.tsx
 import dayjs from "dayjs";
 import React from "react";
+import Link from "next/link";
 
 interface Blog {
   _id: string;
@@ -32,7 +33,7 @@ const Blogs: React.FC<FeaturedblogsProps> = ({
       )}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {blogs.map((blog) => (
-          <a
+          <Link
             key={blog._id}
             // href={blog.link}
             href={`/blog/${blog.url}`}
@@ -57,7 +58,7 @@ const Blogs: React.FC<FeaturedblogsProps> = ({
                 Khám phá ngay
               </span>
             </div>
-          </a>
+          </Link>
         ))}
       </div>
       {showButton && (

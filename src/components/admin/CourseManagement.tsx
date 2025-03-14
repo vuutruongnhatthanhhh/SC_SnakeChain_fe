@@ -7,17 +7,19 @@ import SearchAdmin from "@/components/admin/SearchAdmin";
 import Pagination from "@/components/admin/Pagination";
 import FilterAdmin from "./FilterAdmin";
 import Table from "./Table";
-import {
-  createBlog,
-  deleteBlog,
-  getAllBlogs,
-  updateBlog,
-  uploadImage,
-} from "@/services/blogService";
+import Select from "react-select";
+
 import Editor from "./Editor";
 import ImageServer from "./ImageServer";
 import { Shojumaru } from "next/font/google";
-import { getAllCourse } from "@/services/courseService";
+import {
+  createCourse,
+  deleteCourse,
+  getAllCourse,
+  updateCourse,
+} from "@/services/courseService";
+import { LiaEggSolid } from "react-icons/lia";
+import { getAllLessons } from "@/services/lessonService";
 
 interface Course {
   _id: string;
@@ -43,14 +45,14 @@ const CourseManagement = () => {
   const [courses, setCourses] = useState<Course[]>([]);
   const storedUser = localStorage.getItem("user");
   const user = storedUser ? JSON.parse(storedUser) : null;
-  const [newBlog, setNewBlog] = useState({
+  const [newCourse, setNewCourse] = useState({
     title: "",
     url: "",
     image: "",
     shortDescription: "",
-    content: "",
-    author: user?.email,
+    category: "WEBSITE",
     isHide: false,
+    lessons: [] as string[],
   });
   const [meta, setMeta] = useState<Meta>({
     current: 1,
@@ -59,9 +61,9 @@ const CourseManagement = () => {
     total: 0,
   });
 
-  const [editingBlog, setEditingBlog] = useState<Course | null>(null);
+  const [editingCourse, setEditingCourse] = useState<Course | null>(null);
 
-  const [selectedBlog, setSelectedBlog] = useState<Course | null>(null);
+  const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
 
@@ -82,6 +84,22 @@ const CourseManagement = () => {
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [selectedCategory, setSelectedCategory] =
     useState<string>("uploadBlog");
+
+  const [lessons, setLessons] = useState<{ value: string; label: string }[]>(
+    []
+  );
+
+  const [selectedLessons, setSelectedLessons] = useState<string[]>([]);
+
+  const handleDragEnd = (result: any) => {
+    if (!result.destination) return; // Không thay đổi nếu thả ra ngoài
+
+    const reorderedLessons = Array.from(newCourse.lessons);
+    const [movedItem] = reorderedLessons.splice(result.source.index, 1);
+    reorderedLessons.splice(result.destination.index, 0, movedItem);
+
+    setNewCourse({ ...newCourse, lessons: reorderedLessons });
+  };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const file = e.target.files ? e.target.files[0] : null;
@@ -106,15 +124,15 @@ const CourseManagement = () => {
     setImageFile(null);
   };
 
-  const resetBlogState = () => {
-    setNewBlog({
+  const resetCourseState = () => {
+    setNewCourse({
       title: "",
       url: "",
       image: "",
       shortDescription: "",
-      content: "",
-      author: user?.email,
+      category: "WEBSITE",
       isHide: false,
+      lessons: [] as string[],
     });
   };
 
@@ -146,74 +164,92 @@ const CourseManagement = () => {
     }
   };
 
+  const handleFetchLessons = async () => {
+    const fetchedData = await getAllLessons(1, 1000, "", "", "");
+    if (fetchedData.data.results) {
+      // Chuyển đổi dữ liệu thành format { value, label } cho react-select
+      const formattedLessons = fetchedData.data.results.map(
+        (lesson: { _id: string; title: string }) => ({
+          value: lesson._id,
+          label: lesson.title,
+        })
+      );
+      setLessons(formattedLessons);
+    } else {
+      alert("Tải danh sách lessons không thành công");
+    }
+  };
+
   useEffect(() => {
     fetchCourses();
+    handleFetchLessons();
   }, [meta.current, meta.pageSize, searchTerm, isHide, category]);
 
   const handleEditBlog = (course: Course) => {
-    setEditingBlog(course);
+    setEditingCourse(course);
     setIsEditing(true);
   };
 
-  // const handleUpdateBlog = async () => {
-  //   if (!editingBlog) return;
-  //   try {
-  //     setIsLoadingUpdate(true);
+  const handleUpdateCourse = async () => {
+    if (!editingCourse) return;
+    try {
+      setIsLoadingUpdate(true);
 
-  //     if (!editingBlog.image) {
-  //       if (imagePath) {
-  //         const updatedBlog = await updateBlog({
-  //           _id: editingBlog._id,
-  //           title: editingBlog.title,
-  //           url: editingBlog.url,
-  //           image: imagePath,
-  //           shortDescription: editingBlog.shortDescription,
-  //           content: editingBlog.content,
-  //           author: editingBlog.author,
-  //           isHide: editingBlog.isHide,
-  //         });
-  //         if (updatedBlog) {
-  //           alert("Cập nhật thông tin thành công");
-  //           setEditingBlog(null);
-  //           resetImage();
-  //           fetchCourses();
-  //         }
-  //       } else {
-  //         alert("Vui lòng chọn hình ảnh để tải lên.");
-  //       }
-  //     } else {
-  //       const updatedBlog = await updateBlog({
-  //         _id: editingBlog._id,
-  //         title: editingBlog.title,
-  //         url: editingBlog.url,
-  //         image: editingBlog.image,
-  //         shortDescription: editingBlog.shortDescription,
-  //         content: editingBlog.content,
-  //         author: editingBlog.author,
-  //         isHide: editingBlog.isHide,
-  //       });
-  //       if (updatedBlog) {
-  //         alert("Cập nhật thông tin thành công");
-  //         setEditingBlog(null);
-  //         resetImage();
-  //         fetchCourses();
-  //       }
-  //     }
-  //   } catch (error: any) {
-  //     alert(
-  //       error.response?.data?.message || "Có lỗi xảy ra, vui lòng thử lại."
-  //     );
-  //   } finally {
-  //     setIsLoadingUpdate(false);
-  //   }
-  // };
+      if (!editingCourse.image) {
+        if (imagePath) {
+          const updatedCourse = await updateCourse({
+            _id: editingCourse._id,
+            title: editingCourse.title,
+            url: editingCourse.url,
+            image: imagePath,
+            shortDescription: editingCourse.shortDescription,
+            category: editingCourse.category,
+            isHide: editingCourse.isHide,
+            lessons: editingCourse.lessons,
+          });
+          if (updatedCourse) {
+            alert("Cập nhật thông tin thành công");
+            setEditingCourse(null);
+            resetImage();
+            fetchCourses();
+          }
+        } else {
+          alert("Vui lòng chọn hình ảnh để tải lên.");
+        }
+      } else {
+        const updatedCourse = await updateCourse({
+          _id: editingCourse._id,
+          title: editingCourse.title,
+          url: editingCourse.url,
+          image: editingCourse.image,
+          shortDescription: editingCourse.shortDescription,
+          category: editingCourse.category,
 
-  const handleDeleteSourceCode = async (id: string, code: string) => {
-    const confirmed = window.confirm(`Bạn muốn xóa Blog: ${code}?`);
+          isHide: editingCourse.isHide,
+          lessons: editingCourse.lessons,
+        });
+        if (updatedCourse) {
+          alert("Cập nhật thông tin thành công");
+          setEditingCourse(null);
+          resetImage();
+          fetchCourses();
+        }
+      }
+    } catch (error: any) {
+      alert(
+        error.response?.data?.message || "Có lỗi xảy ra, vui lòng thử lại."
+      );
+    } finally {
+      setIsLoadingUpdate(false);
+    }
+  };
+
+  const handleDeleteCourse = async (id: string, title: string) => {
+    const confirmed = window.confirm(`Bạn muốn xóa Khóa Học: ${title}?`);
 
     if (confirmed) {
       try {
-        await deleteBlog(id);
+        await deleteCourse(id);
         fetchCourses();
       } catch (error: any) {
         alert(
@@ -223,46 +259,19 @@ const CourseManagement = () => {
     }
   };
 
-  const handleViewBlog = (course: Course) => {
-    setSelectedBlog(course);
+  const handleViewCourse = (course: Course) => {
+    setSelectedCourse(course);
   };
 
   const closeModal = () => {
     setIsEditing(false);
-    setSelectedBlog(null);
+    setSelectedCourse(null);
     setIsAdding(false);
-    resetBlogState();
+    resetCourseState();
     resetImage();
   };
 
-  const handleAddImage = async () => {
-    if (!imageFile) {
-      alert("Vui lòng chọn hình ảnh chính để tải lên.");
-      return;
-    }
-    try {
-      const imagePath = await uploadImage(imageFile, "uploadBlog");
-
-      return imagePath;
-    } catch (err) {
-      alert("Có lỗi xảy ra");
-    }
-  };
-
-  const handleContentChange = (content: string) => {
-    setNewBlog((prevState) => ({
-      ...prevState,
-      content: content,
-    }));
-  };
-
-  const handleContentUpdate = (content: string) => {
-    setEditingBlog((prevState) =>
-      prevState ? { ...prevState, content } : null
-    );
-  };
-
-  const handleAddBlog = async () => {
+  const handleAddCourse = async () => {
     if (!validateForm()) {
       return;
     }
@@ -270,7 +279,7 @@ const CourseManagement = () => {
       setIsLoadingAdd(true);
 
       if (imagePath) {
-        setNewBlog((prevState) => ({
+        setNewCourse((prevState) => ({
           ...prevState,
           image: imagePath,
         }));
@@ -285,18 +294,18 @@ const CourseManagement = () => {
   };
 
   useEffect(() => {
-    if (newBlog.image) {
-      const createSourceCodeHandler = async () => {
+    if (newCourse.image) {
+      const createCourseHandler = async () => {
         try {
-          await createBlog(newBlog);
+          await createCourse(newCourse);
           setIsAdding(false);
           fetchCourses();
-          alert("Thêm Blog thành công");
-          resetBlogState();
+          alert("Thêm Khóa Học thành công");
+          resetCourseState();
           setImageFile(null);
           setImagePreview(null);
-          setImageFiles([]);
-          setImagePreviews([]);
+          // setImageFiles([]);
+          // setImagePreviews([]);
         } catch (error: any) {
           alert(
             error.response?.data?.message || "Có lỗi xảy ra, vui lòng thử lại."
@@ -304,10 +313,10 @@ const CourseManagement = () => {
         }
       };
 
-      createSourceCodeHandler();
+      createCourseHandler();
     }
   }, [
-    newBlog.image,
+    newCourse.image,
     // newBlog.extendedImage
   ]);
 
@@ -339,11 +348,10 @@ const CourseManagement = () => {
 
   const validateForm = () => {
     if (
-      !newBlog.title ||
-      !newBlog.url ||
-      !newBlog.shortDescription ||
-      !newBlog.content ||
-      !newBlog.author
+      !newCourse.title ||
+      !newCourse.url ||
+      !newCourse.shortDescription ||
+      !newCourse.category
     ) {
       alert("Vui lòng điền đầy đủ các thông tin bắt buộc.");
       return false;
@@ -416,10 +424,10 @@ const CourseManagement = () => {
       <Table
         columns={[{ label: "Tên", key: "title" }]}
         data={courses}
-        handleView={handleViewBlog}
+        handleView={handleViewCourse}
         handleEdit={handleEditBlog}
         handleDelete={(course: Course) =>
-          handleDeleteSourceCode(course._id, course.title)
+          handleDeleteCourse(course._id, course.title)
         }
       />
 
@@ -431,36 +439,36 @@ const CourseManagement = () => {
         pageSize={meta.pageSize}
       />
 
-      {/* popup view blog */}
-      {selectedBlog && (
+      {/* popup view course */}
+      {selectedCourse && (
         <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full max-h-screen overflow-y-auto">
             <h2 className="text-xl font-bold mb-4  sticky top-0">
-              Thông tin Blog
+              Thông tin Khóa Học
             </h2>
             <div className="flex-1 overflow-y-auto max-h-[70vh] px-1">
               <p className="break-words">
-                <strong>Id:</strong> {selectedBlog._id}
+                <strong>Id:</strong> {selectedCourse._id}
               </p>
               <p className="break-words">
                 <strong>Tiêu đề:</strong>{" "}
                 <span className="text-green-600 font-bold">
-                  {selectedBlog.title}
+                  {selectedCourse.title}
                 </span>
               </p>
               <p className="break-words">
-                <strong>Url:</strong> {selectedBlog.url}
+                <strong>Url:</strong> {selectedCourse.url}
               </p>
               <p className="break-words">
                 <strong>Hình ảnh</strong>
-                {selectedBlog.image ? (
+                {selectedCourse.image ? (
                   <img
-                    src={process.env.NEXT_PUBLIC_SERVER + selectedBlog.image}
+                    src={process.env.NEXT_PUBLIC_SERVER + selectedCourse.image}
                     alt="Hình ảnh chính"
                     className="w-32 h-32 object-cover mt-2 cursor-pointer"
                     onClick={() =>
                       openModalImage(
-                        process.env.NEXT_PUBLIC_SERVER + selectedBlog.image
+                        process.env.NEXT_PUBLIC_SERVER + selectedCourse.image
                       )
                     }
                   />
@@ -469,40 +477,47 @@ const CourseManagement = () => {
                 )}
               </p>
               <p className="break-words">
-                <strong>Mô tả ngắn:</strong> {selectedBlog.shortDescription}
+                <strong>Mô tả ngắn:</strong> {selectedCourse.shortDescription}
               </p>
               <p className="break-words">
-                <strong>Nội dung:</strong>
+                <strong>Loại: </strong>
 
-                <a
-                  className="text-blue-600 hover:underline"
-                  href={`/blog/${selectedBlog.url}`}
-                  target="_blank"
-                >
-                  Xem chi tiết
-                </a>
+                {selectedCourse.category}
               </p>
-              {/* <p className="break-words">
-                <strong>Tác giả:</strong> {selectedBlog.author}
-              </p> */}
+
               <p className="break-words">
                 <strong>Trạng thái:</strong>{" "}
                 <span
                   className={`font-bold ${
-                    selectedBlog.isHide ? "text-red-600" : "text-blue-600"
+                    selectedCourse.isHide ? "text-red-600" : "text-blue-600"
                   }`}
                 >
-                  {selectedBlog.isHide ? "Ẩn" : "Hiện"}
+                  {selectedCourse.isHide ? "Ẩn" : "Hiện"}
                 </span>
               </p>
               <p className="break-words">
                 <strong>Ngày tạo:</strong>{" "}
-                {dayjs(selectedBlog.createdAt).format("DD-MM-YYYY HH:mm")}
+                {dayjs(selectedCourse.createdAt).format("DD-MM-YYYY HH:mm")}
               </p>
               <p className="break-words">
                 <strong>Cập nhật:</strong>{" "}
-                {dayjs(selectedBlog.updatedAt).format("DD-MM-YYYY HH:mm")}
+                {dayjs(selectedCourse.updatedAt).format("DD-MM-YYYY HH:mm")}
               </p>
+              <p className="break-words">
+                <strong>Bài học:</strong>
+              </p>
+              <ul className="list-disc list-inside">
+                {selectedCourse.lessons.map(
+                  (lessonId: string, index: number) => {
+                    const lesson = lessons.find((l) => l.value === lessonId);
+                    return (
+                      <li key={index}>
+                        {lesson ? lesson.label : "Không tìm thấy"}
+                      </li>
+                    );
+                  }
+                )}
+              </ul>
 
               {/* Modal view image*/}
               {isModalOpen && (
@@ -537,12 +552,12 @@ const CourseManagement = () => {
         </div>
       )}
 
-      {/* popup edit source code */}
-      {isEditing && editingBlog && (
+      {/* popup edit course */}
+      {isEditing && editingCourse && (
         <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg max-w-4xl w-full max-h-screen overflow-y-auto">
             <h2 className="text-xl font-bold mb-4 sticky top-0">
-              Chỉnh sửa Blog
+              Chỉnh sửa Khóa Học
             </h2>
             <div className="flex-1 overflow-y-auto max-h-[70vh] px-1">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -553,10 +568,10 @@ const CourseManagement = () => {
                   <input
                     type="text"
                     className="border p-2 w-full"
-                    value={editingBlog.title}
+                    value={editingCourse.title}
                     onChange={(e) =>
-                      setEditingBlog({
-                        ...editingBlog,
+                      setEditingCourse({
+                        ...editingCourse,
                         title: e.target.value,
                       })
                     }
@@ -569,10 +584,10 @@ const CourseManagement = () => {
                   <input
                     type="text"
                     className="border p-2 w-full"
-                    value={editingBlog.url}
+                    value={editingCourse.url}
                     onChange={(e) =>
-                      setEditingBlog({
-                        ...editingBlog,
+                      setEditingCourse({
+                        ...editingCourse,
                         url: e.target.value,
                       })
                     }
@@ -583,18 +598,20 @@ const CourseManagement = () => {
                     Hình ảnh <span className="text-red-600">* (800x400)</span>
                   </label>
 
-                  {editingBlog.image && (
+                  {editingCourse.image && (
                     <div className="mt-2 flex items-center">
                       <img
-                        src={process.env.NEXT_PUBLIC_SERVER + editingBlog.image}
+                        src={
+                          process.env.NEXT_PUBLIC_SERVER + editingCourse.image
+                        }
                         alt="Hình ảnh chính"
                         className="w-32 h-32 object-cover"
                       />
                       <button
                         onClick={() => {
-                          const newBlog = { ...editingBlog };
-                          newBlog.image = "";
-                          setEditingBlog(newBlog);
+                          const newCourse = { ...editingCourse };
+                          newCourse.image = "";
+                          setEditingCourse(newCourse);
                         }}
                         className="bg-red-500 text-white rounded-full w-6 h-6"
                       >
@@ -602,12 +619,12 @@ const CourseManagement = () => {
                       </button>
                     </div>
                   )}
-                  {!editingBlog.image && (
+                  {!editingCourse.image && (
                     <div className="mt-2">
                       {!imagePreview && (
                         <ImageServer
                           handleImageSelect={handleImageSelect}
-                          folder="uploadBlog"
+                          folder="uploadCourse"
                         />
                       )}
 
@@ -629,32 +646,55 @@ const CourseManagement = () => {
                     </div>
                   )}
                 </div>
-                {/* <div>
-                  <label className="block">Tác giả</label>
+
+                <div>
+                  <label className="block">
+                    Mô tả ngắn <span className="text-red-600">*</span>
+                  </label>
                   <input
                     type="text"
                     className="border p-2 w-full"
-                    value={editingBlog.author}
+                    value={editingCourse.shortDescription}
                     onChange={(e) =>
-                      setEditingBlog({
-                        ...editingBlog,
-                        author: e.target.value,
+                      setEditingCourse({
+                        ...editingCourse,
+                        shortDescription: e.target.value,
                       })
                     }
                   />
-                </div> */}
+                </div>
+
+                <div>
+                  <label className="block">Loại</label>
+                  <select
+                    className="border p-2 w-full"
+                    value={editingCourse.category}
+                    onChange={(e) =>
+                      setEditingCourse({
+                        ...editingCourse,
+                        category: e.target.value,
+                      })
+                    }
+                  >
+                    <option value="WEBSITE">Website</option>
+                    <option value="BLOCKCHAIN">Blockchain</option>
+                    <option value="MOBILE">Mobile</option>
+                    <option value="SOFTWARE">Software</option>
+                  </select>
+                </div>
+
                 <div>
                   <label className="block">Trạng thái</label>
                   <select
                     className="border p-2 w-full"
                     value={
-                      editingBlog.isHide !== undefined
-                        ? String(editingBlog.isHide)
+                      editingCourse.isHide !== undefined
+                        ? String(editingCourse.isHide)
                         : "false"
                     }
                     onChange={(e) =>
-                      setEditingBlog({
-                        ...editingBlog,
+                      setEditingCourse({
+                        ...editingCourse,
                         isHide: e.target.value === "true",
                       })
                     }
@@ -665,35 +705,33 @@ const CourseManagement = () => {
                 </div>
                 <div>
                   <label className="block">
-                    Mô tả ngắn <span className="text-red-600">*</span>
+                    Bài học <span className="text-red-600">*</span>
                   </label>
-                  <input
-                    type="text"
+
+                  <Select
+                    isMulti
+                    options={lessons} // Bây giờ lessons đã ở dạng { value, label }
+                    value={editingCourse.lessons.map((lessonId) =>
+                      lessons.find((l) => l.value === lessonId)
+                    )} // Duy trì thứ tự theo newCourse.lessons
+                    onChange={(selectedOptions) => {
+                      const selectedValues = selectedOptions.map(
+                        (option: any) => option.value
+                      );
+                      setEditingCourse({
+                        ...editingCourse,
+                        lessons: selectedValues,
+                      });
+                    }}
                     className="border p-2 w-full"
-                    value={editingBlog.shortDescription}
-                    onChange={(e) =>
-                      setEditingBlog({
-                        ...editingBlog,
-                        shortDescription: e.target.value,
-                      })
-                    }
+                    placeholder="Tìm kiếm bài học..."
                   />
                 </div>
               </div>
-              {/* <div>
-                <label className="block">
-                  Nội dung <span className="text-red-600">*</span>
-                </label>
-                <Editor
-                  folder="uploadBlog"
-                  initialContent={`${editingBlog.content}`}
-                  onContentChange={handleContentUpdate}
-                />
-              </div> */}
             </div>
-            {/* <div className="mt-4 flex justify-end space-x-2">
+            <div className="mt-4 flex justify-end space-x-2">
               <button
-                onClick={handleUpdateBlog}
+                onClick={handleUpdateCourse}
                 className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
                 disabled={isLoadingUpdate}
               >
@@ -711,17 +749,17 @@ const CourseManagement = () => {
               >
                 Hủy
               </button>
-            </div> */}
+            </div>
           </div>
         </div>
       )}
 
-      {/* popup add blog */}
+      {/* popup add course */}
       {isAdding && (
         <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg max-w-4xl w-full max-h-screen overflow-y-auto">
             <h2 className="text-xl font-bold mb-4 sticky top-0">
-              Thêm Blog mới
+              Thêm Khóa Học mới
             </h2>
             <div className="flex-1 overflow-y-auto max-h-[70vh] px-1">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -732,11 +770,11 @@ const CourseManagement = () => {
                   <input
                     type="text"
                     className="border p-2 w-full"
-                    value={newBlog.title}
+                    value={newCourse.title}
                     onChange={(e) => {
                       const title = e.target.value;
-                      setNewBlog({
-                        ...newBlog,
+                      setNewCourse({
+                        ...newCourse,
                         title: title,
                         url: convertToUrl(title),
                       });
@@ -750,10 +788,10 @@ const CourseManagement = () => {
                   <input
                     type="text"
                     className="border p-2 w-full"
-                    value={newBlog.url}
+                    value={newCourse.url}
                     onChange={(e) =>
-                      setNewBlog({
-                        ...newBlog,
+                      setNewCourse({
+                        ...newCourse,
                         url: e.target.value,
                       })
                     }
@@ -766,7 +804,7 @@ const CourseManagement = () => {
                   <div className="relative">
                     {!imagePreview && (
                       <ImageServer
-                        folder="uploadBlog"
+                        folder="uploadCourse"
                         handleImageSelect={handleImageSelect}
                       />
                     )}
@@ -791,14 +829,88 @@ const CourseManagement = () => {
 
                 <div>
                   <label className="block">
-                    Tác giả <span className="text-red-600">*</span>
+                    Mô tả ngắn <span className="text-red-600">*</span>
                   </label>
                   <input
                     type="text"
                     className="border p-2 w-full"
-                    value={newBlog.author}
-                    readOnly
+                    value={newCourse.shortDescription}
+                    onChange={(e) => {
+                      const shortDescription = e.target.value;
+                      setNewCourse({
+                        ...newCourse,
+                        shortDescription: shortDescription,
+                      });
+                    }}
                   />
+                </div>
+                <div>
+                  <label className="block">Bài học</label>
+
+                  {/* Hiển thị danh sách bài học đã chọn */}
+                  {/* <div className="flex flex-wrap gap-2 mb-2">
+                    {newCourse.lessons.map((lessonId) => {
+                      const lesson = lessons.find((l) => l.value === lessonId);
+                      return (
+                        lesson && (
+                          <div
+                            key={lesson.value}
+                            className="flex items-center bg-blue-100 px-3 py-1 rounded-full"
+                          >
+                            <span className="mr-2">{lesson.label}</span>
+                            <button
+                              onClick={() => {
+                                setNewCourse({
+                                  ...newCourse,
+                                  lessons: newCourse.lessons.filter(
+                                    (id) => id !== lesson.value
+                                  ),
+                                });
+                              }}
+                              className="bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs"
+                            >
+                              ✕
+                            </button>
+                          </div>
+                        )
+                      );
+                    })}
+                  </div> */}
+
+                  {/* Select để tìm kiếm và chọn bài học */}
+                  <Select
+                    isMulti
+                    options={lessons} // Bây giờ lessons đã ở dạng { value, label }
+                    value={newCourse.lessons.map((lessonId) =>
+                      lessons.find((l) => l.value === lessonId)
+                    )} // Duy trì thứ tự theo newCourse.lessons
+                    onChange={(selectedOptions) => {
+                      const selectedValues = selectedOptions.map(
+                        (option: any) => option.value
+                      );
+                      setNewCourse({ ...newCourse, lessons: selectedValues });
+                    }}
+                    className="border p-2 w-full"
+                    placeholder="Tìm kiếm bài học..."
+                  />
+                </div>
+                <div>
+                  <label className="block">Loại</label>
+                  <select
+                    className="border p-2 w-full"
+                    value={newCourse.category}
+                    onChange={(e) =>
+                      setNewCourse({
+                        ...newCourse,
+                        category: e.target.value,
+                      })
+                    }
+                  >
+                    <option value="WEBSITE">Website</option>
+                    <option value="BLOCKCHAIN">Blockchain</option>
+                    <option value="MOBILE">Mobile</option>
+                    <option value="SOFTWARE">Software</option>
+                  </select>
                 </div>
 
                 <div>
@@ -806,13 +918,13 @@ const CourseManagement = () => {
                   <select
                     className="border p-2 w-full"
                     value={
-                      newBlog.isHide !== undefined
-                        ? String(newBlog.isHide)
+                      newCourse.isHide !== undefined
+                        ? String(newCourse.isHide)
                         : "false"
                     }
                     onChange={(e) =>
-                      setNewBlog({
-                        ...newBlog,
+                      setNewCourse({
+                        ...newCourse,
                         isHide: e.target.value === "true",
                       })
                     }
@@ -821,38 +933,11 @@ const CourseManagement = () => {
                     <option value="true">Ẩn</option>
                   </select>
                 </div>
-                <div>
-                  <label className="block">
-                    Mô tả ngắn <span className="text-red-600">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    className="border p-2 w-full"
-                    value={newBlog.shortDescription}
-                    onChange={(e) => {
-                      const shortDescription = e.target.value;
-                      setNewBlog({
-                        ...newBlog,
-                        shortDescription: shortDescription,
-                      });
-                    }}
-                  />
-                </div>
-              </div>
-              <div>
-                <label className="block">
-                  Nội dung <span className="text-red-600">*</span>
-                </label>
-
-                <Editor
-                  folder="uploadBlog"
-                  onContentChange={handleContentChange}
-                />
               </div>
             </div>
             <div className="mt-4 flex justify-end space-x-2">
               <button
-                onClick={handleAddBlog}
+                onClick={handleAddCourse}
                 className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
                 disabled={isLoadingAdd}
               >

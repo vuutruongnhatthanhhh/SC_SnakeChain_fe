@@ -5,44 +5,6 @@ import { useParams } from "next/navigation";
 import { getAllBlogUser, getBlogUser } from "@/services/blogService";
 import Blogs from "@/components/Blogs";
 const BlogDetailPage: React.FC = () => {
-  const blogs = [
-    {
-      _id: "a",
-      title: "Cách tối ưu SEO với Next.js",
-      shortDescription: "Tối ưu thứ hạng tìm kiếm google",
-      url: "cach-toi-uu-seo-voi-nextjs",
-      image: "/images/blogs/blog-nextjs.png",
-      link: "/course/react",
-      createdAt: "2022-01-01T00:00:00.000Z",
-    },
-    {
-      _id: "b",
-      title: "Cách tối ưu SEO với Next.js",
-      shortDescription: "Tối ưu thứ hạng tìm kiếm google",
-      url: "cach-toi-uu-seo-voi-nextjs",
-      image: "/images/blogs/blog-nextjs.png",
-      link: "/course/react",
-      createdAt: "2022-01-01T00:00:00.000Z",
-    },
-    {
-      _id: "v",
-      title: "Cách tối ưu SEO với Next.js",
-      shortDescription: "Tối ưu thứ hạng tìm kiếm google",
-      url: "cach-toi-uu-seo-voi-nextjs",
-      image: "/images/blogs/blog-nextjs.png",
-      link: "/course/react",
-      createdAt: "2022-01-01T00:00:00.000Z",
-    },
-    {
-      _id: "d",
-      title: "Cách tối ưu SEO với Next.js",
-      shortDescription: "Tối ưu thứ hạng tìm kiếm google",
-      url: "cach-toi-uu-seo-voi-nextjs",
-      image: "/images/blogs/blog-nextjs.png",
-      link: "/course/react",
-      createdAt: "2022-01-01T00:00:00.000Z",
-    },
-  ];
   const { url } = useParams();
   const [blog, setBlog] = useState<any>(null);
   const [relatedBlogs, setRelatedBlogs] = useState<any[]>([]);
@@ -76,7 +38,7 @@ const BlogDetailPage: React.FC = () => {
     fetchRelatedBlogs("");
   }, [url]);
 
-  if (loading) return <div>Đang tải...</div>;
+  if (loading) return <div className="min-h-screen">Đang tải...</div>;
   if (error) return <div>{error}</div>;
 
   return (

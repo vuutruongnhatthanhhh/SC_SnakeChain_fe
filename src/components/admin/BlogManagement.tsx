@@ -283,7 +283,7 @@ const BlogManagement = () => {
 
   useEffect(() => {
     if (newBlog.image) {
-      const createSourceCodeHandler = async () => {
+      const createBlogHandler = async () => {
         try {
           await createBlog(newBlog);
           setIsAdding(false);
@@ -301,7 +301,7 @@ const BlogManagement = () => {
         }
       };
 
-      createSourceCodeHandler();
+      createBlogHandler();
     }
   }, [
     newBlog.image,
