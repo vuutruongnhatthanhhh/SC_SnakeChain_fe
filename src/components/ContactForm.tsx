@@ -1,4 +1,5 @@
 "use client";
+import { sendContactRequest } from "@/services/mailService";
 import { useState } from "react";
 
 export default function ContactForm() {
@@ -9,15 +10,31 @@ export default function ContactForm() {
     message: "",
   });
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Form Data Submitted:", formData);
+    setIsLoading(true);
+    try {
+      const response = await sendContactRequest(formData);
+      alert(response.data.message);
+      setFormData({
+        name: "",
+        email: "",
+        phone: "",
+        message: "",
+      });
+    } catch (error) {
+      alert("Gửi yêu cầu báo giá thất bại!");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -51,6 +68,7 @@ export default function ContactForm() {
                   onChange={handleChange}
                   placeholder="Họ tên"
                   className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-purple-500 focus:border-purple-500"
+                  required
                 />
               </div>
 
@@ -59,12 +77,15 @@ export default function ContactForm() {
                   Số điện thoại
                 </label>
                 <input
-                  type="text"
+                  type="tel"
                   name="phone"
                   value={formData.phone}
                   onChange={handleChange}
                   placeholder="Số điện thoại"
                   className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-purple-500 focus:border-purple-500"
+                  required
+                  pattern="[0-9]{10,11}" // Chỉ nhận số, từ 10 đến 11 chữ số
+                  title="Số điện thoại không hợp lệ"
                 />
               </div>
             </div>
@@ -80,6 +101,7 @@ export default function ContactForm() {
                 onChange={handleChange}
                 placeholder="Email"
                 className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-purple-500 focus:border-purple-500"
+                required
               />
             </div>
 
@@ -93,6 +115,7 @@ export default function ContactForm() {
                 onChange={handleChange}
                 placeholder="Nội dung tin nhắn..."
                 rows={4}
+                required
                 className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-purple-500 focus:border-purple-500"
               ></textarea>
             </div>
@@ -100,9 +123,12 @@ export default function ContactForm() {
             <div className="text-center">
               <button
                 type="submit"
-                className="bg-buttonRoot px-6 py-2 rounded-lg font-semibold transition-all"
+                className={`w-full p-3 font-semibold rounded-md bg-buttonRoot transition-colors ${
+                  isLoading ? "opacity-50 cursor-not-allowed" : ""
+                }`}
+                disabled={isLoading}
               >
-                Gửi
+                {isLoading ? "Đang gửi..." : "Gửi"}
               </button>
             </div>
           </form>

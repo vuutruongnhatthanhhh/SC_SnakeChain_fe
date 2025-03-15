@@ -34,16 +34,17 @@ const CourseContent: React.FC<CourseDetailProps> = ({ course }) => {
   const [lessons, setLessons] = useState<Lesson[]>([]);
   const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [videoError, setVideoError] = useState(false);
 
   const fetchLessonsOnCourse = async () => {
     try {
       const lessonDetails = await Promise.all(
         course.lessons.map((lesson) => getLessonsUser(lesson))
       );
-      const lessonData = lessonDetails.map((res) => res.data); // Giả sử API trả về dữ liệu trong res.data
+      const lessonData = lessonDetails.map((res) => res.data);
       setLessons(lessonData);
       if (lessonData.length > 0) {
-        setSelectedLesson(lessonData[0]); // Chọn bài học đầu tiên mặc định
+        setSelectedLesson(lessonData[0]);
       }
     } catch (error) {
       console.error("Lỗi khi tải bài học:", error);
@@ -56,6 +57,13 @@ const CourseContent: React.FC<CourseDetailProps> = ({ course }) => {
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
+  };
+
+  const extractYouTubeId = (url: string) => {
+    const regExp =
+      /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
+    const match = url.match(regExp);
+    return match ? match[1] : "";
   };
 
   return (
@@ -129,12 +137,32 @@ const CourseContent: React.FC<CourseDetailProps> = ({ course }) => {
         <div className="w-full">
           <div className="aspect-w-16 aspect-h-9 max-w-[1200px] bg-black rounded-lg overflow-hidden mb-6">
             {selectedLesson && (
-              <iframe
-                src={`https://www.youtube.com/embed/${selectedLesson.videoUrl}`}
-                className="w-full h-[700px]"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              />
+              <>
+                {selectedLesson.price !== 0 ? (
+                  !videoError ? (
+                    <iframe
+                      src={selectedLesson.videoUrl}
+                      className="w-full h-[700px]"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      onError={() => setVideoError(true)}
+                    />
+                  ) : (
+                    <div className="text-white text-center p-4 bg-red-500">
+                      Không thể hiển thị video
+                    </div>
+                  )
+                ) : (
+                  <iframe
+                    src={`https://www.youtube.com/embed/${extractYouTubeId(
+                      selectedLesson.videoUrl
+                    )}`}
+                    className="w-full h-[700px]"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
+                )}
+              </>
             )}
           </div>
 

@@ -460,7 +460,7 @@ const LessonsManagement = () => {
                     Giá tiền <span className="text-red-600">*</span>
                   </label>
                   <input
-                    type="text"
+                    type="number"
                     className="border p-2 w-full"
                     value={String(editingLesson.price)}
                     onChange={(e) =>
@@ -569,7 +569,7 @@ const LessonsManagement = () => {
                   <input
                     type="number"
                     className="border p-2 w-full"
-                    value={Number(newLesson.price)}
+                    value={String(newLesson.price)}
                     onChange={(e) =>
                       setNewLesson({
                         ...newLesson,

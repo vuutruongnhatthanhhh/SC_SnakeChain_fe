@@ -892,6 +892,13 @@ const CourseManagement = () => {
                     }}
                     className="border p-2 w-full"
                     placeholder="Tìm kiếm bài học..."
+                    styles={{
+                      menuList: (base) => ({
+                        ...base,
+                        maxHeight: "200px",
+                        overflowY: "auto",
+                      }),
+                    }}
                   />
                 </div>
                 <div>

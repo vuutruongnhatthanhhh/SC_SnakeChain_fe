@@ -1,5 +1,6 @@
 "use client";
 import config from "@/config";
+import { sendQuoteRequest } from "@/services/mailService";
 import React, { useState, useEffect } from "react";
 import { FaYoutube, FaFacebook, FaTiktok, FaInstagram } from "react-icons/fa";
 
@@ -20,6 +21,8 @@ const QuoteRequestForm: React.FC = () => {
     description: "",
   });
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
@@ -32,9 +35,24 @@ const QuoteRequestForm: React.FC = () => {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(formData);
+    setIsLoading(true);
+    try {
+      const response = await sendQuoteRequest(formData);
+      alert(response.data.message);
+      setFormData({
+        name: "",
+        email: "",
+        phone: "",
+        budget: "",
+        description: "",
+      });
+    } catch (error) {
+      alert("Gửi yêu cầu báo giá thất bại!");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -61,13 +79,15 @@ const QuoteRequestForm: React.FC = () => {
             required
           />
           <input
-            type="text"
+            type="tel"
             name="phone"
             value={formData.phone}
             onChange={handleChange}
             placeholder="Số điện thoại"
             className="w-full p-3 border rounded-md"
             required
+            pattern="[0-9]{10,11}" // Chỉ nhận số, từ 10 đến 11 chữ số
+            title="Số điện thoại không hợp lệ"
           />
           <select
             name="budget"
@@ -94,9 +114,12 @@ const QuoteRequestForm: React.FC = () => {
           ></textarea>
           <button
             type="submit"
-            className="w-full p-3  font-semibold rounded-md bg-buttonRoot transition-colors"
+            className={`w-full p-3 font-semibold rounded-md bg-buttonRoot transition-colors ${
+              isLoading ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+            disabled={isLoading}
           >
-            Gửi yêu cầu
+            {isLoading ? "Đang gửi..." : "Gửi yêu cầu"}
           </button>
         </form>
       </div>

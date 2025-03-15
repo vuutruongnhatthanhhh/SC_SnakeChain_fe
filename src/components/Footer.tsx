@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { FaYoutube, FaFacebook, FaTiktok, FaInstagram } from "react-icons/fa";
 import config from "@/config";
+import Link from "next/link";
 
 const Footer = () => {
   return (
@@ -13,9 +14,9 @@ const Footer = () => {
           </p>
           <p className="mb-2 text-gray-400">
             Email:{" "}
-            <a href="mailto:vuutruongnhatthanh@gmail.com" className="">
+            <Link href="mailto:vuutruongnhatthanh@gmail.com" className="">
               {config.companyEmail}
-            </a>
+            </Link>
           </p>
         </div>
 
@@ -25,19 +26,19 @@ const Footer = () => {
           </h3>
           <ul>
             <li>
-              <a href="/about" className="text-gray-400 hover:underline">
+              <Link href="/about" className="text-gray-400 hover:underline">
                 Giới thiệu
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="/blog" className="text-gray-400 hover:underline">
+              <Link href="/blog" className="text-gray-400 hover:underline">
                 Blog
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="/contact" className="text-gray-400 hover:underline">
+              <Link href="/contact" className="text-gray-400 hover:underline">
                 Liên hệ
-              </a>
+              </Link>
             </li>
           </ul>
         </div>
@@ -46,24 +47,27 @@ const Footer = () => {
           <h3 className="text-xl font-semibold mb-4">Sản phẩm / Dịch vụ</h3>
           <ul>
             <li>
-              <a href="/website" className="text-gray-400 hover:underline">
+              <Link href="/website" className="text-gray-400 hover:underline">
                 Thiết kế website
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="/course" className="text-gray-400 hover:underline">
+              <Link href="/course" className="text-gray-400 hover:underline">
                 Khóa học
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="/sourcecode" className="text-gray-400 hover:underline">
+              <Link
+                href="/sourcecode"
+                className="text-gray-400 hover:underline"
+              >
                 Source Code
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="/price" className="text-gray-400 hover:underline">
+              <Link href="/price" className="text-gray-400 hover:underline">
                 Bảng giá
-              </a>
+              </Link>
             </li>
 
             {/* <li>
@@ -83,20 +87,20 @@ const Footer = () => {
           <h3 className="text-xl font-semibold mb-4">Lĩnh vực hoạt động</h3>
           <p className="mb-2 text-gray-400">{config.companyField}</p>
           <div className="mt-4 flex gap-4 justify-center sm:justify-start">
-            <a
+            <Link
               href="https://www.youtube.com/@SnakeChain2801"
               target="_blank"
               className="text-blue-400 hover:text-blue-500"
             >
               <FaYoutube className="h-6 w-6" />
-            </a>
-            <a
+            </Link>
+            <Link
               href="https://www.facebook.com/people/Snake-Chain/61573199592592/"
               target="_blank"
               className="text-blue-400 hover:text-blue-500"
             >
               <FaFacebook className="h-6 w-6" />
-            </a>
+            </Link>
             {/* <a href="#" className="text-blue-400 hover:text-blue-500">
               <FaTiktok className="h-6 w-6" />
             </a>
