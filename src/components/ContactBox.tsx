@@ -24,7 +24,6 @@ export default function ContactBox() {
   const popupRef = useRef<HTMLDivElement | null>(null);
   const iconRef = useRef<HTMLDivElement | null>(null);
 
-  // Danh sách người dùng Zalo
   const contact: Contact = {
     name: "Nhật Thanh",
     phone: "0911 622 262",
@@ -71,32 +70,33 @@ export default function ContactBox() {
             Liên hệ với Snake Chain
           </h3>
           <ul className="space-y-3">
-            <li className="flex items-center space-x-3 p-2 hover:bg-gray-100 cursor-pointer">
+            <li
+              className="flex items-center space-x-3 p-2 hover:bg-gray-100 cursor-pointer"
+              onClick={() =>
+                window.open(contact.zaloLink, "_blank", "noopener,noreferrer")
+              }
+            >
               <SiZalo className="text-blue-500" size={20} />
-              <a
-                href={contact.zaloLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-gray-800"
-              >
-                Nhật Thanh
-              </a>
+              <span className="text-gray-800">Nhật Thanh</span>
             </li>
             <li className="flex items-center space-x-3 p-2 hover:bg-gray-100 cursor-pointer">
               <FaPhoneAlt className="text-green-500" size={20} />
               <span className="text-gray-800">{contact.phone}</span>
             </li>
-            <li className="flex items-center space-x-3 p-2 hover:bg-gray-100 cursor-pointer">
+            <li
+              className="flex items-center space-x-3 p-2 hover:bg-gray-100 cursor-pointer"
+              onClick={() =>
+                window.open(
+                  contact.messengerLink,
+                  "_blank",
+                  "noopener,noreferrer"
+                )
+              }
+            >
               <FaFacebookMessenger className="text-blue-600" size={20} />
-              <a
-                href={contact.messengerLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-gray-800"
-              >
-                Snake Chain
-              </a>
+              <span className="text-gray-800">Snake Chain</span>
             </li>
+
             <li className="flex items-center space-x-3 p-2 hover:bg-gray-100 cursor-pointer">
               <FaEnvelope className="text-red-500" size={20} />
               <span className="text-gray-800">{contact.email}</span>

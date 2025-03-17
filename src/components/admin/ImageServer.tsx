@@ -23,7 +23,6 @@ const ImageServer: React.FC<ImageButtonProps> = ({
 }) => {
   const [showImageModal, setShowImageModal] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string>(folder);
-  // const [localCategory, setLocalCategory] = useState<string>(selectedCategory);
   const [uploadedImages, setUploadedImages] = useState<UploadedImage[]>([]);
   const [search, setSearch] = useState<string>("");
   const [viewMode, setViewMode] = useState<"image" | "name">("image");
@@ -123,8 +122,6 @@ const ImageServer: React.FC<ImageButtonProps> = ({
               backgroundColor: "white",
               padding: "20px",
               borderRadius: "10px",
-              // maxWidth: "80%",
-              // maxHeight: "80%",
               width: "800px",
               overflowY: "auto",
               position: "relative",

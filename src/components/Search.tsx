@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { FaSearch } from "react-icons/fa";
 
 interface SearchProps {
   onSearch: (query: string) => void;
@@ -17,16 +16,11 @@ const Search: React.FC<SearchProps> = ({
   const [isClient, setIsClient] = useState<boolean>(false);
 
   useEffect(() => {
-    // setIsClient(true);
     setClientCheckboxes(checkboxes);
   }, [checkboxes]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value);
-  };
-
-  const handleSearch = () => {
-    onSearch(query);
   };
 
   const handleCheckboxChange = (index: number) => {
@@ -36,10 +30,6 @@ const Search: React.FC<SearchProps> = ({
     updatedCheckboxes[index].checked = newCheckedState;
     setClientCheckboxes(updatedCheckboxes);
   };
-
-  // if (!isClient) {
-  //   return null;
-  // }
 
   return (
     <div className="flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-4 w-full">

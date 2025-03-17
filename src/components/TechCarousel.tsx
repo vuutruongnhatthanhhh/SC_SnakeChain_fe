@@ -1,4 +1,3 @@
-// components/TechCarousel.tsx
 import React from "react";
 import styles from "../styles/TechCarousel.module.css";
 

@@ -3,6 +3,7 @@ import React from "react";
 import styles from "@/styles/Slider.module.css";
 import { FaLongArrowAltRight } from "react-icons/fa";
 import config from "@/config";
+import Link from "next/link";
 
 interface SliderProps {
   images: string[];
@@ -44,13 +45,13 @@ const Slider: React.FC<SliderProps> = ({ images }) => {
           </span>
         </p>
         <div className="mt-6">
-          <a
+          <Link
             href="/course"
             className="px-6 py-2 bg-buttonRoot font-semibold rounded-full ho inline-block text-center
       hidden lg:block w-[200px]"
           >
             Khám phá ngay
-          </a>
+          </Link>
         </div>
       </div>
     </div>

@@ -90,15 +90,6 @@ const UserInfo: React.FC = () => {
     }
   };
 
-  const logoutUser = () => {
-    localStorage.removeItem("access_token");
-    localStorage.removeItem("refresh_token");
-    localStorage.removeItem("user");
-    router.push("/");
-    setUser(null);
-    window.location.reload();
-  };
-
   const token = localStorage.getItem("access_token");
   const userId = token ? getUserIdFromToken(token) : null;
 
@@ -204,12 +195,12 @@ const UserInfo: React.FC = () => {
         <ul className="space-y-2 mt-4">
           {user.purchasedCourses.map((course, index) => (
             <li key={index}>
-              <a
+              <Link
                 href={course.link}
                 className="text-blue-600 hover:text-blue-800"
               >
                 {course.title}
-              </a>
+              </Link>
             </li>
           ))}
         </ul>
@@ -227,7 +218,6 @@ const UserInfo: React.FC = () => {
           </button>
         ) : (
           <div className="mt-4">
-            {/* Trường mật khẩu cũ */}
             <div className="relative mb-4">
               <input
                 type={showOldPassword ? "text" : "password"}
@@ -249,7 +239,6 @@ const UserInfo: React.FC = () => {
               </button>
             </div>
 
-            {/* Trường mật khẩu mới */}
             <div className="relative mb-4">
               <input
                 type={showNewPassword ? "text" : "password"}
@@ -271,7 +260,6 @@ const UserInfo: React.FC = () => {
               </button>
             </div>
 
-            {/* Trường xác nhận mật khẩu mới */}
             <div className="relative mb-4">
               <input
                 type={showConfirmPassword ? "text" : "password"}

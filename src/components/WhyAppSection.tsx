@@ -1,13 +1,6 @@
 "use client";
 import React from "react";
-import {
-  FaCogs,
-  FaMobileAlt,
-  FaHandshake,
-  FaShareAlt,
-  FaHeadset,
-  FaLevelUpAlt,
-} from "react-icons/fa"; // Import icons
+import { FaLevelUpAlt } from "react-icons/fa";
 
 import { LuNotebookText } from "react-icons/lu";
 import { RiMoneyDollarCircleLine } from "react-icons/ri";

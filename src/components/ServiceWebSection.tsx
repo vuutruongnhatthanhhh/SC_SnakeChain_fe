@@ -10,7 +10,6 @@ import config from "@/config";
 
 const ServicesSection: React.FC = () => {
   return (
-    // bg-gray-100
     <section className="py-16 px-8  pb-10">
       <h2 className="text-3xl font-semibold text-center mb-8">
         DỊCH VỤ THIẾT KẾ WEBSITE

@@ -16,7 +16,7 @@ import {
 import FilterAdmin from "./FilterAdmin";
 import Table from "./Table";
 import ImageServer from "./ImageServer";
-import { link } from "fs";
+import Link from "next/link";
 
 interface SourceCode {
   _id: string;
@@ -98,31 +98,6 @@ const SourceCodeManagement = () => {
   const [selectedCategory, setSelectedCategory] =
     useState<string>("uploadSourceCode");
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    const file = e.target.files ? e.target.files[0] : null;
-    if (file) {
-      const previewUrl = URL.createObjectURL(file);
-      setImagePreview(previewUrl);
-      setImageFile(file);
-    }
-  };
-
-  const handleExtendedImageChange = (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const files = e.target.files;
-    if (files) {
-      const selectedFiles = Array.from(files);
-
-      const previewUrls = selectedFiles.map((file) =>
-        URL.createObjectURL(file)
-      );
-
-      setImagePreviews((prevState) => [...prevState, ...previewUrls]);
-      setImageFiles((prevState) => [...prevState, ...selectedFiles]);
-    }
-  };
-
   const handleDeleteImage = (index: number) => {
     setImagePreviews((prevState) => prevState.filter((_, i) => i !== index));
     setImageFiles((prevState) => prevState.filter((_, i) => i !== index));
@@ -197,14 +172,8 @@ const SourceCodeManagement = () => {
     if (!editingSourceCode) return;
     try {
       setIsLoadingUpdate(true);
-      // let imagePath;
-      // let imageExtendedPath: string[] = [];
-
-      // imageExtendedPath = (await handleAddImages()) || [];
 
       if (!editingSourceCode.image) {
-        // imagePath = await handleAddImage();
-
         if (imagePath) {
           const updatedSourceCode = await updateSourceCode({
             _id: editingSourceCode._id,
@@ -331,11 +300,6 @@ const SourceCodeManagement = () => {
     }
     try {
       setIsLoadingAdd(true);
-      // let imageExtendedPath: string[] = [];
-      // const imagePath = await handleAddImage();
-      // if (imagePath) {
-      //   imageExtendedPath = (await handleAddImages()) || [];
-      // }
 
       if (imagePath) {
         setNewSourceCode((prevState) => ({
@@ -491,53 +455,6 @@ const SourceCodeManagement = () => {
         placeholder="Tìm kiếm theo mã, tên..."
         initialValue={searchTerm}
       />
-      {/* <table className="w-full border-collapse border border-gray-300">
-        <thead>
-          <tr className="bg-gray-200">
-            <th className="border p-2">Mã</th>
-            <th className="border p-2">Tên</th>
-            <th className="border p-2"></th>
-          </tr>
-        </thead>
-        <tbody>
-          {sourceCodes.length === 0 ? (
-            <tr>
-              <td colSpan={2} className="text-center p-4 text-gray-500">
-                Không tìm thấy Source Code
-              </td>
-            </tr>
-          ) : (
-            sourceCodes.map((sourceCode) => (
-              <tr key={sourceCode._id} className="text-center">
-                <td className="border p-2">{sourceCode.code}</td>
-                <td className="border p-2">{sourceCode.title}</td>
-                <td className="border p-2 space-x-2">
-                  <button
-                    onClick={() => handleViewSourceCode(sourceCode)}
-                    className="text-orange-500"
-                  >
-                    <FiEye />
-                  </button>
-                  <button
-                    onClick={() => handleEditSourceCode(sourceCode)}
-                    className="text-blue-500"
-                  >
-                    <FiEdit />
-                  </button>
-                  <button
-                    onClick={() =>
-                      handleDeleteSourceCode(sourceCode._id, sourceCode.code)
-                    }
-                    className="text-red-500"
-                  >
-                    <FiTrash />
-                  </button>
-                </td>
-              </tr>
-            ))
-          )}
-        </tbody>
-      </table> */}
 
       <p>
         Số lượng:{" "}
@@ -682,33 +599,33 @@ const SourceCodeManagement = () => {
 
               <p className="break-words">
                 <strong>Link doc:</strong>{" "}
-                <a
+                <Link
                   className="text-blue-600 hover:underline"
                   href={selectedSourceCode.linkDoc}
                   target="_blank"
                 >
                   {selectedSourceCode.linkDoc}
-                </a>
+                </Link>
               </p>
               <p className="break-words">
                 <strong>Link Youtube:</strong>{" "}
-                <a
+                <Link
                   className="text-blue-600 hover:underline"
                   href={selectedSourceCode.linkYoutube}
                   target="_blank"
                 >
                   {selectedSourceCode.linkYoutube}
-                </a>
+                </Link>
               </p>
               <p className="break-words">
                 <strong>Link Website:</strong>{" "}
-                <a
+                <Link
                   className="text-blue-600 hover:underline"
                   href={selectedSourceCode.linkWebsite}
                   target="_blank"
                 >
                   {selectedSourceCode.linkWebsite}
-                </a>
+                </Link>
               </p>
               <p className="break-words">
                 <strong>Trạng thái:</strong>{" "}
@@ -876,22 +793,6 @@ const SourceCodeManagement = () => {
                   )}
                   {!editingSourceCode.image && (
                     <div className="mt-2">
-                      {/* <input
-                      ref={fileInputRef}
-                      type="file"
-                      className="border p-2 w-full"
-                      onChange={handleImageChange}
-                      accept="image/*"
-                      style={{ display: "none" }}
-                      id="file-upload-main"
-                    />
-                    <label
-                      htmlFor="file-upload-main"
-                      className="cursor-pointer bg-blue-500 text-white py-2 px-4 rounded"
-                    >
-                      Chọn ảnh
-                    </label> */}
-
                       <div className="relative">
                         {!imagePreview && (
                           <ImageServer
@@ -971,21 +872,6 @@ const SourceCodeManagement = () => {
                     <span className="text-gray-500"></span>
                   )}
                   <div className="mt-2">
-                    {/* <input
-                    type="file"
-                    className="border p-2 w-full"
-                    onChange={(e) => handleExtendedImageChange(e)}
-                    accept="image/*"
-                    multiple
-                    style={{ display: "none" }}
-                    id="file-upload"
-                  />
-                  <label
-                    htmlFor="file-upload"
-                    className="cursor-pointer bg-blue-500 text-white py-2 px-4 rounded"
-                  >
-                    Chọn ảnh
-                  </label> */}
                     <ImageServer
                       handleImageSelect={(imageUrl) =>
                         handleImageExtendSelect([imageUrl])
@@ -1246,21 +1132,7 @@ const SourceCodeManagement = () => {
                     Hình ảnh chính{" "}
                     <span className="text-red-600">* (800x400)</span>
                   </label>
-                  {/* <div className="relative">
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    className="opacity-0 absolute top-0 left-0 w-full h-full cursor-pointer"
-                    onChange={handleImageChange}
-                    accept="image/*"
-                  />
-                  <button
-                    onClick={() => fileInputRef.current?.click()}
-                    className="bg-blue-500 text-white py-2 px-4 rounded"
-                  >
-                    Chọn ảnh
-                  </button>
-                </div> */}
+
                   <div className="relative">
                     {!imagePreview && (
                       <ImageServer
@@ -1291,18 +1163,7 @@ const SourceCodeManagement = () => {
                     Hình ảnh phụ{" "}
                     <span className="text-red-600">(600x400, tối đa 10)</span>
                   </label>
-                  {/* <div className="relative">
-                  <input
-                    type="file"
-                    className="border p-2 w-full opacity-0 absolute top-0 left-0 cursor-pointer"
-                    onChange={handleExtendedImageChange}
-                    accept="image/*"
-                    multiple
-                  />
-                  <button className="bg-blue-500 text-white py-2 px-4 rounded">
-                    Chọn ảnh
-                  </button>
-                </div> */}
+
                   <div className="relative">
                     <ImageServer
                       handleImageSelect={(imageUrl) =>

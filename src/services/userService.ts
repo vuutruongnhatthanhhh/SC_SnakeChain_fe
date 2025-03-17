@@ -7,6 +7,7 @@ export interface UpdateUserDto {
   phone?: string;
   address?: string;
   role?: string;
+  lessons?: string[];
 }
 
 export interface CreateUserDto {
@@ -157,5 +158,27 @@ export const createUser = async (data: CreateUserDto): Promise<any> => {
     return response.data;
   } catch (error) {
     throw error;
+  }
+};
+
+export const checkUserLesson = async (
+  userId: string,
+  lessonId: string
+): Promise<boolean> => {
+  try {
+    const token = localStorage.getItem("access_token");
+    if (!token) {
+      throw new Error("No access token found");
+    }
+
+    const response = await api.get(`/users/${userId}/has-lesson/${lessonId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data.data.hasLesson;
+  } catch (error) {
+    console.error("Error checking user lesson:", error);
+    return false;
   }
 };

@@ -1,7 +1,4 @@
-// pages/blog.tsx
-
 import dayjs from "dayjs";
-import { NextPage } from "next";
 
 interface Blog {
   title: string;

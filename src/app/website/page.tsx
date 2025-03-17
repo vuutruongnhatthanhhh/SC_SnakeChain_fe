@@ -62,12 +62,12 @@ const Page: React.FC = () => {
         ))}
       </div>
       {/* <div className="text-center mt-8">
-        <a
+        <Link
           href={"#"}
           className="inline-block px-4 py-2 rounded-lg font-semibold bg-buttonRoot"
         >
           Xem tất cả
-        </a>
+        </Link>
       </div> */}
       <WhyWebSection />
       <ProcessWebSection />

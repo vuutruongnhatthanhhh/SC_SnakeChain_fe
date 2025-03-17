@@ -1,6 +1,7 @@
 "use client";
 import { sendContactRequest } from "@/services/mailService";
 import { useState } from "react";
+import Link from "next/link";
 
 export default function ContactForm() {
   const [formData, setFormData] = useState({
@@ -43,12 +44,12 @@ export default function ContactForm() {
         <div className="md:w-1/3 text-center md:text-left">
           <h2 className="text-4xl font-bold mt-2">Liên hệ ngay!</h2>
           <p className="text-gray-600 mt-4">
-            <a
+            <Link
               href="mailto:vuutruongnhatthanh@gmail.com"
               className="text-blue-600 hover:underline"
             >
               vuutruongnhatthanh@gmail.com
-            </a>
+            </Link>
           </p>
           <p className="text-gray-600 mt-1">0911 622 262</p>
         </div>
@@ -84,7 +85,7 @@ export default function ContactForm() {
                   placeholder="Số điện thoại"
                   className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-purple-500 focus:border-purple-500"
                   required
-                  pattern="[0-9]{10,11}" // Chỉ nhận số, từ 10 đến 11 chữ số
+                  pattern="[0-9]{10,11}"
                   title="Số điện thoại không hợp lệ"
                 />
               </div>

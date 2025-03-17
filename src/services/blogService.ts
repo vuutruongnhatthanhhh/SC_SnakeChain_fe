@@ -176,35 +176,6 @@ export const uploadImage = async (
   }
 };
 
-// export const uploadImages = async (imageFiles: File[]): Promise<string[]> => {
-//   try {
-//     const token = localStorage.getItem("access_token");
-//     if (!token) {
-//       throw new Error("No access token found");
-//     }
-
-//     const formData = new FormData();
-//     imageFiles.forEach((file, index) => {
-//       formData.append("images", file);
-//     });
-
-//     const response = await api.post("/uploadImage/multiple", formData, {
-//       headers: {
-//         Authorization: `Bearer ${token}`,
-//         "Content-Type": "multipart/form-data",
-//       },
-//     });
-
-//     if (response.data.data.success) {
-//       return response.data.data.imagePaths;
-//     } else {
-//       throw new Error("Tải ảnh lên thất bại.");
-//     }
-//   } catch (error: any) {
-//     throw error;
-//   }
-// };
-
 export const getUploadedImages = async (): Promise<string[]> => {
   try {
     const token = localStorage.getItem("access_token");

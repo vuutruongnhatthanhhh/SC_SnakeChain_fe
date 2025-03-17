@@ -9,16 +9,13 @@ import FilterAdmin from "./FilterAdmin";
 import Table from "./Table";
 import Select from "react-select";
 
-import Editor from "./Editor";
 import ImageServer from "./ImageServer";
-import { Shojumaru } from "next/font/google";
 import {
   createCourse,
   deleteCourse,
   getAllCourse,
   updateCourse,
 } from "@/services/courseService";
-import { LiaEggSolid } from "react-icons/lia";
 import { getAllLessons } from "@/services/lessonService";
 
 interface Course {
@@ -72,7 +69,6 @@ const CourseManagement = () => {
 
   const [searchTerm, setSearchTerm] = useState("");
   const [isHide, setIsHide] = useState<string>("");
-  const [field, setField] = useState<string>("");
   const [category, setCategory] = useState<string>("");
 
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -80,35 +76,9 @@ const CourseManagement = () => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [imagePath, setImagePath] = useState<string | null>(null);
 
-  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
-  const [imageFiles, setImageFiles] = useState<File[]>([]);
-  const [selectedCategory, setSelectedCategory] =
-    useState<string>("uploadBlog");
-
   const [lessons, setLessons] = useState<{ value: string; label: string }[]>(
     []
   );
-
-  const [selectedLessons, setSelectedLessons] = useState<string[]>([]);
-
-  const handleDragEnd = (result: any) => {
-    if (!result.destination) return; // Không thay đổi nếu thả ra ngoài
-
-    const reorderedLessons = Array.from(newCourse.lessons);
-    const [movedItem] = reorderedLessons.splice(result.source.index, 1);
-    reorderedLessons.splice(result.destination.index, 0, movedItem);
-
-    setNewCourse({ ...newCourse, lessons: reorderedLessons });
-  };
-
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    const file = e.target.files ? e.target.files[0] : null;
-    if (file) {
-      const previewUrl = URL.createObjectURL(file);
-      setImagePreview(previewUrl);
-      setImageFile(file);
-    }
-  };
 
   const handleImageSelect = (imageUrl: string) => {
     const fullImageUrl = process.env.NEXT_PUBLIC_SERVER + imageUrl;
@@ -139,8 +109,6 @@ const CourseManagement = () => {
   const resetImage = () => {
     setImagePath(null);
     setImagePreview(null);
-    // setImageFiles([]);
-    // setImagePreviews([]);
   };
 
   const fetchCourses = async () => {
@@ -167,7 +135,6 @@ const CourseManagement = () => {
   const handleFetchLessons = async () => {
     const fetchedData = await getAllLessons(1, 1000, "", "", "");
     if (fetchedData.data.results) {
-      // Chuyển đổi dữ liệu thành format { value, label } cho react-select
       const formattedLessons = fetchedData.data.results.map(
         (lesson: { _id: string; title: string }) => ({
           value: lesson._id,
@@ -304,8 +271,6 @@ const CourseManagement = () => {
           resetCourseState();
           setImageFile(null);
           setImagePreview(null);
-          // setImageFiles([]);
-          // setImagePreviews([]);
         } catch (error: any) {
           alert(
             error.response?.data?.message || "Có lỗi xảy ra, vui lòng thử lại."
@@ -710,10 +675,10 @@ const CourseManagement = () => {
 
                   <Select
                     isMulti
-                    options={lessons} // Bây giờ lessons đã ở dạng { value, label }
+                    options={lessons}
                     value={editingCourse.lessons.map((lessonId) =>
                       lessons.find((l) => l.value === lessonId)
-                    )} // Duy trì thứ tự theo newCourse.lessons
+                    )}
                     onChange={(selectedOptions) => {
                       const selectedValues = selectedOptions.map(
                         (option: any) => option.value
@@ -847,43 +812,13 @@ const CourseManagement = () => {
                 <div>
                   <label className="block">Bài học</label>
 
-                  {/* Hiển thị danh sách bài học đã chọn */}
-                  {/* <div className="flex flex-wrap gap-2 mb-2">
-                    {newCourse.lessons.map((lessonId) => {
-                      const lesson = lessons.find((l) => l.value === lessonId);
-                      return (
-                        lesson && (
-                          <div
-                            key={lesson.value}
-                            className="flex items-center bg-blue-100 px-3 py-1 rounded-full"
-                          >
-                            <span className="mr-2">{lesson.label}</span>
-                            <button
-                              onClick={() => {
-                                setNewCourse({
-                                  ...newCourse,
-                                  lessons: newCourse.lessons.filter(
-                                    (id) => id !== lesson.value
-                                  ),
-                                });
-                              }}
-                              className="bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs"
-                            >
-                              ✕
-                            </button>
-                          </div>
-                        )
-                      );
-                    })}
-                  </div> */}
-
-                  {/* Select để tìm kiếm và chọn bài học */}
+                  {/* Select lessons and search lesson */}
                   <Select
                     isMulti
-                    options={lessons} // Bây giờ lessons đã ở dạng { value, label }
+                    options={lessons}
                     value={newCourse.lessons.map((lessonId) =>
                       lessons.find((l) => l.value === lessonId)
-                    )} // Duy trì thứ tự theo newCourse.lessons
+                    )}
                     onChange={(selectedOptions) => {
                       const selectedValues = selectedOptions.map(
                         (option: any) => option.value

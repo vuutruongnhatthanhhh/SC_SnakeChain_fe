@@ -1,5 +1,4 @@
 "use client";
-// import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 const services = [
@@ -135,7 +134,6 @@ const services = [
 ];
 
 export default function TablePricing() {
-  // const [selectedService, setSelectedService] = useState(services[0].id);
   const router = useRouter();
 
   const handleSelectPlan = () => {

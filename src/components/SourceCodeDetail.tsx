@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { FaYoutube, FaFileWord } from "react-icons/fa";
 import { IoEarthOutline } from "react-icons/io5";
+import Link from "next/link";
 
 interface SourceCode {
   code: string;
@@ -84,38 +85,38 @@ const SourceCodeDetail: React.FC<SourceCodeDetailProps> = ({ sourcecode }) => {
 
         <div className="flex items-center mt-4">
           <FaYoutube className="text-red-600 mr-2" size={24} />
-          <a
+          <Link
             href={sourcecode.linkYoutube}
             target="_blank"
             rel="noopener noreferrer"
             className="text-blue-600 hover:underline"
           >
             Xem demo dự án
-          </a>
+          </Link>
         </div>
 
         <div className="flex items-center mt-4">
           <FaFileWord className="text-blue-600 mr-2" size={24} />
-          <a
+          <Link
             href={sourcecode.linkDoc}
             target="_blank"
             rel="noopener noreferrer"
             className="text-blue-600 hover:underline"
           >
             Tổng quan dự án
-          </a>
+          </Link>
         </div>
         {sourcecode.linkWebsite && (
           <div className="flex items-center mt-4">
             <IoEarthOutline className="text-green-600 mr-2" size={24} />
-            <a
+            <Link
               href={sourcecode.linkWebsite}
               target="_blank"
               rel="noopener noreferrer"
               className="text-green-600 hover:underline cursor-pointer"
             >
               Link xem thực tế
-            </a>
+            </Link>
           </div>
         )}
 
@@ -168,31 +169,35 @@ const SourceCodeDetail: React.FC<SourceCodeDetailProps> = ({ sourcecode }) => {
       {isPaymentModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="relative bg-white p-6 rounded-lg w-96 ">
-            <h2 className="text-xl font-bold mb-4">Thông tin thanh toán</h2>
-            <p>
-              Vui lòng chuyển đúng số tiền{" "}
-              <strong>{sourcecode.price.toLocaleString("vi-VN")}</strong> và
-              nhập đúng nội dung chuyển khoản: email {sourcecode.code} (ví dụ:
-              snakechain@gmail.com {sourcecode.code})
-            </p>
+            <h2 className="text-xl font-bold mb-4 sticky top-0">
+              Thông tin thanh toán
+            </h2>
+            <div className="flex-1 overflow-y-auto max-h-[70vh] px-1">
+              <p>
+                Vui lòng chuyển đúng số tiền{" "}
+                <strong>{sourcecode.price.toLocaleString("vi-VN")}</strong> và
+                nhập đúng nội dung chuyển khoản: email {sourcecode.code} (ví dụ:
+                snakechain@gmail.com {sourcecode.code})
+              </p>
 
-            {/* QR Code */}
-            <div className="flex justify-center mt-4">
-              <a href="/images/qr_code_2.png" download="qr_code.png">
-                <img
-                  src="/images/qr_code.png"
-                  alt="QR Code"
-                  className="w-70 h-70 object-contain rounded-lg"
-                />
-              </a>
+              {/* QR Code */}
+              <div className="flex justify-center mt-4">
+                <a href="/images/qr_code.png" download="qr_code.png">
+                  <img
+                    src="/images/qr_code.png"
+                    alt="QR Code"
+                    className="w-70 h-70 object-contain rounded-lg"
+                  />
+                </a>
+              </div>
+
+              <p className="mt-4 text-gray-600 text-sm">
+                Vui lòng chờ trong khoảng <strong>12 giờ</strong> để chúng tôi
+                chuyển source code + hướng dẫn cài đặt đến bạn qua email hoặc có
+                thể liên hệ qua Zalo <strong>0911622262</strong>
+              </p>
+              <strong>Cảm ơn bạn đã ủng hộ Snake Chain! ❤️</strong>
             </div>
-
-            <p className="mt-4 text-gray-600 text-sm">
-              Vui lòng chờ trong khoảng <strong>12h</strong> để chúng tôi chuyển
-              source code + hướng dẫn cài đặt đến bạn qua email hoặc có thể liên
-              hệ qua Zalo <strong>0911 622 262</strong>
-            </p>
-
             <button
               onClick={() => setIsPaymentModalOpen(false)}
               className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg text-center"

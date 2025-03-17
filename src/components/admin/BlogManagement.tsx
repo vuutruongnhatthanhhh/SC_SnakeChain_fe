@@ -16,7 +16,7 @@ import {
 } from "@/services/blogService";
 import Editor from "./Editor";
 import ImageServer from "./ImageServer";
-import { Shojumaru } from "next/font/google";
+import Link from "next/link";
 
 interface Blog {
   _id: string;
@@ -81,15 +81,6 @@ const BlogManagement = () => {
   const [selectedCategory, setSelectedCategory] =
     useState<string>("uploadBlog");
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    const file = e.target.files ? e.target.files[0] : null;
-    if (file) {
-      const previewUrl = URL.createObjectURL(file);
-      setImagePreview(previewUrl);
-      setImageFile(file);
-    }
-  };
-
   const handleImageSelect = (imageUrl: string) => {
     const fullImageUrl = process.env.NEXT_PUBLIC_SERVER + imageUrl;
     setImagePreview(fullImageUrl);
@@ -119,8 +110,6 @@ const BlogManagement = () => {
   const resetImage = () => {
     setImagePath(null);
     setImagePreview(null);
-    // setImageFiles([]);
-    // setImagePreviews([]);
   };
 
   const fetchBlog = async () => {
@@ -303,10 +292,7 @@ const BlogManagement = () => {
 
       createBlogHandler();
     }
-  }, [
-    newBlog.image,
-    // newBlog.extendedImage
-  ]);
+  }, [newBlog.image]);
 
   const handleSearch = (query: string) => {
     setSearchTerm(query);
@@ -459,13 +445,13 @@ const BlogManagement = () => {
               <p className="break-words">
                 <strong>Nội dung:</strong>
                 {/* {selectedBlog.content} */}{" "}
-                <a
+                <Link
                   className="text-blue-600 hover:underline"
                   href={`/blog/${selectedBlog.url}`}
                   target="_blank"
                 >
                   Xem chi tiết
-                </a>
+                </Link>
               </p>
               <p className="break-words">
                 <strong>Tác giả:</strong> {selectedBlog.author}

@@ -1,6 +1,7 @@
 import React from "react";
 import Image from "next/image";
 import config from "@/config";
+import Link from "next/link";
 
 const About: React.FC = () => {
   return (
@@ -45,17 +46,14 @@ const About: React.FC = () => {
               hợp để giúp bạn tiết kiệm thời gian và tối ưu quy trình phát triển
               phần mềm.
             </p>
-            <a
+            <Link
               href="/sourcecode"
               className="text-[#319795] hover:text-[#2C7A7B] font-semibold"
             >
               Xem thêm về mã nguồn dự án
-            </a>
+            </Link>
           </div>
           <div className="relative flex flex-col items-center p-6 bg-white rounded-lg shadow-lg">
-            {/* <span className="absolute top-2 right-2 bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded-lg shadow-md">
-              Sắp ra mắt
-            </span> */}
             <h3 className="text-xl font-semibold text-gray-800 mb-4">
               Thiết Kế Website
             </h3>
@@ -67,33 +65,28 @@ const About: React.FC = () => {
               thực với giao diện đẹp, tốc độ nhanh và trải nghiệm người dùng tối
               ưu.
             </p>
-            <a
+            <Link
               href="/website"
               className="text-[#319795] hover:text-[#2C7A7B] font-semibold"
             >
               Xem thêm về dịch vụ thiết kế website
-            </a>
+            </Link>
           </div>
           <div className="relative flex flex-col items-center p-6 bg-white rounded-lg shadow-lg">
-            {/* Nhãn "Sắp ra mắt" */}
-            <span className="absolute top-2 right-2 bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded-lg shadow-md">
-              Sắp ra mắt
-            </span>
-
             <h3 className="text-xl font-semibold text-gray-800 mb-4">
               Khóa học lập trình
             </h3>
             <p className="text-gray-600 mb-4">
               Chúng tôi cung cấp các khóa học lập trình từ cơ bản đến nâng cao.
               Các khóa học được thiết kế phù hợp với nhu cầu của học viên, từ
-              lập trình web, app mobile đến phát triển phần mềm.
+              lập trình web, app mobile, blockchain cho đến phát triển phần mềm.
             </p>
-            <a
-              href="#"
+            <Link
+              href="/course"
               className="text-[#319795] hover:text-[#2C7A7B] font-semibold"
             >
               Xem thêm về khóa học
-            </a>
+            </Link>
           </div>
 
           <div className="relative flex flex-col items-center p-6 bg-white rounded-lg shadow-lg">
@@ -108,12 +101,12 @@ const About: React.FC = () => {
               tảng iOS và Android, giúp bạn mang sản phẩm của mình đến gần hơn
               với người dùng.
             </p>
-            <a
+            <Link
               href="#"
               className="text-[#319795] hover:text-[#2C7A7B] font-semibold"
             >
               Xem thêm về dịch vụ thiết kế ứng dụng di động
-            </a>
+            </Link>
           </div>
           <div className="relative flex flex-col items-center p-6 bg-white rounded-lg shadow-lg">
             <span className="absolute top-2 right-2 bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded-lg shadow-md">
@@ -130,12 +123,12 @@ const About: React.FC = () => {
               đột phá, đảm bảo hiệu suất cao, an toàn và linh hoạt theo nhu cầu
               của bạn.
             </p>
-            <a
+            <Link
               href="#"
               className="text-[#319795] hover:text-[#2C7A7B] font-semibold"
             >
               Xem thêm về giải pháp Blockchain
-            </a>
+            </Link>
           </div>
           <div className="relative flex flex-col items-center p-6 bg-white rounded-lg shadow-lg">
             <span className="absolute top-2 right-2 bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded-lg shadow-md">
@@ -153,12 +146,12 @@ const About: React.FC = () => {
               tôi giúp doanh nghiệp của bạn vận hành linh hoạt, hiệu quả và sẵn
               sàng bứt phá trong kỷ nguyên số.
             </p>
-            <a
+            <Link
               href="#"
               className="text-[#319795] hover:text-[#2C7A7B] font-semibold"
             >
               Xem thêm về phần mềm số hóa cho doanh nghiệp
-            </a>
+            </Link>
           </div>
         </div>
       </div>

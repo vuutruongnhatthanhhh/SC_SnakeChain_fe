@@ -9,15 +9,7 @@ import FilterAdmin from "./FilterAdmin";
 import Table from "./Table";
 
 import Editor from "./Editor";
-import ImageServer from "./ImageServer";
-import { Shojumaru } from "next/font/google";
-import {
-  createCourse,
-  deleteCourse,
-  getAllCourse,
-  updateCourse,
-} from "@/services/courseService";
-import { LiaEggSolid } from "react-icons/lia";
+
 import {
   createLesson,
   deleteLesson,
@@ -28,6 +20,7 @@ import {
 interface Lesson {
   _id: string;
   title: string;
+  code: string;
   content: string;
   videoUrl: string;
   price: Number;
@@ -49,6 +42,7 @@ const LessonsManagement = () => {
   const user = storedUser ? JSON.parse(storedUser) : null;
   const [newLesson, setNewLesson] = useState({
     title: "",
+    code: "",
     content: "",
     videoUrl: "",
     price: 0,
@@ -79,32 +73,10 @@ const LessonsManagement = () => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [imagePath, setImagePath] = useState<string | null>(null);
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    const file = e.target.files ? e.target.files[0] : null;
-    if (file) {
-      const previewUrl = URL.createObjectURL(file);
-      setImagePreview(previewUrl);
-      setImageFile(file);
-    }
-  };
-
-  const handleImageSelect = (imageUrl: string) => {
-    const fullImageUrl = process.env.NEXT_PUBLIC_SERVER + imageUrl;
-    setImagePreview(fullImageUrl);
-    setImagePath(imageUrl);
-  };
-
-  const handleClearImage = () => {
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
-    setImagePreview(null);
-    setImageFile(null);
-  };
-
   const resetLessonState = () => {
     setNewLesson({
       title: "",
+      code: "",
       content: "",
       videoUrl: "",
       price: 0,
@@ -115,8 +87,6 @@ const LessonsManagement = () => {
   const resetImage = () => {
     setImagePath(null);
     setImagePreview(null);
-    // setImageFiles([]);
-    // setImagePreviews([]);
   };
 
   const fetchLessons = async () => {
@@ -157,6 +127,7 @@ const LessonsManagement = () => {
       const updatedLesson = await updateLesson({
         _id: editingLesson._id,
         title: editingLesson.title,
+        code: editingLesson.code,
         content: editingLesson.content,
         videoUrl: editingLesson.videoUrl,
         price: editingLesson.price,
@@ -240,19 +211,6 @@ const LessonsManagement = () => {
     setMeta((prev) => ({ ...prev, pageSize: size, current: 1 }));
   };
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalImage, setModalImage] = useState("");
-
-  const openModalImage = (image: string) => {
-    setModalImage(image);
-    setIsModalOpen(true);
-  };
-
-  const closeModalImage = () => {
-    setIsModalOpen(false);
-    setModalImage("");
-  };
-
   const validateForm = () => {
     if (!newLesson.title || !newLesson.content || !newLesson.videoUrl) {
       alert("Vui lòng điền đầy đủ các thông tin bắt buộc.");
@@ -262,24 +220,17 @@ const LessonsManagement = () => {
     return true;
   };
 
-  const convertToUrl = (title: string) => {
-    return title
-      .toLowerCase()
-      .replace(/đ/g, "d")
-      .replace(/Đ/g, "D")
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .replace(/[^a-z0-9\s-]/g, "")
-      .trim()
-      .replace(/\s+/g, "-")
-      .replace(/-+/g, "-");
-  };
-
   const handleContentChange = (content: string) => {
     setNewLesson((prevState) => ({
       ...prevState,
       content: content,
     }));
+  };
+
+  const handleContentUpdate = (content: string) => {
+    setEditingLesson((prevState) =>
+      prevState ? { ...prevState, content } : null
+    );
   };
 
   return (
@@ -319,7 +270,10 @@ const LessonsManagement = () => {
       </p>
 
       <Table
-        columns={[{ label: "Tên", key: "title" }]}
+        columns={[
+          { label: "Mã", key: "code" },
+          { label: "Tên", key: "title" },
+        ]}
         data={lessons}
         handleView={handleViewLesson}
         handleEdit={handleEditLesson}
@@ -348,14 +302,15 @@ const LessonsManagement = () => {
                 <strong>Id:</strong> {selectedLesson._id}
               </p>
               <p className="break-words">
-                <strong>Tiêu đề:</strong>{" "}
+                <strong>Tiêu đề:</strong> <span>{selectedLesson.title}</span>
+              </p>
+              <p className="break-words">
+                <strong>Mã:</strong>{" "}
                 <span className="text-green-600 font-bold">
-                  {selectedLesson.title}
+                  {selectedLesson.code}
                 </span>
               </p>
-              {/* <p className="break-words">
-                <strong>Nội dung:</strong> {selectedLesson.content}
-              </p> */}
+
               <p className="break-words">
                 <strong>Video url:</strong> {selectedLesson.videoUrl}
               </p>
@@ -423,20 +378,41 @@ const LessonsManagement = () => {
                 </div>
                 <div>
                   <label className="block">
-                    Nội dung <span className="text-red-600">*</span>
+                    Giá tiền <span className="text-red-600">*</span>
                   </label>
                   <input
-                    type="text"
+                    type="number"
                     className="border p-2 w-full"
-                    value={editingLesson.content}
+                    value={String(editingLesson.price)}
                     onChange={(e) =>
                       setEditingLesson({
                         ...editingLesson,
-                        content: e.target.value,
+                        price: Number(e.target.value),
                       })
                     }
                   />
                 </div>
+                {editingLesson.price !== 0 && (
+                  <div>
+                    <label className="block">
+                      Mã{" "}
+                      <span className="text-red-600">
+                        (Lưu ý video trả phí mới nhập mã)
+                      </span>
+                    </label>
+                    <input
+                      type="text"
+                      className="border p-2 w-full"
+                      value={editingLesson?.code || ""}
+                      onChange={(e) =>
+                        setEditingLesson({
+                          ...editingLesson,
+                          code: e.target.value,
+                        })
+                      }
+                    />
+                  </div>
+                )}
 
                 <div>
                   <label className="block">
@@ -450,23 +426,6 @@ const LessonsManagement = () => {
                       setEditingLesson({
                         ...editingLesson,
                         videoUrl: e.target.value,
-                      })
-                    }
-                  />
-                </div>
-
-                <div>
-                  <label className="block">
-                    Giá tiền <span className="text-red-600">*</span>
-                  </label>
-                  <input
-                    type="number"
-                    className="border p-2 w-full"
-                    value={String(editingLesson.price)}
-                    onChange={(e) =>
-                      setEditingLesson({
-                        ...editingLesson,
-                        price: Number(e.target.value),
                       })
                     }
                   />
@@ -492,6 +451,16 @@ const LessonsManagement = () => {
                     <option value="true">Ẩn</option>
                   </select>
                 </div>
+              </div>
+              <div>
+                <label className="block">
+                  Nội dung <span className="text-red-600">*</span>
+                </label>
+                <Editor
+                  folder="uploadCourse"
+                  initialContent={`${editingLesson.content}`}
+                  onContentChange={handleContentUpdate}
+                />
               </div>
             </div>
             <div className="mt-4 flex justify-end space-x-2">
@@ -548,22 +517,6 @@ const LessonsManagement = () => {
 
                 <div>
                   <label className="block">
-                    Video url <span className="text-red-600">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    className="border p-2 w-full"
-                    value={newLesson.videoUrl}
-                    onChange={(e) =>
-                      setNewLesson({
-                        ...newLesson,
-                        videoUrl: e.target.value,
-                      })
-                    }
-                  />
-                </div>
-                <div>
-                  <label className="block">
                     Giá tiền <span className="text-red-600">*</span>
                   </label>
                   <input
@@ -574,6 +527,45 @@ const LessonsManagement = () => {
                       setNewLesson({
                         ...newLesson,
                         price: Number(e.target.value),
+                      })
+                    }
+                  />
+                </div>
+
+                {newLesson.price !== 0 && (
+                  <div>
+                    <label className="block">
+                      Mã{" "}
+                      <span className="text-red-600">
+                        (Lưu ý video trả phí mới nhập mã)
+                      </span>
+                    </label>
+                    <input
+                      type="text"
+                      className="border p-2 w-full"
+                      value={newLesson.code}
+                      onChange={(e) =>
+                        setNewLesson({
+                          ...newLesson,
+                          code: e.target.value,
+                        })
+                      }
+                    />
+                  </div>
+                )}
+
+                <div>
+                  <label className="block">
+                    Video url <span className="text-red-600">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    className="border p-2 w-full"
+                    value={newLesson.videoUrl}
+                    onChange={(e) =>
+                      setNewLesson({
+                        ...newLesson,
+                        videoUrl: e.target.value,
                       })
                     }
                   />
@@ -608,17 +600,6 @@ const LessonsManagement = () => {
                   folder="uploadCourse"
                   onContentChange={handleContentChange}
                 />
-                {/* <input
-                    type="text"
-                    className="border p-2 w-full"
-                    value={newLesson.content}
-                    onChange={(e) =>
-                      setNewLesson({
-                        ...newLesson,
-                        content: e.target.value,
-                      })
-                    }
-                  /> */}
               </div>
             </div>
             <div className="mt-4 flex justify-end space-x-2">

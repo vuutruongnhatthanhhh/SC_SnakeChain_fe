@@ -1,4 +1,3 @@
-// components/FeaturedCourses.tsx
 import React from "react";
 import Link from "next/link";
 
@@ -24,6 +23,9 @@ const Courses: React.FC<FeaturedCoursesProps> = ({
   allCoursesLink,
   showButton,
 }) => {
+  if (courses.length === 0) {
+    return null;
+  }
   return (
     <div className="py-6 px-4 sm:px-6 lg:px-8 w-full">
       {title && title.trim() !== "" && (
@@ -55,12 +57,12 @@ const Courses: React.FC<FeaturedCoursesProps> = ({
       </div>
       {showButton && (
         <div className="text-center mt-8">
-          <a
+          <Link
             href="/course"
             className="inline-block bg-buttonRoot px-4 py-2 rounded-lg font-semibold "
           >
             Xem tất cả
-          </a>
+          </Link>
         </div>
       )}
     </div>

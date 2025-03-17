@@ -58,7 +58,7 @@ const Editor = ({
       }),
       Image.configure({
         HTMLAttributes: {
-          class: "my-4", // Margin top and bottom
+          class: "my-4",
         },
       }),
       Bold,

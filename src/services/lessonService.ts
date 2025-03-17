@@ -2,6 +2,7 @@ import api from "@/services/api";
 
 export interface CreateLessonDto {
   title?: string;
+  code?: string;
   content?: string;
   videoUrl?: string;
   price?: Number;
@@ -11,6 +12,7 @@ export interface CreateLessonDto {
 
 export interface UpdateLessonDto {
   _id?: string;
+  code?: string;
   title?: string;
   content?: string;
   videoUrl?: string;
@@ -124,6 +126,29 @@ export const getLessonsUser = async (id: string): Promise<any> => {
     const response = await api.get(`/lessons/${id}`);
     return response.data;
   } catch (error: any) {
+    throw error;
+  }
+};
+
+export const uploadVideo = async (file: File): Promise<any> => {
+  try {
+    const token = localStorage.getItem("access_token");
+    if (!token) {
+      throw new Error("No access token found");
+    }
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const response = await api.post("/video/upload", formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    return response.data;
+  } catch (error) {
     throw error;
   }
 };

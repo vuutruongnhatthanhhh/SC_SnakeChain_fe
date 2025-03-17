@@ -6,7 +6,7 @@ import {
   FaHandshake,
   FaShareAlt,
   FaHeadset,
-} from "react-icons/fa"; // Import icons
+} from "react-icons/fa";
 
 interface WhyCardProps {
   icon: React.ReactNode;

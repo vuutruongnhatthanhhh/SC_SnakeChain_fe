@@ -76,15 +76,15 @@ export default function Home() {
       <Courses
         courses={courses.slice(0, 4)}
         title="Khóa học nổi bật"
-        allCoursesLink="#allcourse"
-        // showButton={true}
+        allCoursesLink="/course"
+        showButton={false}
       />
 
       <SourceCode
         codes={sourceCodes.slice(0, 4)}
         title="Kho Source Code đa dạng"
         allCodeLink="/sourcecode"
-        // showButton={true}
+        showButton={false}
       />
 
       <Blogs

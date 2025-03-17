@@ -14,6 +14,8 @@ import SearchAdmin from "@/components/admin/SearchAdmin";
 import Pagination from "@/components/admin/Pagination";
 import FilterAdmin from "@/components/admin/FilterAdmin";
 import Table from "@/components/admin/Table";
+import Select from "react-select";
+import { getAllLessons } from "@/services/lessonService";
 
 interface User {
   _id: string;
@@ -26,6 +28,7 @@ interface User {
   updatedAt: string;
   phone: string;
   address: string;
+  lessons: string[];
 }
 
 interface Meta {
@@ -63,6 +66,9 @@ const UserManagement = () => {
   const [role, setRole] = useState("");
   const [accountType, setAccountType] = useState("");
   const [isActive, setIsActive] = useState<string>("");
+  const [lessons, setLessons] = useState<
+    { value: string; label: string; code: string }[]
+  >([]);
 
   const resetNewUser = () => {
     setNewUser({
@@ -99,6 +105,7 @@ const UserManagement = () => {
 
   useEffect(() => {
     fetchUsers();
+    handleFetchLessons();
   }, [meta.current, meta.pageSize, searchTerm, role, accountType, isActive]);
 
   const handleEditUser = (user: User) => {
@@ -115,6 +122,7 @@ const UserManagement = () => {
         phone: editingUser.phone,
         address: editingUser.address,
         role: editingUser.role,
+        lessons: editingUser.lessons,
       });
 
       if (updatedUser) {
@@ -182,6 +190,24 @@ const UserManagement = () => {
     setMeta((prev) => ({ ...prev, pageSize: size, current: 1 }));
   };
 
+  const handleFetchLessons = async () => {
+    const fetchedData = await getAllLessons(1, 1000, "", "", "");
+
+    if (fetchedData.data.results) {
+      const filteredLessons = fetchedData.data.results
+        .filter((lesson: { price: number }) => lesson.price !== 0)
+        .map((lesson: { _id: string; title: string; code: string }) => ({
+          value: lesson._id,
+          label: lesson.title,
+          code: lesson.code,
+        }));
+
+      setLessons(filteredLessons);
+    } else {
+      alert("Tải danh sách lessons không thành công");
+    }
+  };
+
   return (
     <div className="p-4 w-full">
       <h2 className="text-xl font-bold mb-4 flex items-center">
@@ -235,49 +261,6 @@ const UserManagement = () => {
         Số lượng:{" "}
         <span className="text-blue-700 font-bold"> {users.length}</span>
       </p>
-      {/* <table className="w-full border-collapse border border-gray-300">
-        <thead>
-          <tr className="bg-gray-200">
-            <th className="border p-2">Tên</th>
-            <th className="border p-2"></th>
-          </tr>
-        </thead>
-        <tbody>
-          {users.length === 0 ? (
-            <tr>
-              <td colSpan={2} className="text-center p-4 text-gray-500">
-                Không tìm thấy người dùng
-              </td>
-            </tr>
-          ) : (
-            users.map((user) => (
-              <tr key={user._id} className="text-center">
-                <td className="border p-2">{user.name}</td>
-                <td className="border p-2 space-x-2">
-                  <button
-                    onClick={() => handleViewUser(user)}
-                    className="text-orange-500"
-                  >
-                    <FiEye />
-                  </button>
-                  <button
-                    onClick={() => handleEditUser(user)}
-                    className="text-blue-500"
-                  >
-                    <FiEdit />
-                  </button>
-                  <button
-                    onClick={() => handleDeleteUser(user._id, user.name)}
-                    className="text-red-500"
-                  >
-                    <FiTrash />
-                  </button>
-                </td>
-              </tr>
-            ))
-          )}
-        </tbody>
-      </table> */}
 
       <Table
         columns={[{ label: "Tên", key: "name" }]}
@@ -337,6 +320,21 @@ const UserManagement = () => {
                   {selectedUser.isActive ? "YES" : "NO"}
                 </span>
               </p>
+              <p className="break-words">
+                <strong>Bài học:</strong>
+              </p>
+              <ul className="list-disc list-inside">
+                {selectedUser.lessons.map((lessonId: string, index: number) => {
+                  const lesson = lessons.find((l) => l.value === lessonId);
+                  return (
+                    <li key={index}>
+                      {lesson
+                        ? `[${lesson.code}] ` + lesson.label
+                        : "Không tìm thấy"}
+                    </li>
+                  );
+                })}
+              </ul>
               <p className="break-words">
                 <strong>Ngày tạo:</strong>{" "}
                 {dayjs(selectedUser.createdAt).format("DD-MM-YYYY HH:mm")}
@@ -413,6 +411,38 @@ const UserManagement = () => {
                   <option value="WORM">WORM</option>
                   <option value="USER">USER</option>
                 </select>
+              </div>
+              <div>
+                <label className="block">
+                  Bài học <span className="text-red-600">*</span>
+                </label>
+
+                <Select
+                  isMulti
+                  // options={lessons}
+                  options={lessons.map((lesson) => ({
+                    value: lesson.value,
+                    label: lesson.label,
+                    code: lesson.code,
+                  }))}
+                  value={editingUser.lessons.map((lessonId) =>
+                    lessons.find((l) => l.value === lessonId)
+                  )}
+                  getOptionLabel={(option) =>
+                    `[${option?.code}] ${option?.label}`
+                  }
+                  onChange={(selectedOptions) => {
+                    const selectedValues = selectedOptions.map(
+                      (option: any) => option.value
+                    );
+                    setEditingUser({
+                      ...editingUser,
+                      lessons: selectedValues,
+                    });
+                  }}
+                  className="border p-2 w-full"
+                  placeholder="Tìm kiếm bài học..."
+                />
               </div>
             </div>
             <div className="mt-4 flex justify-end space-x-2">

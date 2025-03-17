@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import Link from "next/link";
 
 const projects = [
   {
@@ -56,7 +57,7 @@ export default function MobileCard() {
       {/* Project Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {projects.map((project) => (
-          <a
+          <Link
             key={project.id}
             href={project.link}
             className="bg-white shadow-lg rounded-xl p-4 flex flex-col items-center hover:shadow-xl hover:scale-105 transition-all duration-300"
@@ -70,17 +71,17 @@ export default function MobileCard() {
               {project.name}
             </h3>
             <p className="text-sm text-gray-500">{project.description}</p>
-          </a>
+          </Link>
         ))}
       </div>
 
       <div className="text-center mt-8">
-        <a
+        <Link
           href={"#"}
           className="inline-block px-4 py-2 rounded-lg font-semibold bg-buttonRoot"
         >
           Xem tất cả
-        </a>
+        </Link>
       </div>
     </div>
   );

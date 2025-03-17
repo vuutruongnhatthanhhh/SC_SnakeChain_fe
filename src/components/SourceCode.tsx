@@ -1,4 +1,3 @@
-// components/Featuredcodes.tsx
 import React from "react";
 import Link from "next/link";
 
@@ -28,6 +27,9 @@ const SourceCode: React.FC<FeaturedSourceCodeProps> = ({
   allCodeLink,
   showButton,
 }) => {
+  if (codes.length === 0) {
+    return null;
+  }
   return (
     <div className="py-6 px-4 sm:px-6 lg:px-8">
       {title && title.trim() !== "" && (
@@ -61,12 +63,12 @@ const SourceCode: React.FC<FeaturedSourceCodeProps> = ({
       </div>
       {showButton && (
         <div className="text-center mt-8">
-          <a
+          <Link
             href={allCodeLink}
             className="inline-block bg-teal-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-teal-700"
           >
             Xem tất cả
-          </a>
+          </Link>
         </div>
       )}
     </div>

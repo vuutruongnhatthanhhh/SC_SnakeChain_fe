@@ -3,6 +3,7 @@ import config from "@/config";
 import { sendQuoteRequest } from "@/services/mailService";
 import React, { useState, useEffect } from "react";
 import { FaYoutube, FaFacebook, FaTiktok, FaInstagram } from "react-icons/fa";
+import Link from "next/link";
 
 interface FormData {
   name: string;
@@ -56,7 +57,7 @@ const QuoteRequestForm: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col lg:flex-row items-center bg-white p-8 rounded-2xl shadow-lg max-w-6xl w-full mx-auto mb-4">
+    <div className="flex flex-col lg:flex-row items-center bg-white p-8 rounded-2xl shadow-lg max-w-6xl w-full mx-auto my-12">
       <div className="w-full lg:w-1/2 p-4 ">
         <h2 className="text-3xl font-bold mb-4">Yêu cầu báo giá</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -86,7 +87,7 @@ const QuoteRequestForm: React.FC = () => {
             placeholder="Số điện thoại"
             className="w-full p-3 border rounded-md"
             required
-            pattern="[0-9]{10,11}" // Chỉ nhận số, từ 10 đến 11 chữ số
+            pattern="[0-9]{10,11}"
             title="Số điện thoại không hợp lệ"
           />
           <select
@@ -137,27 +138,27 @@ const QuoteRequestForm: React.FC = () => {
           <strong>Email:</strong> vuutruongnhatthanh@gmail.com
         </p>
         <div className="flex space-x-4 mt-4">
-          <a
+          <Link
             href="https://www.youtube.com/@SnakeChain2801"
             target="_blank"
             className="text-blue-600 hover:text-blue-700"
           >
             <FaYoutube size={24} />
-          </a>
-          <a
+          </Link>
+          <Link
             href="https://www.facebook.com/people/Snake-Chain/61573199592592/"
             target="_blank"
             className="text-blue-600 hover:text-blue-700"
           >
             <FaFacebook size={24} />
-          </a>
-          {/* <a
+          </Link>
+          {/* <Link
             href="https://t.me"
             target="_blank"
             className="text-blue-600 hover:text-blue-700"
           >
             <FaTiktok size={24} />
-          </a> */}
+          </Link> */}
         </div>
       </div>
     </div>
