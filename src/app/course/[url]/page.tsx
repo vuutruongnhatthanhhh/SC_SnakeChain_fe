@@ -1,34 +1,70 @@
-"use client";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import CourseDetail from "@/components/CourseDetail";
-import { useParams } from "next/navigation";
-import { getAllCourseUser, getCourseUser } from "@/services/courseService";
-const CourseDetailPage: React.FC = () => {
-  const { url } = useParams();
-  const [course, setCourse] = useState<any>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string>("");
+import { getCourseUser } from "@/services/courseService";
+import { notFound } from "next/navigation";
+import { baseOpenGraph } from "@/app/shared-metadata";
 
-  useEffect(() => {
-    const fetchCourse = async () => {
-      if (url) {
-        try {
-          const data = await getCourseUser(url as string);
-          setCourse(data.data);
-          setLoading(false);
-        } catch (err: any) {
-          setError("Không tìm thấy course hoặc có lỗi xảy ra.");
-          setLoading(false);
-        }
-      }
+interface CourseDetailPageProps {
+  params: { url: string };
+}
+
+export async function generateMetadata({ params }: CourseDetailPageProps) {
+  try {
+    const courseResponse = await getCourseUser(params.url);
+
+    if (!courseResponse?.data) {
+      return {
+        title: "Khóa học không tồn tại",
+        description: "Khóa học không tồn tại hoặc đã bị xóa.",
+      };
+    }
+
+    const url = process.env.NEXT_PUBLIC_URL + "/course/" + params.url;
+    const urlImage = process.env.NEXT_PUBLIC_SERVER + courseResponse.data.image;
+
+    return {
+      title: {
+        absolute: courseResponse.data.title,
+      },
+      description: courseResponse.data.shortDescription,
+      openGraph: {
+        ...baseOpenGraph,
+        title: `${courseResponse.data.title}`,
+        description: `${courseResponse.data.shortDescription}`,
+        url: url,
+        siteName: "Snake Chain",
+        images: [
+          {
+            url: urlImage,
+            // width: 800,
+            // height: 600,
+          },
+        ],
+      },
+      alternates: {
+        canonical: url,
+      },
     };
+  } catch (error) {
+    return {
+      title: "Lỗi khi tải khóa học",
+      description: "Có lỗi xảy ra khi tải thông tin khóa học.",
+    };
+  }
+}
 
-    fetchCourse();
-  }, [url]);
-  if (loading) return <div className="min-h-screen">Đang tải...</div>;
-  if (error) return <div>{error}</div>;
+export default async function CourseDetailPage({
+  params,
+}: CourseDetailPageProps) {
+  try {
+    const courseResponse = await getCourseUser(params.url);
 
-  return <CourseDetail course={course} />;
-};
+    if (!courseResponse?.data) {
+      notFound();
+    }
 
-export default CourseDetailPage;
+    return <CourseDetail course={courseResponse.data} />;
+  } catch (error) {
+    notFound();
+  }
+}

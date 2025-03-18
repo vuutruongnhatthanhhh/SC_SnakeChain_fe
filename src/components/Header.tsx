@@ -6,6 +6,7 @@ import Link from "next/link";
 import AuthForm from "./AuthForm";
 import config from "@/config";
 import { useAuth } from "@/context/AuthContext";
+import Image from "next/image";
 
 const Header: React.FC = () => {
   const [isDropdownVisible, setDropdownVisible] = useState<boolean>(false);
@@ -106,7 +107,7 @@ const Header: React.FC = () => {
               onMouseLeave={() => setDropdownVisible(false)}
             >
               <Link
-                href="#"
+                href="/website"
                 className="text-white hover:text-[#319795] flex items-center"
               >
                 Dịch vụ

@@ -7,6 +7,7 @@ import dayjs from "dayjs";
 import * as jwt_decode from "jwt-decode";
 import { checkUserLesson } from "@/services/userService";
 import AuthForm from "@/components/AuthForm";
+import Image from "next/image";
 
 interface Course {
   _id: number;

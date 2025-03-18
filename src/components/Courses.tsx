@@ -1,5 +1,6 @@
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 
 interface Course {
   title: string;
@@ -38,10 +39,13 @@ const Courses: React.FC<FeaturedCoursesProps> = ({
             href={`/course/${course.url}`}
             className="bg-white shadow-lg rounded-lg overflow-hidden group transform transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-2xl block"
           >
-            <img
+            <Image
               src={process.env.NEXT_PUBLIC_SERVER + course.image}
               alt={course.title}
               className="w-full aspect-[16/9] object-cover group-hover:opacity-75"
+              layout="responsive"
+              width={16}
+              height={9}
             />
             <div className="p-6">
               <h3 className="text-xl font-semibold text-gray-800">

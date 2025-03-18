@@ -7,6 +7,7 @@ import Head from "next/head";
 import config from "@/config";
 import ContactBox from "@/components/ContactBox";
 import { AuthProvider } from "@/context/AuthContext";
+import { baseOpenGraph } from "./shared-metadata";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -19,8 +20,12 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: `${config.title}`,
-  description: `${config.description}`,
+  title: {
+    template: "%s - Snake Chain",
+    default: "Thiết kế Website chuyên nghiệp giá rẻ - Snake Chain",
+  },
+  description: config.seoDescription,
+  openGraph: baseOpenGraph,
 };
 
 export default function RootLayout({
@@ -33,9 +38,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col w-full`}
       >
-        <Head>
+        {/* <Head>
           <link rel="icon" href="/favicon.ico" />
-        </Head>
+        </Head> */}
         <AuthProvider>
           <Header />
           <main className="flex-grow w-full"> {children}</main>

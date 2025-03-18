@@ -1,37 +1,71 @@
-"use client";
-
-import React, { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import React from "react";
+import { notFound } from "next/navigation";
 import { getSourceCodeUser } from "@/services/sourceCodeService";
 import SourceCodeDetail from "@/components/SourceCodeDetail";
+import { baseOpenGraph } from "@/app/shared-metadata";
 
-const SourceCodeDetailPage: React.FC = () => {
-  const { url } = useParams();
-  const [sourceCode, setSourceCode] = useState<any>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string>("");
+interface SourceCodeDetailPageProps {
+  params: { url: string };
+}
 
-  useEffect(() => {
-    const fetchSourceCode = async () => {
-      if (url) {
-        try {
-          const data = await getSourceCodeUser(url as string);
-          setSourceCode(data.data);
-          setLoading(false);
-        } catch (err: any) {
-          setError("Không tìm thấy source code hoặc có lỗi xảy ra.");
-          setLoading(false);
-        }
-      }
+export async function generateMetadata({ params }: SourceCodeDetailPageProps) {
+  try {
+    const sourceCodeResponse = await getSourceCodeUser(params.url);
+
+    if (!sourceCodeResponse?.data) {
+      return {
+        title: "Source Code không tồn tại",
+        description: "Source Code không tồn tại hoặc đã bị xóa.",
+      };
+    }
+
+    const url = process.env.NEXT_PUBLIC_URL + "/sourcecode/" + params.url;
+    const urlImage =
+      process.env.NEXT_PUBLIC_SERVER + sourceCodeResponse.data.image;
+
+    return {
+      title: {
+        absolute: sourceCodeResponse.data.title,
+      },
+      description: sourceCodeResponse.data.stack,
+      openGraph: {
+        ...baseOpenGraph,
+        title: `${sourceCodeResponse.data.title}`,
+        description: `${sourceCodeResponse.data.stack}`,
+        url: url,
+        siteName: "Snake Chain",
+        images: [
+          {
+            url: urlImage,
+            // width: 800,
+            // height: 600,
+          },
+        ],
+      },
+      alternates: {
+        canonical: url,
+      },
     };
+  } catch (error) {
+    return {
+      title: "Lỗi khi tải Source Code",
+      description: "Có lỗi xảy ra khi tải thông tin source code.",
+    };
+  }
+}
 
-    fetchSourceCode();
-  }, [url]);
+export default async function SourceCodeDetailPage({
+  params,
+}: SourceCodeDetailPageProps) {
+  try {
+    const sourceCodeResponse = await getSourceCodeUser(params.url);
 
-  if (loading) return <div className="min-h-screen">Đang tải...</div>;
-  if (error) return <div>{error}</div>;
+    if (!sourceCodeResponse?.data) {
+      notFound();
+    }
 
-  return <SourceCodeDetail sourcecode={sourceCode} />;
-};
-
-export default SourceCodeDetailPage;
+    return <SourceCodeDetail sourcecode={sourceCodeResponse.data} />;
+  } catch (error) {
+    notFound();
+  }
+}

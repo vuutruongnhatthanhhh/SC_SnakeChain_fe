@@ -4,6 +4,31 @@ import WebCard from "@/components/WebCard";
 import WhyWebSection from "@/components/WhyWebSection";
 import ProcessWebSection from "@/components/ProcessWebSection";
 import QuoteRequestForm from "@/components/QuoteRequestForm";
+import { Metadata } from "next";
+import { baseOpenGraph } from "../shared-metadata";
+
+const url = process.env.NEXT_PUBLIC_URL + "/website";
+const urlImage = process.env.NEXT_PUBLIC_URL + "/images/logo.png";
+
+export const metadata: Metadata = {
+  description:
+    "Dịch vụ thiết kế website chuyên nghiệp giá rẻ tại Snake Chain – giao diện đẹp, tối ưu SEO, tốc độ nhanh, giá cả hợp lý, giúp doanh nghiệp phát triển bền vững",
+  openGraph: {
+    ...baseOpenGraph,
+    url: url,
+    siteName: "Snake Chain",
+    images: [
+      {
+        url: urlImage,
+        // width: 800,
+        // height: 600,
+      },
+    ],
+  },
+  alternates: {
+    canonical: url,
+  },
+};
 
 const Page: React.FC = () => {
   const images = [

@@ -1,81 +1,53 @@
-"use client";
-import React, { useState, useEffect } from "react";
-import SourceCode from "@/components/SourceCode";
+import React from "react";
 import { getAllSourceCodeUser } from "@/services/sourceCodeService";
-import SearchInput from "@/components/SearchInput";
-import Select from "@/components/Select";
+import SourceCode from "@/components/SourceCode";
+import SourceSearchBar from "./SearchSourceCode";
+import { Metadata } from "next";
+import { baseOpenGraph } from "../shared-metadata";
 
-export default function Source() {
-  const [searchTerm, setSearchTerm] = useState<string>("");
-  const [field, setField] = useState<string>("");
-  const [sourceCodes, setSourceCodes] = useState<any[]>([]);
+const url = process.env.NEXT_PUBLIC_URL + "/sourcecode";
+const urlImage = process.env.NEXT_PUBLIC_URL + "/images/logo.png";
 
-  const [debounceTimeout, setDebounceTimeout] = useState<NodeJS.Timeout | null>(
-    null
-  );
+export const metadata: Metadata = {
+  title: "Source code - Mã nguồn dự án",
+  description:
+    "Snake Chain cung cấp source code chất lượng, dễ mở rộng, tối ưu SEO và hiệu suất, giúp lập trình viên và doanh nghiệp triển khai dự án nhanh chóng",
+  openGraph: {
+    ...baseOpenGraph,
+    url: url,
+    siteName: "Snake Chain",
+    images: [
+      {
+        url: urlImage,
+        // width: 800,
+        // height: 600,
+      },
+    ],
+  },
+  alternates: {
+    canonical: url,
+  },
+};
 
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value;
-    setSearchTerm(value);
+const Source = async ({
+  searchParams,
+}: {
+  searchParams: { query?: string; field?: string };
+}) => {
+  const searchTerm = searchParams.query || "";
+  const field = searchParams.field || "";
 
-    if (debounceTimeout) {
-      clearTimeout(debounceTimeout);
-    }
-
-    const newTimeout = setTimeout(() => {
-      fetchSourceCodes(value, field);
-    }, 500);
-
-    setDebounceTimeout(newTimeout);
-  };
-
-  const handleFieldChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const value = event.target.value;
-    setField(value);
-
-    fetchSourceCodes(searchTerm, value);
-  };
-
-  const fetchSourceCodes = async (query: string, field: string) => {
-    try {
-      const response = await getAllSourceCodeUser(query, field);
-      setSourceCodes(response.data.results);
-    } catch (error) {
-      console.error("Error fetching source codes:", error);
-    }
-  };
-
-  useEffect(() => {
-    if (searchTerm === "" && field === "") {
-      fetchSourceCodes("", "");
-    }
-  }, []);
+  const data = await getAllSourceCodeUser(searchTerm, field);
+  const sourceCodes = data?.data?.results || [];
 
   return (
     <div className="flex p-4 w-full">
       <div className="w-full">
-        <SearchInput
-          value={searchTerm}
-          onChange={handleSearchChange}
-          placeholder="Nhập tên hoặc mã..."
-          className="border p-2 mb-4 mr-3"
-        />
-
-        <Select
-          value={field}
-          onChange={handleFieldChange}
-          options={[
-            { value: "", label: "Tất cả" },
-            { value: "FRONTEND", label: "Front-end" },
-            { value: "BACKEND", label: "Back-end" },
-            { value: "FULLSTACK", label: "Full-stack" },
-            { value: "MOBILE", label: "Mobile" },
-            { value: "BLOCKCHAIN", label: "Blockchain" },
-          ]}
-        />
-
+        <SourceSearchBar searchTerm={searchTerm} field={field} />
         <SourceCode codes={sourceCodes} title="" allCodeLink="#allcourse" />
       </div>
     </div>
   );
-}
+};
+
+export default Source;

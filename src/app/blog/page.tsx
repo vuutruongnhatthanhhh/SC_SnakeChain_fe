@@ -1,54 +1,47 @@
-"use client";
-import React, { useEffect, useState } from "react";
-import Blogs from "@/components/Blogs";
+import React from "react";
 import { getAllBlogUser } from "@/services/blogService";
-import SearchInput from "@/components/SearchInput";
-const BlogPage: React.FC = () => {
-  const [blogs, setBlogs] = useState<any[]>([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [debounceTimeout, setDebounceTimeout] = useState<NodeJS.Timeout | null>(
-    null
-  );
+import Blogs from "@/components/Blogs";
+import SearchBar from "./SearchBar";
+import { Metadata } from "next";
+import { baseOpenGraph } from "../shared-metadata";
 
-  const fetchBlogs = async (query: string) => {
-    try {
-      const data = await getAllBlogUser(query);
-      setBlogs(data.data.results);
-    } catch (error) {
-      console.error("Lỗi khi lấy danh sách blog:", error);
-    }
-  };
+const url = process.env.NEXT_PUBLIC_URL + "/blog";
+const urlImage = process.env.NEXT_PUBLIC_URL + "/images/logo.png";
 
-  useEffect(() => {
-    if (searchTerm === "") {
-      fetchBlogs("");
-    }
-  }, [searchTerm]);
+export const metadata: Metadata = {
+  title: "Blog công nghệ và lập trình",
+  description:
+    "Blog Snake Chain chia sẻ kiến thức lập trình, thiết kế website, blockchain và công nghệ mới nhất, giúp bạn cập nhật xu hướng và nâng cao kỹ năng",
+  openGraph: {
+    ...baseOpenGraph,
+    url: url,
+    siteName: "Snake Chain",
+    images: [
+      {
+        url: urlImage,
+        // width: 800,
+        // height: 600,
+      },
+    ],
+  },
+  alternates: {
+    canonical: url,
+  },
+};
 
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value;
-    setSearchTerm(value);
-
-    if (debounceTimeout) {
-      clearTimeout(debounceTimeout);
-    }
-
-    const newTimeout = setTimeout(() => {
-      fetchBlogs(value);
-    }, 500);
-
-    setDebounceTimeout(newTimeout);
-  };
+const BlogPage = async ({
+  searchParams,
+}: {
+  searchParams: { query?: string };
+}) => {
+  const searchTerm = searchParams.query || "";
+  const data = await getAllBlogUser(searchTerm);
+  const blogs = data?.data?.results || [];
 
   return (
     <div className="flex p-4 w-full">
       <div className="w-full">
-        <SearchInput
-          value={searchTerm}
-          onChange={handleSearchChange}
-          placeholder="Nhập tên blog..."
-          className="border p-2 mb-4 mr-3"
-        />
+        <SearchBar searchTerm={searchTerm} />
         <Blogs blogs={blogs} title="" allBlogLink="#allBlog" />
       </div>
     </div>

@@ -1,21 +1,38 @@
-"use client";
 import Slider from "@/components/Slider";
 import Carousel from "@/components/TechCarousel";
 import Courses from "@/components/Courses";
 import Blogs from "@/components/Blogs";
 import QuoteRequestForm from "@/components/QuoteRequestForm";
 import { getAllBlogUser } from "@/services/blogService";
-import { useEffect, useState } from "react";
 import { getAllSourceCodeUser } from "@/services/sourceCodeService";
 import SourceCode from "@/components/SourceCode";
 import { getAllCourseUser } from "@/services/courseService";
+import { Metadata } from "next";
+import { baseOpenGraph } from "./shared-metadata";
 
-export default function Home() {
-  const [relatedBlogs, setRelatedBlogs] = useState<any[]>([]);
-  const [sourceCodes, setSourceCodes] = useState<any[]>([]);
-  const [courses, setCourses] = useState<any[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string>("");
+const url = process.env.NEXT_PUBLIC_URL;
+const urlImage = process.env.NEXT_PUBLIC_URL + "/images/logo.png";
+
+export const metadata: Metadata = {
+  title: "Thiết kế Website chuyên nghiệp giá rẻ - Snake Chain",
+  openGraph: {
+    ...baseOpenGraph,
+    url: url,
+    siteName: "Snake Chain",
+    images: [
+      {
+        url: urlImage,
+        // width: 800,
+        // height: 600,
+      },
+    ],
+  },
+  alternates: {
+    canonical: url,
+  },
+};
+
+export default async function Home() {
   const images = ["/images/banner-snake-chain.gif"];
   const techImages = [
     "/images/carousel/react-icon.png",
@@ -32,68 +49,38 @@ export default function Home() {
     "/images/carousel/solidity-icon.png",
   ];
 
-  const fetchCourse = async (query: string, category: string) => {
-    try {
-      const response = await getAllCourseUser(query, category);
-      setCourses(response.data.results);
-    } catch (error) {
-      console.error("Error fetching course:", error);
-    }
-  };
-
-  const fetchRelatedBlogs = async (query: string) => {
-    try {
-      const data = await getAllBlogUser(query);
-      setRelatedBlogs(data.data.results);
-    } catch (error) {
-      console.error("Lỗi khi lấy danh sách blog:", error);
-    }
-  };
-
-  const fetchSourceCodes = async (query: string, field: string) => {
-    try {
-      const response = await getAllSourceCodeUser(query, field);
-      setSourceCodes(response.data.results);
-    } catch (error) {
-      console.error("Error fetching source codes:", error);
-    }
-  };
-
-  useEffect(() => {
-    fetchRelatedBlogs("");
-    fetchSourceCodes("", "");
-    fetchCourse("", "");
-    setLoading(false);
-  }, []);
-
-  if (loading) return <div className="min-h-screen">Đang tải...</div>;
-  if (error) return <div>{error}</div>;
+  // Fetch data in server
+  const [relatedBlogs, sourceCodes, courses] = await Promise.all([
+    getAllBlogUser(""),
+    getAllSourceCodeUser("", ""),
+    getAllCourseUser("", ""),
+  ]);
 
   return (
-    <div>
-      <Slider images={images} />
-      <Carousel images={techImages} />
-      <Courses
-        courses={courses.slice(0, 4)}
-        title="Khóa học nổi bật"
-        allCoursesLink="/course"
-        showButton={false}
-      />
-
-      <SourceCode
-        codes={sourceCodes.slice(0, 4)}
-        title="Kho Source Code đa dạng"
-        allCodeLink="/sourcecode"
-        showButton={false}
-      />
-
-      <Blogs
-        blogs={relatedBlogs.slice(0, 4)}
-        title="Blog nổi bật"
-        allBlogLink="/blog"
-        showButton={true}
-      />
-      <QuoteRequestForm />
-    </div>
+    <>
+      <div>
+        <Slider images={images} />
+        <Carousel images={techImages} />
+        <Courses
+          courses={courses.data.results.slice(0, 4)}
+          title="Khóa học nổi bật"
+          allCoursesLink="/course"
+          showButton={false}
+        />
+        <QuoteRequestForm />
+        <SourceCode
+          codes={sourceCodes.data.results.slice(0, 4)}
+          title="Kho Source Code đa dạng"
+          allCodeLink="/sourcecode"
+          showButton={false}
+        />
+        <Blogs
+          blogs={relatedBlogs.data.results.slice(0, 4)}
+          title="Blog nổi bật"
+          allBlogLink="/blog"
+          showButton={true}
+        />
+      </div>
+    </>
   );
 }

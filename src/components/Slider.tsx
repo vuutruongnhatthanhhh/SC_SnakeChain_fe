@@ -4,6 +4,7 @@ import styles from "@/styles/Slider.module.css";
 import { FaLongArrowAltRight } from "react-icons/fa";
 import config from "@/config";
 import Link from "next/link";
+import Image from "next/image";
 
 interface SliderProps {
   images: string[];
@@ -46,7 +47,7 @@ const Slider: React.FC<SliderProps> = ({ images }) => {
         </p>
         <div className="mt-6">
           <Link
-            href="/course"
+            href="/website"
             className="px-6 py-2 bg-buttonRoot font-semibold rounded-full ho inline-block text-center
       hidden lg:block w-[200px]"
           >
