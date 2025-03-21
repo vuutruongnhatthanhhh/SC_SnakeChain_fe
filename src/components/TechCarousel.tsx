@@ -1,5 +1,6 @@
 import React from "react";
 import styles from "../styles/TechCarousel.module.css";
+import Image from "next/image";
 
 const Carousel = ({ images }: { images: string[] }) => {
   const loopedImages = [...images, ...images];
@@ -8,11 +9,13 @@ const Carousel = ({ images }: { images: string[] }) => {
     <div className={styles.carouselWrapper}>
       <div className={styles.carouselTrack}>
         {loopedImages.map((src, index) => (
-          <img
+          <Image
             key={index}
             src={src}
             alt={`tech-${index}`}
             className={styles.techImage}
+            width={150}
+            height={73.89}
           />
         ))}
       </div>

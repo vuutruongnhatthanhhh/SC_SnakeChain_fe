@@ -11,9 +11,9 @@ import config from "@/config";
 const ServicesSection: React.FC = () => {
   return (
     <section className="py-16 px-8  pb-10">
-      <h2 className="text-3xl font-semibold text-center mb-8">
+      <h1 className="text-3xl font-semibold text-center mb-8">
         DỊCH VỤ THIẾT KẾ WEBSITE
-      </h2>
+      </h1>
       <p className="text-center text-gray-700 mb-12">
         {config.companyName} cung cấp những giải pháp công nghệ tiên tiến, mang
         đến đầy đủ dịch vụ thiết kế website giúp xây dựng thương hiệu online
@@ -24,19 +24,19 @@ const ServicesSection: React.FC = () => {
           icon={<FaShoppingCart />}
           title="Thiết kế website bán hàng"
           description={`Khám phá sự khác biệt vượt trội với công nghệ thiết kế website bán hàng chuẩn SEO Google từ ${config.companyName}, giúp đẩy mạnh doanh số bán hàng`}
-          link={"#"}
+          link={""}
         />
         <ServiceCard
           icon={<FaBuilding />}
           title="Thiết kế website doanh nghiệp"
           description={`Hãy trải nghiệm dịch vụ Thiết kế web doanh nghiệp chuẩn SEO từ ${config.companyName} để nâng tầm thương hiệu công ty bạn.`}
-          link={"#1"}
+          link={""}
         />
         <ServiceCard
           icon={<FaCode />}
           title="Thiết kế website theo yêu cầu"
           description="Thiết kế website tùy chỉnh với giao diện và tính năng riêng biệt, bao gồm các dự án web code tay như website đặt tour, mạng xã hội, và nhiều hơn nữa."
-          link={"#2"}
+          link={""}
         />
         {/* <ServiceCard
           icon={<FaMobileAlt />}

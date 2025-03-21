@@ -17,25 +17,60 @@ const About: React.FC = () => {
           />
         </div>
 
-        <h2 className="text-4xl font-semibold text-gray-800 mb-4">
+        <h1 className="text-4xl font-semibold text-gray-800 mb-4">
           {config.companyName}
-        </h2>
-        <p className="text-lg text-gray-600 mb-8">
+        </h1>
+        <h2 className="text-lg text-gray-600 mb-8">
           {config.companyName} chuyên cung cấp dịch vụ đào tạo lập trình và phát
           triển các giải pháp công nghệ, bao gồm thiết kế website và ứng dụng di
           động theo yêu cầu. Với đội ngũ chuyên gia giàu kinh nghiệm, chúng tôi
           cam kết mang đến những sản phẩm chất lượng và hiệu quả nhất cho khách
           hàng.
-        </p>
+        </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="relative flex flex-col items-center p-6 bg-white rounded-lg shadow-lg">
+            <h2 className="text-xl font-semibold text-gray-800 mb-4">
+              Thiết Kế Website
+            </h2>
+            <p className="text-gray-600 mb-4">
+              Chúng tôi chuyên thiết kế website theo yêu cầu, mang đến giải pháp
+              tối ưu và phù hợp nhất cho từng khách hàng. Dù bạn cần một trang
+              web giới thiệu doanh nghiệp hay một nền tảng thương mại điện tử
+              mạnh mẽ, chúng tôi luôn sẵn sàng biến ý tưởng của bạn thành hiện
+              thực với giao diện đẹp, tốc độ nhanh và trải nghiệm người dùng tối
+              ưu.
+            </p>
+            <Link
+              href="/website"
+              className="text-[#319795] hover:text-[#2C7A7B] font-semibold"
+            >
+              Xem thêm về dịch vụ thiết kế website
+            </Link>
+          </div>
+          <div className="relative flex flex-col items-center p-6 bg-white rounded-lg shadow-lg">
+            <h2 className="text-xl font-semibold text-gray-800 mb-4">
+              Khóa học lập trình
+            </h2>
+            <p className="text-gray-600 mb-4">
+              Chúng tôi cung cấp các khóa học lập trình từ cơ bản đến nâng cao.
+              Các khóa học được thiết kế phù hợp với nhu cầu của học viên, từ
+              lập trình web, app mobile, blockchain cho đến phát triển phần mềm.
+            </p>
+            <Link
+              href="/course"
+              className="text-[#319795] hover:text-[#2C7A7B] font-semibold"
+            >
+              Xem thêm về khóa học
+            </Link>
+          </div>
           <div className="relative flex flex-col items-center p-6 bg-white rounded-lg shadow-lg">
             {/* <span className="absolute top-2 right-2 bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded-lg shadow-md">
               Sắp ra mắt
             </span> */}
-            <h3 className="text-xl font-semibold text-gray-800 mb-4">
+            <h2 className="text-xl font-semibold text-gray-800 mb-4">
               Mã nguồn dự án
-            </h3>
+            </h2>
             <p className="text-gray-600 mb-4">
               Chúng tôi cung cấp source code các dự án chuyên nghiệp, được thiết
               kế đẹp mắt, tối ưu hiệu suất và dễ dàng tùy chỉnh. Mỗi sản phẩm
@@ -53,49 +88,14 @@ const About: React.FC = () => {
               Xem thêm về mã nguồn dự án
             </Link>
           </div>
-          <div className="relative flex flex-col items-center p-6 bg-white rounded-lg shadow-lg">
-            <h3 className="text-xl font-semibold text-gray-800 mb-4">
-              Thiết Kế Website
-            </h3>
-            <p className="text-gray-600 mb-4">
-              Chúng tôi chuyên thiết kế website theo yêu cầu, mang đến giải pháp
-              tối ưu và phù hợp nhất cho từng khách hàng. Dù bạn cần một trang
-              web giới thiệu doanh nghiệp hay một nền tảng thương mại điện tử
-              mạnh mẽ, chúng tôi luôn sẵn sàng biến ý tưởng của bạn thành hiện
-              thực với giao diện đẹp, tốc độ nhanh và trải nghiệm người dùng tối
-              ưu.
-            </p>
-            <Link
-              href="/website"
-              className="text-[#319795] hover:text-[#2C7A7B] font-semibold"
-            >
-              Xem thêm về dịch vụ thiết kế website
-            </Link>
-          </div>
-          <div className="relative flex flex-col items-center p-6 bg-white rounded-lg shadow-lg">
-            <h3 className="text-xl font-semibold text-gray-800 mb-4">
-              Khóa học lập trình
-            </h3>
-            <p className="text-gray-600 mb-4">
-              Chúng tôi cung cấp các khóa học lập trình từ cơ bản đến nâng cao.
-              Các khóa học được thiết kế phù hợp với nhu cầu của học viên, từ
-              lập trình web, app mobile, blockchain cho đến phát triển phần mềm.
-            </p>
-            <Link
-              href="/course"
-              className="text-[#319795] hover:text-[#2C7A7B] font-semibold"
-            >
-              Xem thêm về khóa học
-            </Link>
-          </div>
 
           <div className="relative flex flex-col items-center p-6 bg-white rounded-lg shadow-lg">
             <span className="absolute top-2 right-2 bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded-lg shadow-md">
               Sắp ra mắt
             </span>
-            <h3 className="text-xl font-semibold text-gray-800 mb-4">
+            <h2 className="text-xl font-semibold text-gray-800 mb-4">
               Thiết Kế Ứng Dụng Di Động
-            </h3>
+            </h2>
             <p className="text-gray-600 mb-4">
               Chúng tôi cung cấp dịch vụ phát triển ứng dụng di động cho các nền
               tảng iOS và Android, giúp bạn mang sản phẩm của mình đến gần hơn
@@ -112,9 +112,9 @@ const About: React.FC = () => {
             <span className="absolute top-2 right-2 bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded-lg shadow-md">
               Sắp ra mắt
             </span>
-            <h3 className="text-xl font-semibold text-gray-800 mb-4">
+            <h2 className="text-xl font-semibold text-gray-800 mb-4">
               Giải pháp Blockchain
-            </h3>
+            </h2>
             <p className="text-gray-600 mb-4">
               Chúng tôi cung cấp các giải pháp Blockchain tiên tiến, giúp doanh
               nghiệp tối ưu hóa quy trình, nâng cao tính bảo mật và minh bạch
@@ -134,9 +134,9 @@ const About: React.FC = () => {
             <span className="absolute top-2 right-2 bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded-lg shadow-md">
               Sắp ra mắt
             </span>
-            <h3 className="text-xl font-semibold text-gray-800 mb-4">
+            <h2 className="text-xl font-semibold text-gray-800 mb-4">
               Phần mềm số hóa cho doanh nghiệp
-            </h3>
+            </h2>
             <p className="text-gray-600 mb-4">
               Chúng tôi cung cấp giải pháp số hóa toàn diện, giúp doanh nghiệp
               chuyển đổi từ quy trình thủ công sang hệ thống quản lý thông minh.

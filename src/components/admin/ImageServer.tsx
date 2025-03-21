@@ -5,6 +5,7 @@ import { CiBoxList, CiImageOn } from "react-icons/ci";
 import SearchAdmin from "./SearchAdmin";
 import { deleteUploadedImage, uploadImage } from "@/services/blogService";
 import path from "path";
+import Image from "next/image";
 
 interface UploadedImage {
   _id: string;
@@ -209,10 +210,12 @@ const ImageServer: React.FC<ImageButtonProps> = ({
                   >
                     {viewMode === "image" ? (
                       <div className="relative">
-                        <img
+                        <Image
                           src={process.env.NEXT_PUBLIC_SERVER + image.name}
                           alt={image.name}
                           className="w-full h-24 object-cover cursor-pointer rounded-lg shadow-md transition-transform duration-200 ease-in-out"
+                          width={145.59}
+                          height={96}
                         />
 
                         <button

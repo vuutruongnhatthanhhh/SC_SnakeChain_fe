@@ -21,17 +21,18 @@ const Slider: React.FC<SliderProps> = ({ images }) => {
         className="w-full h-auto object-cover"
       />
       <div className="absolute top-1/2 left-0 transform -translate-y-1/2 p-6 text-white">
-        <h2 className={styles.sliderTitle}>
-          Nâng cao kỹ năng lập trình & Giải pháp công nghệ
-        </h2>
+        <h1 className={styles.sliderTitle}>
+          Thiết kế website chuyên nghiệp & Nâng cao kỹ năng lập trình
+        </h1>
+
+        <p className={`${styles.sliderText} flex items-center space-x-2`}>
+          <FaLongArrowAltRight />
+          <span>Bạn có ý tưởng website muốn phát triển?</span>
+        </p>
 
         <p className={`${styles.sliderText} flex items-center space-x-2`}>
           <FaLongArrowAltRight />
           <span>Bạn muốn nâng cao kỹ năng lập trình?</span>
-        </p>
-        <p className={`${styles.sliderText} flex items-center space-x-2`}>
-          <FaLongArrowAltRight />
-          <span>Bạn có ý tưởng công nghệ muốn phát triển?</span>
         </p>
 
         <p className={`${styles.sliderText} flex items-center space-x-2`}>

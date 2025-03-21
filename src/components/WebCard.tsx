@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import Modal from "react-modal";
 import styles from "@/styles/WebCard.module.css";
+import Image from "next/image";
 
 interface WebCard {
   title: string;
@@ -25,10 +26,12 @@ const WebCard: React.FC<WebCard> = ({ title, imageUrl }) => {
           <span className="absolute top-2 left-2 bg-[#111827] text-white p-2 rounded">
             {title}
           </span>
-          <img
+          <Image
             src={imageUrl}
             alt={title}
             className="w-full h-72 object-cover rounded-lg shadow-lg"
+            width={619}
+            height={288}
           />
         </div>
       </div>

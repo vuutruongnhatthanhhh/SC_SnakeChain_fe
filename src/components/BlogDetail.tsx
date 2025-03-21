@@ -14,7 +14,7 @@ interface BlogCodeDetailProps {
 
 const BlogDetail: React.FC<BlogCodeDetailProps> = ({ blog }) => {
   return (
-    <div className="max-w-7xl mx-auto p-6 bg-white shadow-lg rounded-lg mt-10">
+    <div className="max-w-7xl mx-auto p-6 bg-white shadow-lg rounded-lg mt-10 mb-10">
       <h1 className="text-4xl font-bold ">{blog.title}</h1>
       <div className="flex items-center space-x-4 mt-4 text-sm text-gray-500">
         <span className="text-blue-700">{blog.author}</span>

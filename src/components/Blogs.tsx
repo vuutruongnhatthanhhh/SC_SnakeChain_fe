@@ -30,9 +30,9 @@ const Blogs: React.FC<FeaturedblogsProps> = ({
     return null;
   }
   return (
-    <div className="py-6 px-4 sm:px-6 lg:px-8">
+    <div className="pb-6 px-4 sm:px-6 lg:px-8">
       {title && title.trim() !== "" && (
-        <h2 className="text-3xl font-bold text-center mb-8">{title}</h2>
+        <h1 className="text-3xl font-bold text-center mb-8">{title}</h1>
       )}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {blogs.map((blog) => (
@@ -50,15 +50,15 @@ const Blogs: React.FC<FeaturedblogsProps> = ({
               height={9}
             />
             <div className="p-6">
-              <h3 className="text-xl font-semibold text-gray-800">
+              <h2 className="text-xl font-semibold text-gray-800 line-clamp-2">
                 {blog.title}
-              </h3>
+              </h2>
               <p className="mt-1 text-sm text-gray-500 flex items-center gap-1">
                 📅 {dayjs(blog.createdAt).format("DD-MM-YYYY HH:mm")}
               </p>
-              <p className="mt-2 text-gray-600 line-clamp-2">
+              <h3 className="mt-2 text-gray-600 line-clamp-2">
                 {blog.shortDescription}
-              </p>
+              </h3>
               <span className="mt-4 inline-block text-teal-600 font-semibold hover:text-teal-700">
                 Khám phá ngay
               </span>

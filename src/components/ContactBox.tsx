@@ -9,6 +9,7 @@ import {
   FaEnvelope,
   FaMapMarkerAlt,
 } from "react-icons/fa";
+import config from "@/config";
 
 interface Contact {
   name: string;
@@ -26,11 +27,11 @@ export default function ContactBox() {
 
   const contact: Contact = {
     name: "Nhật Thanh",
-    phone: "0911 622 262",
-    zaloLink: "https://zalo.me/0911622262",
-    email: "vuutruongnhatthanh@gmail.com",
-    address: "20 Nguyễn Cơ Thạch, P. An Lợi Đông, TP Thủ Đức",
-    messengerLink: "https://m.me/605190802668591",
+    phone: config.companyPhone,
+    zaloLink: config.zalo,
+    email: config.companyEmail,
+    address: "451/15",
+    messengerLink: config.mess,
   };
 
   useEffect(() => {

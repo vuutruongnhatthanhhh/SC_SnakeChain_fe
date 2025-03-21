@@ -141,9 +141,9 @@ export default function TablePricing() {
   };
   return (
     <div className="max-w-7xl mx-auto p-6">
-      <h2 className="text-3xl font-semibold text-center mb-8">
+      <h1 className="text-3xl font-semibold text-center mb-8">
         BẢNG GIÁ DỊCH VỤ
-      </h2>
+      </h1>
 
       {/* <div className="flex flex-wrap justify-center gap-4 mb-8">
         {services.map((service) => (
@@ -166,12 +166,12 @@ export default function TablePricing() {
           // .filter((service) => service.id === selectedService)
           .map((service) => (
             <div key={service.id}>
-              <h3 className="text-2xl font-bold text-center mb-4 text-gray-800">
+              <h2 className="text-2xl font-bold text-center mb-4 text-gray-800">
                 {service.name}
-              </h3>
-              <p className="text-center text-gray-500 mb-6">
+              </h2>
+              <h2 className="text-center text-gray-500 mb-6">
                 {service.description}
-              </p>
+              </h2>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                 {service.plans.map((plan, index) => (
@@ -179,9 +179,9 @@ export default function TablePricing() {
                     key={index}
                     className="border border-gray-200 rounded-lg p-6 hover:shadow-xl transition-all duration-300 flex flex-col items-center"
                   >
-                    <h4 className="text-xl font-semibold text-gray-700">
+                    <h3 className="text-xl font-semibold text-gray-700">
                       {plan.name}
-                    </h4>
+                    </h3>
                     <p className="text-green-600 text-lg font-bold mt-2">
                       {plan.price}
                     </p>

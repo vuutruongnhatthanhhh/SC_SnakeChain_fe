@@ -52,7 +52,7 @@ const Page: React.FC = () => {
       imageUrl: "/images/web/thiet-ke-website-spa-tham-my-vien.jpg",
     },
     {
-      title: "Mẫu website công ty đồng phục, xưởng may mặc",
+      title: "Mẫu website xưởng may mặc",
       imageUrl:
         "/images/web/thiet-ke-website-cong-ty-dong-phuc-xuong-may-mac.jpg",
     },

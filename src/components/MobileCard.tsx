@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 
 const projects = [
   {
@@ -62,9 +63,12 @@ export default function MobileCard() {
             href={project.link}
             className="bg-white shadow-lg rounded-xl p-4 flex flex-col items-center hover:shadow-xl hover:scale-105 transition-all duration-300"
           >
-            <img
+            <Image
               src={project.image}
               alt={project.name}
+              width={192}
+              height={180}
+              layout="responsive"
               className="w-full h-48 object-cover rounded-lg"
             />
             <h3 className="mt-4 text-lg font-semibold text-gray-800">

@@ -5,6 +5,7 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import {
   changePassword,
   checkCode,
+  register,
   retryActive,
   retryPassword,
 } from "@/services/authService";
@@ -32,8 +33,16 @@ export default function AuthForm({ onLoginSuccess }: AuthFormProps) {
   const [isVerifyingPass, setIsVerifyingPass] = useState(false);
   const [isChangePass, setIsChangePass] = useState(false);
 
+  const isStrongPassword = (password: string): boolean => {
+    return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)[A-Za-z\d\W]{8,}$/.test(
+      password
+    );
+  };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -45,25 +54,39 @@ export default function AuthForm({ onLoginSuccess }: AuthFormProps) {
       return;
     }
 
+    if (!isStrongPassword(formData.password) && !isLogin) {
+      setError(
+        "Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt."
+      );
+      return;
+    }
+
+    setError(null);
+
     try {
       if (isLogin) {
         await handleLogin(formData.email, formData.password);
-
         window.location.reload();
         onLoginSuccess();
       } else {
-        const response = await handleRegister(
-          formData.email,
-          formData.password,
-          formData.name
-        );
-        setIsVerifying(true);
+        try {
+          const data = {
+            email: formData.email,
+            password: formData.password,
+            name: formData.name,
+          };
+
+          const response = await register(data);
+          setIsVerifying(true);
+        } catch (err: any) {
+          setError("Email đã tồn tại");
+        }
       }
     } catch (err: any) {
-      if (err === "Tài khoản chưa được kích hoạt") {
+      if (err.response?.data?.message === "Tài khoản chưa được kích hoạt") {
         setIsVerifying(true);
       } else {
-        setError(err);
+        setError(err.response?.data?.message);
       }
     }
   };
@@ -74,7 +97,6 @@ export default function AuthForm({ onLoginSuccess }: AuthFormProps) {
       await retryPassword(formData.email);
       setIsVerifyingPass(true);
     } catch (err: any) {
-      console.log("err", err);
       setError(err.response.data.message);
     }
   };
@@ -205,7 +227,7 @@ export default function AuthForm({ onLoginSuccess }: AuthFormProps) {
                 </button>
               </div>
             </div>
-            {error && <p className="text-red-500 text-center">{error}</p>}
+            {error && <p className="text-red-500">{error}</p>}
             <button
               type="submit"
               className="w-full bg-buttonRoot font-semibold py-2 rounded-md transition-all"
@@ -239,7 +261,7 @@ export default function AuthForm({ onLoginSuccess }: AuthFormProps) {
               />
             </div>
 
-            {error && <p className="text-red-500 text-center">{error}</p>}
+            {error && <p className="text-red-500">{error}</p>}
 
             <button
               type="submit"
@@ -271,7 +293,7 @@ export default function AuthForm({ onLoginSuccess }: AuthFormProps) {
               />
             </div>
 
-            {error && <p className="text-red-500 text-center">{error}</p>}
+            {error && <p className="text-red-500 ">{error}</p>}
 
             <button
               type="submit"
@@ -375,7 +397,7 @@ export default function AuthForm({ onLoginSuccess }: AuthFormProps) {
                 </div>
               </div>
             )}
-            {error && <p className="text-red-500 text-center">{error}</p>}
+            {error && <p className="text-red-500">{error}</p>}
 
             <button
               type="submit"
@@ -436,7 +458,7 @@ export default function AuthForm({ onLoginSuccess }: AuthFormProps) {
                 required
               />
             </div>
-            {error && <p className="text-red-500 text-center">{error}</p>}
+            {error && <p className="text-red-500">{error}</p>}
             <button
               type="submit"
               className="w-full bg-buttonRoot font-semibold py-2 rounded-md transition-all"

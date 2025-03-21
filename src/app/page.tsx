@@ -60,7 +60,10 @@ export default async function Home() {
     <>
       <div>
         <Slider images={images} />
-        <Carousel images={techImages} />
+
+        <div className="mb-6">
+          <Carousel images={techImages} />
+        </div>
         <Courses
           courses={courses.data.results.slice(0, 4)}
           title="Khóa học nổi bật"

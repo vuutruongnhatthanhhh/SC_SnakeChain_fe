@@ -17,6 +17,7 @@ import FilterAdmin from "./FilterAdmin";
 import Table from "./Table";
 import ImageServer from "./ImageServer";
 import Link from "next/link";
+import Image from "next/image";
 
 interface SourceCode {
   _id: string;
@@ -533,12 +534,14 @@ const SourceCodeManagement = () => {
               <p className="break-words">
                 <strong>Hình ảnh chính:</strong>
                 {selectedSourceCode.image ? (
-                  <img
+                  <Image
                     src={
                       process.env.NEXT_PUBLIC_SERVER + selectedSourceCode.image
                     }
                     alt="Hình ảnh chính"
-                    className="w-32 h-32 object-cover mt-2 cursor-pointer"
+                    className="object-cover mt-2 cursor-pointer"
+                    width={150}
+                    height={150}
                     onClick={() =>
                       openModalImage(
                         process.env.NEXT_PUBLIC_SERVER +
@@ -558,10 +561,12 @@ const SourceCodeManagement = () => {
                   selectedSourceCode.extendedImage.length > 0 ? (
                     selectedSourceCode.extendedImage.map((image, index) => (
                       <div key={index} className="mr-2 mb-2">
-                        <img
+                        <Image
                           src={process.env.NEXT_PUBLIC_SERVER + image}
                           alt={`Hình ảnh phụ ${index}`}
-                          className="w-32 h-32 object-cover cursor-pointer"
+                          className="object-cover cursor-pointer"
+                          width={140}
+                          height={150}
                           onClick={() =>
                             openModalImage(
                               process.env.NEXT_PUBLIC_SERVER + image
@@ -588,10 +593,12 @@ const SourceCodeManagement = () => {
                         Đóng
                       </button>
                     </div>
-                    <img
+                    <Image
                       src={modalImage}
                       alt="Modal Image"
                       className="w-full h-auto object-contain"
+                      width={272}
+                      height={181}
                     />
                   </div>
                 </div>
@@ -599,33 +606,33 @@ const SourceCodeManagement = () => {
 
               <p className="break-words">
                 <strong>Link doc:</strong>{" "}
-                <Link
+                <a
                   className="text-blue-600 hover:underline"
                   href={selectedSourceCode.linkDoc}
                   target="_blank"
                 >
                   {selectedSourceCode.linkDoc}
-                </Link>
+                </a>
               </p>
               <p className="break-words">
                 <strong>Link Youtube:</strong>{" "}
-                <Link
+                <a
                   className="text-blue-600 hover:underline"
                   href={selectedSourceCode.linkYoutube}
                   target="_blank"
                 >
                   {selectedSourceCode.linkYoutube}
-                </Link>
+                </a>
               </p>
               <p className="break-words">
                 <strong>Link Website:</strong>{" "}
-                <Link
+                <a
                   className="text-blue-600 hover:underline"
                   href={selectedSourceCode.linkWebsite}
                   target="_blank"
                 >
                   {selectedSourceCode.linkWebsite}
-                </Link>
+                </a>
               </p>
               <p className="break-words">
                 <strong>Trạng thái:</strong>{" "}
@@ -771,14 +778,17 @@ const SourceCodeManagement = () => {
 
                   {editingSourceCode.image && (
                     <div className="mt-2 flex items-center">
-                      <img
+                      <Image
                         src={
                           process.env.NEXT_PUBLIC_SERVER +
                           editingSourceCode.image
                         }
                         alt="Hình ảnh chính"
-                        className="w-32 h-32 object-cover"
+                        className="object-cover"
+                        width={150}
+                        height={150}
                       />
+
                       <button
                         onClick={() => {
                           const newSourceCode = { ...editingSourceCode };
@@ -803,10 +813,12 @@ const SourceCodeManagement = () => {
                       </div>
                       {imagePreview && (
                         <div className="flex items-center mt-2">
-                          <img
+                          <Image
                             src={imagePreview}
                             alt="Preview"
-                            className="w-16 h-16 object-cover mr-2"
+                            className="object-cover mr-2"
+                            width={150}
+                            height={150}
                           />
                           <button
                             onClick={handleClearImage}
@@ -828,10 +840,12 @@ const SourceCodeManagement = () => {
                     <div className="flex flex-wrap mt-2">
                       {editingSourceCode.extendedImage.map((image, index) => (
                         <div key={index} className="relative mr-2 mb-2">
-                          <img
+                          <Image
                             src={process.env.NEXT_PUBLIC_SERVER + image}
                             alt={`Hình ảnh phụ ${index}`}
-                            className="w-32 h-32 object-cover"
+                            className=" object-cover"
+                            width={150}
+                            height={150}
                           />
                           <button
                             onClick={() => {
@@ -851,10 +865,12 @@ const SourceCodeManagement = () => {
                       {imagePreviews.length > 0 ? (
                         imagePreviews.map((image, index) => (
                           <div key={index} className="relative w-32 h-32 p-2">
-                            <img
+                            <Image
                               src={image}
                               alt={`Preview ${index}`}
-                              className="object-cover w-full h-full rounded"
+                              className="object-cover  rounded"
+                              width={150}
+                              height={150}
                             />
                             <button
                               onClick={() => handleDeleteImage(index)}
@@ -1144,10 +1160,12 @@ const SourceCodeManagement = () => {
 
                   {imagePreview && (
                     <div className="flex items-center mt-2">
-                      <img
+                      <Image
                         src={imagePreview}
                         alt="Preview"
-                        className="w-16 h-16 object-cover mr-2"
+                        className="object-cover mr-2"
+                        width={150}
+                        height={150}
                       />
                       <button
                         onClick={handleClearImage}
@@ -1176,10 +1194,12 @@ const SourceCodeManagement = () => {
                     {imagePreviews.length > 0 ? (
                       imagePreviews.map((image, index) => (
                         <div key={index} className="relative w-24 h-24 p-2">
-                          <img
+                          <Image
                             src={image}
                             alt={`Preview ${index}`}
-                            className="object-cover w-full h-full rounded"
+                            className="object-cover rounded"
+                            width={150}
+                            height={150}
                           />
                           <button
                             onClick={() => handleDeleteImage(index)}

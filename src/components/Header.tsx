@@ -98,9 +98,6 @@ const Header: React.FC = () => {
             <Link href="/about" className="text-white hover:text-[#319795]">
               Giới thiệu
             </Link>
-            <Link href="/course" className="text-white hover:text-[#319795]">
-              Khóa học
-            </Link>
             <div
               className="relative"
               onMouseEnter={() => setDropdownVisible(true)}
@@ -138,6 +135,10 @@ const Header: React.FC = () => {
                 </div>
               )}
             </div>
+            <Link href="/course" className="text-white hover:text-[#319795]">
+              Khóa học
+            </Link>
+
             <Link
               href="/sourcecode"
               className="text-white hover:text-[#319795]"
@@ -346,11 +347,11 @@ const Header: React.FC = () => {
       {isAuthOpen && (
         <div
           className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
-          onClick={(e) => {
-            if (e.target === e.currentTarget) {
-              setIsAuthOpen(false);
-            }
-          }}
+          // onClick={(e) => {
+          //   if (e.target === e.currentTarget) {
+          //     setIsAuthOpen(false);
+          //   }
+          // }}
         >
           <div className="bg-white p-6 rounded-lg shadow-lg w-96 relative">
             <button

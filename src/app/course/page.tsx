@@ -45,7 +45,11 @@ const CoursePage = async ({
     <div className="flex p-4 w-full">
       <div className="w-full">
         <SearchBar searchTerm={searchTerm} category={category} />
-        <Courses courses={courses} title="" allCoursesLink="#allcourse" />
+        <Courses
+          courses={courses}
+          title="Khóa học lập trình"
+          allCoursesLink="#allcourse"
+        />
       </div>
     </div>
   );

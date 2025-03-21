@@ -17,6 +17,7 @@ import {
 import Editor from "./Editor";
 import ImageServer from "./ImageServer";
 import Link from "next/link";
+import Image from "next/image";
 
 interface Blog {
   _id: string;
@@ -425,10 +426,12 @@ const BlogManagement = () => {
               <p className="break-words">
                 <strong>Hình ảnh</strong>
                 {selectedBlog.image ? (
-                  <img
+                  <Image
                     src={process.env.NEXT_PUBLIC_SERVER + selectedBlog.image}
                     alt="Hình ảnh chính"
-                    className="w-32 h-32 object-cover mt-2 cursor-pointer"
+                    className=" object-cover mt-2 cursor-pointer"
+                    width={150}
+                    height={150}
                     onClick={() =>
                       openModalImage(
                         process.env.NEXT_PUBLIC_SERVER + selectedBlog.image
@@ -487,10 +490,12 @@ const BlogManagement = () => {
                         Đóng
                       </button>
                     </div>
-                    <img
+                    <Image
                       src={modalImage}
                       alt="Modal Image"
                       className="w-full h-auto object-contain"
+                      width={272}
+                      height={181}
                     />
                   </div>
                 </div>
@@ -556,10 +561,12 @@ const BlogManagement = () => {
 
                   {editingBlog.image && (
                     <div className="mt-2 flex items-center">
-                      <img
+                      <Image
                         src={process.env.NEXT_PUBLIC_SERVER + editingBlog.image}
                         alt="Hình ảnh chính"
-                        className="w-32 h-32 object-cover"
+                        className=" object-cover"
+                        width={150}
+                        height={150}
                       />
                       <button
                         onClick={() => {
@@ -584,10 +591,12 @@ const BlogManagement = () => {
 
                       {imagePreview && (
                         <div className="flex items-center mt-2">
-                          <img
+                          <Image
                             src={imagePreview}
                             alt="Preview"
-                            className="w-16 h-16 object-cover mr-2"
+                            className="object-cover mr-2"
+                            width={150}
+                            height={150}
                           />
                           <button
                             onClick={handleClearImage}
@@ -745,10 +754,12 @@ const BlogManagement = () => {
 
                   {imagePreview && (
                     <div className="flex items-center mt-2">
-                      <img
+                      <Image
                         src={imagePreview}
                         alt="Preview"
-                        className="w-16 h-16 object-cover mr-2"
+                        className="object-cover mr-2"
+                        width={150}
+                        height={150}
                       />
                       <button
                         onClick={handleClearImage}

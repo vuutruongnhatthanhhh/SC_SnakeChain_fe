@@ -28,9 +28,9 @@ const Courses: React.FC<FeaturedCoursesProps> = ({
     return null;
   }
   return (
-    <div className="py-6 px-4 sm:px-6 lg:px-8 w-full">
+    <div className="pb-6 px-4 sm:px-6 lg:px-8 w-full">
       {title && title.trim() !== "" && (
-        <h2 className="text-3xl font-bold text-center mb-8">{title}</h2>
+        <h1 className="text-3xl font-bold text-center mb-8">{title}</h1>
       )}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {courses.map((course) => (
@@ -48,10 +48,12 @@ const Courses: React.FC<FeaturedCoursesProps> = ({
               height={9}
             />
             <div className="p-6">
-              <h3 className="text-xl font-semibold text-gray-800">
+              <h2 className="text-xl font-semibold text-gray-800 line-clamp-2">
                 {course.title}
+              </h2>
+              <h3 className="mt-2 text-gray-600 line-clamp-2">
+                {course.shortDescription}
               </h3>
-              <p className="mt-2 text-gray-600">{course.shortDescription}</p>
               <span className="mt-4 inline-block text-teal-600 font-semibold hover:text-teal-700">
                 Khám phá khóa học
               </span>

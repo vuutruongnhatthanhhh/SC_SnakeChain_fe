@@ -44,7 +44,11 @@ const Source = async ({
     <div className="flex p-4 w-full">
       <div className="w-full">
         <SourceSearchBar searchTerm={searchTerm} field={field} />
-        <SourceCode codes={sourceCodes} title="" allCodeLink="#allcourse" />
+        <SourceCode
+          codes={sourceCodes}
+          title="Kho source code đa dạng"
+          allCodeLink="#allcourse"
+        />
       </div>
     </div>
   );

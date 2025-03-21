@@ -1,4 +1,5 @@
 import api from "@/services/api";
+import axios from "axios";
 
 export interface User {
   data(data: any): unknown;
@@ -48,16 +49,30 @@ export interface RegisterResponse {
   _id: string;
 }
 
+const api2 = axios.create({
+  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
+  withCredentials: true,
+});
+
 export const login = async (data: LoginRequest): Promise<LoginResponse> => {
-  const response = await api.post<LoginResponseData>("/auth/login", data);
-  return response.data;
+  try {
+    const response = await api2.post<LoginResponseData>("/auth/login", data);
+    return response.data;
+  } catch (err: any) {
+    throw err;
+  }
 };
 
 export const register = async (
   data: RegisterRequest
 ): Promise<RegisterResponse> => {
-  const response = await api.post("/auth/register", data);
-  return response.data;
+  try {
+    const response = await api.post("/auth/register", data);
+    return response.data;
+  } catch (error: any) {
+    // return error.response?.data?.message;
+    throw error;
+  }
 };
 
 export const refreshAccessToken = async () => {
@@ -74,7 +89,6 @@ export const refreshAccessToken = async () => {
     }>("/auth/refresh-token", {
       refresh_token: refreshToken,
     });
-
     localStorage.setItem("access_token", response.data.data.access_token);
     return response.data.access_token;
   } catch (error) {

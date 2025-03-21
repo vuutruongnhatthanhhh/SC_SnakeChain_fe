@@ -4,6 +4,7 @@ import { sendQuoteRequest } from "@/services/mailService";
 import React, { useState, useEffect } from "react";
 import { FaYoutube, FaFacebook, FaTiktok, FaInstagram } from "react-icons/fa";
 import Link from "next/link";
+import { GrGroup } from "react-icons/gr";
 
 interface FormData {
   name: string;
@@ -65,6 +66,7 @@ const QuoteRequestForm: React.FC = () => {
             type="text"
             name="name"
             value={formData.name}
+            maxLength={50}
             onChange={handleChange}
             placeholder="Họ tên"
             className="w-full p-3 border rounded-md"
@@ -74,6 +76,7 @@ const QuoteRequestForm: React.FC = () => {
             type="email"
             name="email"
             value={formData.email}
+            maxLength={100}
             onChange={handleChange}
             placeholder="Email"
             className="w-full p-3 border rounded-md"
@@ -83,6 +86,7 @@ const QuoteRequestForm: React.FC = () => {
             type="tel"
             name="phone"
             value={formData.phone}
+            maxLength={11}
             onChange={handleChange}
             placeholder="Số điện thoại"
             className="w-full p-3 border rounded-md"
@@ -107,6 +111,7 @@ const QuoteRequestForm: React.FC = () => {
           <textarea
             name="description"
             value={formData.description}
+            maxLength={500}
             onChange={handleChange}
             placeholder="Mô tả dự án"
             className="w-full p-3 border rounded-md"
@@ -137,20 +142,28 @@ const QuoteRequestForm: React.FC = () => {
         <p className="mb-2">
           <strong>Email:</strong> vuutruongnhatthanh@gmail.com
         </p>
+
         <div className="flex space-x-4 mt-4">
           <Link
-            href="https://www.youtube.com/@SnakeChain2801"
+            href={config.youtube}
             target="_blank"
             className="text-blue-600 hover:text-blue-700"
           >
             <FaYoutube size={24} />
           </Link>
           <Link
-            href="https://www.facebook.com/people/Snake-Chain/61573199592592/"
+            href={config.facebook}
             target="_blank"
             className="text-blue-600 hover:text-blue-700"
           >
             <FaFacebook size={24} />
+          </Link>
+          <Link
+            href={config.group}
+            target="_blank"
+            className="text-blue-600 hover:text-blue-700"
+          >
+            <GrGroup size={24} />
           </Link>
           {/* <Link
             href="https://t.me"

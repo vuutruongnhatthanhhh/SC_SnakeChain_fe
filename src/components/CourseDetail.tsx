@@ -129,7 +129,7 @@ const CourseContent: React.FC<CourseDetailProps> = ({ course }) => {
       `}
         >
           <div className="p-4 ">
-            <h2 className="text-xl font-bold mb-4">Nội dung khóa học</h2>
+            <h1 className="text-xl font-bold mb-4">{course.title}</h1>
             <div className="space-y-2 max-h-[800px] overflow-y-auto overflow-x-hidden">
               {lessons.map((lesson) => (
                 <button
@@ -164,9 +164,9 @@ const CourseContent: React.FC<CourseDetailProps> = ({ course }) => {
                           <RiVipCrownLine />
                         )}
                       </div>
-                      <span className="font-medium truncate max-w-[300px] overflow-hidden text-ellipsis whitespace-nowrap">
+                      <h2 className="font-medium truncate max-w-[300px] overflow-hidden text-ellipsis whitespace-nowrap">
                         {lesson.title}
-                      </span>
+                      </h2>
                     </div>
                   </div>
                 </button>
@@ -213,10 +213,12 @@ const CourseContent: React.FC<CourseDetailProps> = ({ course }) => {
                         </p>
                         <div className="flex justify-center mt-4">
                           <a href="/images/qr_code.png" download="qr_code.png">
-                            <img
+                            <Image
                               src="/images/qr_code.png"
                               alt="QR Code"
-                              className="w-70 h-70 object-contain rounded-lg"
+                              className="object-contain rounded-lg my-4"
+                              width={350}
+                              height={350}
                             />
                           </a>
                         </div>
@@ -245,9 +247,7 @@ const CourseContent: React.FC<CourseDetailProps> = ({ course }) => {
             </div>
 
             <div className="bg-white rounded-lg p-6 shadow-lg max-w-[1200px]">
-              <h1 className="text-2xl font-bold mb-2">
-                {selectedLesson?.title}
-              </h1>
+              <p className="text-2xl font-bold mb-2">{selectedLesson?.title}</p>
               <p className="text-gray-600 mb-2">
                 Ngày xuất bản:{" "}
                 {dayjs(selectedLesson?.createdAt).format("DD-MM-YYYY HH:mm")}

@@ -42,7 +42,7 @@ const BlogPage = async ({
     <div className="flex p-4 w-full">
       <div className="w-full">
         <SearchBar searchTerm={searchTerm} />
-        <Blogs blogs={blogs} title="" allBlogLink="#allBlog" />
+        <Blogs blogs={blogs} title="Blog" allBlogLink="#allBlog" />
       </div>
     </div>
   );

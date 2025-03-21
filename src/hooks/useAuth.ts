@@ -30,7 +30,7 @@ export const useAuth = () => {
       localStorage.setItem("user", JSON.stringify(response.data.user));
       setUser(response.data.user);
     } catch (error: any) {
-      throw error.response?.data?.message || "Lỗi không xác định";
+      throw error;
     } finally {
     }
   };
@@ -49,7 +49,7 @@ export const useAuth = () => {
   ) => {
     try {
       const response = await register({ email, password, name });
-      return response.data._id;
+      return response;
     } catch (error) {
       console.error("Registration failed", error);
     } finally {

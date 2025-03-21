@@ -23,9 +23,22 @@ const UserInfo: React.FC = () => {
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
+  const isStrongPassword = (password: string): boolean => {
+    return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)[A-Za-z\d\W]{8,}$/.test(
+      password
+    );
+  };
+
   const handlePasswordChange = async () => {
     if (!oldPassword) {
       alert("Vui lòng nhập mật khẩu cũ");
+      return;
+    }
+
+    if (!isStrongPassword(newPassword)) {
+      alert(
+        "Mật khẩu mới phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt."
+      );
       return;
     }
     if (newPassword !== confirmPassword) {
@@ -54,6 +67,10 @@ const UserInfo: React.FC = () => {
   };
 
   const handleProfileChange = async () => {
+    if (!user.name || user.name.trim() === "") {
+      alert("Vui lòng nhập tên trước khi cập nhật thông tin.");
+      return;
+    }
     try {
       const updatedUser = await updateUserProfile({
         _id: user._id,
@@ -149,6 +166,7 @@ const UserInfo: React.FC = () => {
                 type="text"
                 placeholder="Họ và tên"
                 value={user.name}
+                maxLength={50}
                 onChange={(e) => setUser({ ...user, name: e.target.value })}
                 className="border border-gray-300 rounded-md p-2 w-full mb-4"
               />
@@ -159,6 +177,7 @@ const UserInfo: React.FC = () => {
                 type="text"
                 placeholder="Số điện thoại"
                 value={user.phone || ""}
+                maxLength={11}
                 onChange={(e) => setUser({ ...user, phone: e.target.value })}
                 className="border border-gray-300 rounded-md p-2 w-full mb-4"
               />
@@ -168,6 +187,7 @@ const UserInfo: React.FC = () => {
                 type="text"
                 placeholder="Địa chỉ"
                 value={user.address || ""}
+                maxLength={100}
                 onChange={(e) => setUser({ ...user, address: e.target.value })}
                 className="border border-gray-300 rounded-md p-2 w-full mb-4"
               />
@@ -223,6 +243,7 @@ const UserInfo: React.FC = () => {
                 type={showOldPassword ? "text" : "password"}
                 placeholder="Mật khẩu cũ"
                 value={oldPassword}
+                maxLength={32}
                 onChange={(e) => setOldPassword(e.target.value)}
                 className="border border-gray-300 rounded-md p-2 w-full"
               />
@@ -244,6 +265,7 @@ const UserInfo: React.FC = () => {
                 type={showNewPassword ? "text" : "password"}
                 placeholder="Mật khẩu mới"
                 value={newPassword}
+                maxLength={32}
                 onChange={(e) => setNewPassword(e.target.value)}
                 className="border border-gray-300 rounded-md p-2 w-full"
               />
@@ -265,6 +287,7 @@ const UserInfo: React.FC = () => {
                 type={showConfirmPassword ? "text" : "password"}
                 placeholder="Nhập lại mật khẩu mới"
                 value={confirmPassword}
+                maxLength={32}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 className="border border-gray-300 rounded-md p-2 w-full"
               />

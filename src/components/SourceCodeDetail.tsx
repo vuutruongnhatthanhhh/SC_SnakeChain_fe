@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { FaYoutube, FaFileWord } from "react-icons/fa";
 import { IoEarthOutline } from "react-icons/io5";
 import Link from "next/link";
+import Image from "next/image";
 
 interface SourceCode {
   code: string;
@@ -42,18 +43,20 @@ const SourceCodeDetail: React.FC<SourceCodeDetailProps> = ({ sourcecode }) => {
   return (
     <div className="flex flex-col md:flex-row p-6 rounded-lg ">
       <div className="w-full md:w-1/2 mb-6 md:mb-0">
-        <img
-          src={process.env.NEXT_PUBLIC_SERVER + sourcecode.image}
+        <Image
+          src={`${process.env.NEXT_PUBLIC_SERVER}${sourcecode.image}`}
           alt={sourcecode.title}
-          className="w-auto h-auto object-fit rounded-lg"
+          width={800}
+          height={400}
+          className="object-contain rounded-lg"
         />
       </div>
 
       <div className="flex flex-col md:w-1/2 md:pl-6">
-        <h2 className="text-xl font-bold text-black mb-2">
+        <h1 className="text-xl font-bold text-black mb-2">
           {`[${sourcecode.code}] `}
           {sourcecode.title}
-        </h2>
+        </h1>
         <p className="text-gray-600 mb-4">{sourcecode.description}</p>
 
         <div className="flex items-center mb-4">
@@ -134,10 +137,12 @@ const SourceCodeDetail: React.FC<SourceCodeDetailProps> = ({ sourcecode }) => {
                     openModal(process.env.NEXT_PUBLIC_SERVER + image)
                   }
                 >
-                  <img
+                  <Image
                     src={process.env.NEXT_PUBLIC_SERVER + image}
                     alt={`Image ${index + 1}`}
                     className="w-full h-full object-cover"
+                    width={600}
+                    height={400}
                   />
                 </div>
               ))}
@@ -157,10 +162,12 @@ const SourceCodeDetail: React.FC<SourceCodeDetailProps> = ({ sourcecode }) => {
             >
               &times;
             </span>
-            <img
+            <Image
               src={modalImage}
               alt="Modal Preview"
-              className="w-full h-auto max-h-[80vh] object-contain"
+              className="max-h-[80vh] object-contain"
+              width={600}
+              height={400}
             />
           </div>
         </div>
@@ -183,10 +190,12 @@ const SourceCodeDetail: React.FC<SourceCodeDetailProps> = ({ sourcecode }) => {
               {/* QR Code */}
               <div className="flex justify-center mt-4">
                 <a href="/images/qr_code.png" download="qr_code.png">
-                  <img
+                  <Image
                     src="/images/qr_code.png"
                     alt="QR Code"
-                    className="w-70 h-70 object-contain rounded-lg"
+                    className="object-contain rounded-lg"
+                    width={350}
+                    height={350}
                   />
                 </a>
               </div>
